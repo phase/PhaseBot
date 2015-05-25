@@ -10,7 +10,6 @@ import org.spacehq.mc.auth.exception.AuthenticationException;
 import org.spacehq.mc.protocol.MinecraftProtocol;
 import org.spacehq.mc.protocol.ProtocolConstants;
 import org.spacehq.mc.protocol.ProtocolMode;
-import org.spacehq.mc.protocol.data.game.values.entity.player.Animation;
 import org.spacehq.mc.protocol.data.message.Message;
 import org.spacehq.mc.protocol.data.status.ServerStatusInfo;
 import org.spacehq.mc.protocol.data.status.handler.ServerInfoHandler;
@@ -20,7 +19,6 @@ import org.spacehq.mc.protocol.packet.ingame.client.player.ClientPlayerPositionR
 import org.spacehq.mc.protocol.packet.ingame.client.player.ClientSwingArmPacket;
 import org.spacehq.mc.protocol.packet.ingame.server.ServerChatPacket;
 import org.spacehq.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
-import org.spacehq.mc.protocol.packet.ingame.server.entity.ServerAnimationPacket;
 import org.spacehq.mc.protocol.packet.ingame.server.entity.player.ServerPlayerPositionRotationPacket;
 import org.spacehq.packetlib.Client;
 import org.spacehq.packetlib.Session;
@@ -135,7 +133,7 @@ public class PhaseBot {
 					z = event.<ServerPlayerPositionRotationPacket> getPacket().getZ();
 					pitch = event.<ServerPlayerPositionRotationPacket> getPacket().getPitch();
 					yaw = event.<ServerPlayerPositionRotationPacket> getPacket().getYaw();
-					System.out.println("My Position: " + x + "," + y + "," + z);
+					System.out.println("Err, My Position: " + x + "," + y + "," + z);
 					event.getSession().send(new ClientPlayerPositionRotationPacket(false, x, y, z, pitch, yaw));
 				} else if (event.getPacket() instanceof ServerChatPacket) {
 
@@ -143,16 +141,32 @@ public class PhaseBot {
 					System.out.println(message.getFullText());
 					try {
 						String c = message.getFullText().split(": ")[1];
+						if (!c.startsWith("."))
+							return;
+						if (!(message.getFullText().contains("Phase") || message.getFullText().contains("Voltz"))) {
+							// event.getSession().send(new
+							// ClientChatPacket("You're not my master! D:"));
+							return;
+						}
 						if (c.startsWith(".swing")) {
 							event.getSession().send(new ClientSwingArmPacket());
 						} else if (c.startsWith(".crouch")) {
-							event.getSession().send(new ServerAnimationPacket(entityId, Animation.DAMAGE));
+
+						} else if (c.startsWith(".look")) {
+							float p = Float.parseFloat(c.split(" ")[1]);
+							float y = Float.parseFloat(c.split(" ")[2]);
+							event.getSession().send(new ClientPlayerPositionRotationPacket(false, x, y, z, p, y));
 						} else if (c.startsWith(".say")) {
-							event.getSession().send(new ClientChatPacket(c.split(".say")[1]));
+							StringBuilder text = new StringBuilder();
+							for (int i = 1; i < c.split(" ").length; i++) {
+								text.append(c.split(" ")[i] + " ");
+							}
+							event.getSession().send(new ClientChatPacket(text.toString()));
 						} else if (c.startsWith(".move ")) {
 							double rx = Double.parseDouble(c.split(" ")[1]);
 							double ry = Double.parseDouble(c.split(" ")[2]);
 							double rz = Double.parseDouble(c.split(" ")[3]);
+							System.out.println("Move: " + (x + rx) + " " + (y + ry) + " " + (z + rz));
 							move(event, rx, ry, rz);
 						}
 					} catch (Exception e) {
@@ -170,22 +184,27 @@ public class PhaseBot {
 	}
 
 	public static void move(PacketReceivedEvent event, double rx, double ry, double rz) {
-		System.out.println("Move: " + (x + rx) + " " + (y + ry) + " " + (z + rz));
-		for (double dx = 0; dx != rx; dx += rx > 0 ? 0.5d : rx == 0 ? 0d : -0.5d) {
-			for (double dy = 0; dy != ry; dy += ry > 0 ? 0.5d : ry == 0 ? 0d : -0.5d) {
-				for (double dz = 0; dz != rz; dz += rz > 0 ? 0.5d : rz == 0 ? 0d : -0.5d) {
-					event.getSession().send(
-							new ClientPlayerPositionRotationPacket(false, x + dx, y + dy, z + dz, pitch, yaw));
-					try {
-						Thread.sleep(10);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
+		int numberOfSteps = (int) ((int) 2.0 * Math
+				.floor(Math.sqrt(Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2))));
+		double sLx = rx / numberOfSteps;
+		double sLy = ry / numberOfSteps;
+		double sLz = rz / numberOfSteps;
+		System.out.println("m: " + sLx + " " + sLy + " " + sLz + " : " + numberOfSteps);
+		for (int i = 0; i < numberOfSteps; i++) {
+			event.getSession().send(
+					new ClientPlayerPositionRotationPacket(false, sLx + x, sLy + y, sLz + z, pitch, yaw));
+			x = sLx + x;
+			y = sLy + y;
+			z = sLz + z;
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
-		x = rx + x;
-		y = ry + y;
-		z = rz + z;
+		event.getSession()
+				.send(new ClientPlayerPositionRotationPacket(false, ((int) x) + 0.5d, ((int) y), ((int) z) + 0.5d,
+						pitch, yaw));
 	}
+
 }
