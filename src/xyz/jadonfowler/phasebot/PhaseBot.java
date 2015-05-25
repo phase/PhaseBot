@@ -169,17 +169,16 @@ public class PhaseBot {
 							move(event, rx, ry, rz);
 						}
 						else if(c.startsWith(".patrol ")){
-							double x1 = Double.parseDouble(c.split(" ")[1]);
-							double y1 = Double.parseDouble(c.split(" ")[2]);
-							double z1 = Double.parseDouble(c.split(" ")[3]);
-							double x2 = Double.parseDouble(c.split(" ")[4]);
-							double y2 = Double.parseDouble(c.split(" ")[5]);
-							double z2 = Double.parseDouble(c.split(" ")[6]);
-							double times = Double.parseDouble(c.split(" ")[7]);
+							double dx = Double.parseDouble(c.split(" ")[1]);
+							double dy = Double.parseDouble(c.split(" ")[2]);
+							double dz = Double.parseDouble(c.split(" ")[3]);
+							double times = Double.parseDouble(c.split(" ")[4]);
+							
 							for(int i = 0; i < times; i++){
-								move(event, x1, y1, z1);
-								move(event, x2, y2, z2);
+								move(event, dx, dy, dz);
+								move(event, -dx, -dy, -dz);
 							}
+							event.getSession().send(new ClientChatPacket("I have finished patrolling!"));
 						}
 					} catch (Exception e) {
 					}
@@ -207,7 +206,7 @@ public class PhaseBot {
 		else
 			bot.yaw = (float) a1;
 		
-		//bot.pitch = (float) (ry == 0 ? 0:Math.asin(Math.sqrt(rx*rx+ry*ry+rz*rz)/ry));
+		bot.pitch = 0;//(float) (ry == 0 ? 0:Math.asin(Math.sqrt(rx*rx+ry*ry+rz*rz)/ry));
 		
 		int numberOfSteps = (int) ((int) 2.0 * Math
 				.floor(Math.sqrt(Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2))));
