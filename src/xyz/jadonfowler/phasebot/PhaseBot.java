@@ -144,7 +144,7 @@ public class PhaseBot {
 						String c = message.getFullText().split(": ")[1];
 						if (!c.startsWith("."))
 							return;
-						if (!(message.getFullText().contains("Phase") || message.getFullText().contains("Voltz"))) {
+						if (!(message.getFullText().contains("Phase") || message.getFullText().contains("Voltz") || message.getFullText().contains("chibill"))) {
 							// event.getSession().send(new
 							// ClientChatPacket("You're not my master! D:"));
 							return;
@@ -213,14 +213,14 @@ public class PhaseBot {
 								event.getSession().send(new ClientChatPacket("p3 is set to " + (int)bot.pos.x + " " + (int)bot.pos.y + " " + (int)bot.pos.z));
 								break;
 							}
-						} else if (c.startsWith(".math")) {
+						} else if (c.startsWith(".js")) {
 							ScriptEngineManager mgr = new ScriptEngineManager();
 						    ScriptEngine engine = mgr.getEngineByName("JavaScript");
 						    StringBuilder text = new StringBuilder();
 							for (int i = 1; i < c.split(" ").length; i++) {
 								text.append(c.split(" ")[i] + " ");
 							}
-						    event.getSession().send(new ClientChatPacket(text.toString().replace(" ", "") + " = " + engine.eval(text.toString())));
+						    event.getSession().send(new ClientChatPacket("js> " + engine.eval(text.toString())));
 						}
 					} catch (Exception e) {
 					}
