@@ -27,6 +27,7 @@ public class Bot {
 		this.port = port;
 		this.proxy = proxy;
 		this.positions = new Vector3d[4]; //TODO May need more
+		this.pos = new Vector3d(0, 0, 0);
 	}
 
 	public String getUsername() {

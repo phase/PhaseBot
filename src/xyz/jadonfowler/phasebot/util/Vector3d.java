@@ -11,4 +11,8 @@ public class Vector3d {
 		this.z = z;
 	}
 
+	public String toString(){
+		return "Vector[x=" + x + ",y=" + y + ",z" + z + "]";
+	}
+	
 }
