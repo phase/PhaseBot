@@ -10,6 +10,7 @@ import org.spacehq.mc.auth.exception.AuthenticationException;
 import org.spacehq.mc.protocol.MinecraftProtocol;
 import org.spacehq.mc.protocol.ProtocolConstants;
 import org.spacehq.mc.protocol.ProtocolMode;
+import org.spacehq.mc.protocol.data.game.values.entity.player.Animation;
 import org.spacehq.mc.protocol.data.message.Message;
 import org.spacehq.mc.protocol.data.status.ServerStatusInfo;
 import org.spacehq.mc.protocol.data.status.handler.ServerInfoHandler;
@@ -19,6 +20,7 @@ import org.spacehq.mc.protocol.packet.ingame.client.player.ClientPlayerPositionR
 import org.spacehq.mc.protocol.packet.ingame.client.player.ClientSwingArmPacket;
 import org.spacehq.mc.protocol.packet.ingame.server.ServerChatPacket;
 import org.spacehq.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
+import org.spacehq.mc.protocol.packet.ingame.server.entity.ServerAnimationPacket;
 import org.spacehq.mc.protocol.packet.ingame.server.entity.player.ServerPlayerPositionRotationPacket;
 import org.spacehq.packetlib.Client;
 import org.spacehq.packetlib.Session;
@@ -41,6 +43,7 @@ public class PhaseBot {
 	static double z;
 	static float pitch;
 	static float yaw;
+	static int entityId;
 
 	public static void main(String... args) {
 		try {
@@ -125,6 +128,7 @@ public class PhaseBot {
 					event.getSession().send(
 							new ClientChatPacket("I am in GameMode: "
 									+ event.<ServerJoinGamePacket> getPacket().getGameMode()));
+					entityId = event.<ServerJoinGamePacket> getPacket().getEntityId();
 				} else if (event.getPacket() instanceof ServerPlayerPositionRotationPacket) {
 					x = event.<ServerPlayerPositionRotationPacket> getPacket().getX();
 					y = event.<ServerPlayerPositionRotationPacket> getPacket().getY();
@@ -142,6 +146,7 @@ public class PhaseBot {
 						if (c.startsWith(".swing")) {
 							event.getSession().send(new ClientSwingArmPacket());
 						} else if (c.startsWith(".crouch")) {
+							event.getSession().send(new ServerAnimationPacket(entityId, Animation.DAMAGE));
 						} else if (c.startsWith(".say")) {
 							event.getSession().send(new ClientChatPacket(c.split(".say")[1]));
 						} else if (c.startsWith(".move ")) {
