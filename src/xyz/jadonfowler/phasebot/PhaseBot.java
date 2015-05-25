@@ -36,13 +36,8 @@ public class PhaseBot {
 	private static Proxy PROXY = Proxy.NO_PROXY;
 	private static boolean VERIFY_USERS = true;
 
-	static double x;
-	static double y;
-	static double z;
-	static float pitch;
-	static float yaw;
-	static int entityId;
-
+	static Bot bot;
+	
 	public static void main(String... args) {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("res/config.txt"));
@@ -65,6 +60,7 @@ public class PhaseBot {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
 		status();
 		login();
 	}
@@ -123,18 +119,15 @@ public class PhaseBot {
 
 				if (event.getPacket() instanceof ServerJoinGamePacket) {
 					event.getSession().send(new ClientChatPacket("PhaseBot has joined the game."));
-					event.getSession().send(
-							new ClientChatPacket("I am in GameMode: "
-									+ event.<ServerJoinGamePacket> getPacket().getGameMode()));
-					entityId = event.<ServerJoinGamePacket> getPacket().getEntityId();
+					bot.entityId = event.<ServerJoinGamePacket> getPacket().getEntityId();
 				} else if (event.getPacket() instanceof ServerPlayerPositionRotationPacket) {
-					x = event.<ServerPlayerPositionRotationPacket> getPacket().getX();
-					y = event.<ServerPlayerPositionRotationPacket> getPacket().getY();
-					z = event.<ServerPlayerPositionRotationPacket> getPacket().getZ();
-					pitch = event.<ServerPlayerPositionRotationPacket> getPacket().getPitch();
-					yaw = event.<ServerPlayerPositionRotationPacket> getPacket().getYaw();
-					System.out.println("Err, My Position: " + x + "," + y + "," + z);
-					event.getSession().send(new ClientPlayerPositionRotationPacket(false, x, y, z, pitch, yaw));
+					bot.x = event.<ServerPlayerPositionRotationPacket> getPacket().getX();
+					bot.y = event.<ServerPlayerPositionRotationPacket> getPacket().getY();
+					bot.z = event.<ServerPlayerPositionRotationPacket> getPacket().getZ();
+					bot.pitch = event.<ServerPlayerPositionRotationPacket> getPacket().getPitch();
+					bot.yaw = event.<ServerPlayerPositionRotationPacket> getPacket().getYaw();
+					System.out.println("Err, My Position: " + bot.x + "," + bot.y + "," + bot.z);
+					event.getSession().send(new ClientPlayerPositionRotationPacket(false, bot.x, bot.y, bot.z, bot.pitch, bot.yaw));
 				} else if (event.getPacket() instanceof ServerChatPacket) {
 
 					Message message = event.<ServerChatPacket> getPacket().getMessage();
@@ -155,7 +148,7 @@ public class PhaseBot {
 						} else if (c.startsWith(".look")) {
 							float p = Float.parseFloat(c.split(" ")[1]);
 							float y = Float.parseFloat(c.split(" ")[2]);
-							event.getSession().send(new ClientPlayerPositionRotationPacket(false, x, y, z, p, y));
+							event.getSession().send(new ClientPlayerPositionRotationPacket(false, bot.x, bot.y, bot.z, y, p));
 						} else if (c.startsWith(".say")) {
 							StringBuilder text = new StringBuilder();
 							for (int i = 1; i < c.split(" ").length; i++) {
@@ -163,16 +156,30 @@ public class PhaseBot {
 							}
 							event.getSession().send(new ClientChatPacket(text.toString()));
 						} else if (c.startsWith(".move ")) {
-							double rx = c.split(" ")[1].startsWith("~") ? Double.parseDouble(c.split(" ")[1].split("~")[1])
-									: Math.abs(x - Double.parseDouble(c.split(" ")[1]));
-							double ry = c.split(" ")[2].startsWith("~") ? Double.parseDouble(c.split(" ")[2].split("~")[1])
-									: Math.abs(y - Double.parseDouble(c.split(" ")[2]));
-							double rz = c.split(" ")[3].startsWith("~") ? Double.parseDouble(c.split(" ")[3].split("~")[1])
-									: Math.abs(z - Double.parseDouble(c.split(" ")[3]));
-							//double ry = Double.parseDouble(c.split(" ")[2]);
-							//double rz = Double.parseDouble(c.split(" ")[3]);
-							System.out.println("Move: " + (x + rx) + " " + (y + ry) + " " + (z + rz));
+//							double rx = !c.split(" ")[1].startsWith("*") ? Double.parseDouble(c.split(" ")[1])
+//									: Math.abs(bot.z - Double.parseDouble(c.split(" ")[1].split("*")[1]));
+//							double ry = !c.split(" ")[2].startsWith("*") ? Double.parseDouble(c.split(" ")[2])
+//									: Math.abs(bot.y - Double.parseDouble(c.split(" ")[2].split("*")[1]));
+//							double rz = !c.split(" ")[3].startsWith("*") ? Double.parseDouble(c.split(" ")[3])
+//									: Math.abs(bot.z - Double.parseDouble(c.split(" ")[3].split("*")[1]));
+							double rx = Double.parseDouble(c.split(" ")[1]);
+							double ry = Double.parseDouble(c.split(" ")[2]);
+							double rz = Double.parseDouble(c.split(" ")[3]);
+							System.out.println("Move: " + (bot.x + rx) + " " + (bot.y + ry) + " " + (bot.z + rz));
 							move(event, rx, ry, rz);
+						}
+						else if(c.startsWith(".patrol ")){
+							double x1 = Double.parseDouble(c.split(" ")[1]);
+							double y1 = Double.parseDouble(c.split(" ")[2]);
+							double z1 = Double.parseDouble(c.split(" ")[3]);
+							double x2 = Double.parseDouble(c.split(" ")[4]);
+							double y2 = Double.parseDouble(c.split(" ")[5]);
+							double z2 = Double.parseDouble(c.split(" ")[6]);
+							double times = Double.parseDouble(c.split(" ")[7]);
+							for(int i = 0; i < times; i++){
+								move(event, x1, y1, z1);
+								move(event, x2, y2, z2);
+							}
 						}
 					} catch (Exception e) {
 					}
@@ -189,6 +196,19 @@ public class PhaseBot {
 	}
 
 	public static void move(PacketReceivedEvent event, double rx, double ry, double rz) {
+		
+		double l = (bot.x + rx) - bot.x;
+		double w = (bot.z + rz) - bot.z;
+		double c = Math.sqrt(l*l + w*w);
+		double a1 = -Math.asin(l/c)/Math.PI*180;
+		double a2 = Math.acos(w/c)/Math.PI*180;
+		if(a2 > 90)
+			bot.yaw = (float) (180 - a1);
+		else
+			bot.yaw = (float) a1;
+		
+		//bot.pitch = (float) (ry == 0 ? 0:Math.asin(Math.sqrt(rx*rx+ry*ry+rz*rz)/ry));
+		
 		int numberOfSteps = (int) ((int) 2.0 * Math
 				.floor(Math.sqrt(Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2))));
 		double sLx = rx / numberOfSteps;
@@ -197,19 +217,19 @@ public class PhaseBot {
 		System.out.println("m: " + sLx + " " + sLy + " " + sLz + " : " + numberOfSteps);
 		for (int i = 0; i < numberOfSteps; i++) {
 			event.getSession().send(
-					new ClientPlayerPositionRotationPacket(false, sLx + x, sLy + y, sLz + z, pitch, yaw));
-			x = sLx + x;
-			y = sLy + y;
-			z = sLz + z;
+					new ClientPlayerPositionRotationPacket(false, sLx + bot.x, sLy + bot.y, sLz + bot.z, bot.yaw, bot.pitch));
+			bot.x = sLx + bot.x;
+			bot.y = sLy + bot.y;
+			bot.z = sLz + bot.z;
 			try {
-				Thread.sleep(20);
+				Thread.sleep(50);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
+		
 		event.getSession()
-				.send(new ClientPlayerPositionRotationPacket(false, ((int) x) + 0.5d, ((int) y), ((int) z) + 0.5d,
-						pitch, yaw));
+				.send(new ClientPlayerPositionRotationPacket(false, ((int) bot.x) + 0.5d, ((int) bot.y), ((int) bot.z) + 0.5d,
+						bot.yaw, bot.pitch));
 	}
-
 }
