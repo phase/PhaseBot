@@ -35,7 +35,9 @@ public class PhaseBot {
 
 	private static String USERNAME = "username";
 	private static String PASSWORD = "password";
-	private static String HOST = "mort.openredstone.org";
+	//private static String HOST = "mort.openredstone.org";
+	//private static int PORT = 25569;
+	private static String HOST = "nick.openredstone.org";
 	private static int PORT = 25569;
 	private static Proxy PROXY = Proxy.NO_PROXY;
 	private static boolean VERIFY_USERS = true;
@@ -140,14 +142,8 @@ public class PhaseBot {
 					event.getSession().send(
 							new ClientPlayerPositionRotationPacket(false, bot.pos.x, bot.pos.y, bot.pos.z, bot.pitch,
 									bot.yaw));
-					// } else if (event.getPacket() instanceof
-					// ServerMultiChunkDataPacket) {
-					// for (Chunk c : event.<ServerChunkDataPacket>
-					// getPacket().getChunks()) {
-					// c.getBlocks();
-					// }
 				}
-
+				
 				else if (event.getPacket() instanceof ServerChatPacket) {
 
 					Message message = event.<ServerChatPacket> getPacket().getMessage();
