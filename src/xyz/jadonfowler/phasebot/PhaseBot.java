@@ -166,9 +166,9 @@ public class PhaseBot {
 
 	public static void move(PacketReceivedEvent event, double rx, double ry, double rz) {
 		System.out.println("Move: " + (x + rx) + " " + (y + ry) + " " + (z + rz));
-		for (double dx = 0; dx != rx; dx += rx > 0 ? 0.5d : -0.5d) {
-			for (double dy = 0; dy != ry; dy += ry > 0 ? 0.5d : -0.5d) {
-				for (double dz = 0; dz != rz; dz += rz > 0 ? 0.5d : -0.5d) {
+		for (double dx = 0; dx != rx; dx += rx > 0 ? 0.5d : rx == 0 ? 0d : -0.5d) {
+			for (double dy = 0; dy != ry; dy += ry > 0 ? 0.5d : ry == 0 ? 0d : -0.5d) {
+				for (double dz = 0; dz != rz; dz += rz > 0 ? 0.5d : rz == 0 ? 0d : -0.5d) {
 					event.getSession().send(
 							new ClientPlayerPositionRotationPacket(false, x + dx, y + dy, z + dz, pitch, yaw));
 					try {
