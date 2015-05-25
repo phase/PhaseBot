@@ -11,3 +11,6 @@
 
 #Gradle
 /.gradle
+
+#Config
+/res/config.txt
