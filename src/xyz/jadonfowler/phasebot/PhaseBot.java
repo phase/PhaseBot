@@ -163,9 +163,14 @@ public class PhaseBot {
 							}
 							event.getSession().send(new ClientChatPacket(text.toString()));
 						} else if (c.startsWith(".move ")) {
-							double rx = Double.parseDouble(c.split(" ")[1]);
-							double ry = Double.parseDouble(c.split(" ")[2]);
-							double rz = Double.parseDouble(c.split(" ")[3]);
+							double rx = c.split(" ")[1].startsWith("~") ? Double.parseDouble(c.split(" ")[1].split("~")[1])
+									: Math.abs(x - Double.parseDouble(c.split(" ")[1]));
+							double ry = c.split(" ")[2].startsWith("~") ? Double.parseDouble(c.split(" ")[2].split("~")[1])
+									: Math.abs(y - Double.parseDouble(c.split(" ")[2]));
+							double rz = c.split(" ")[3].startsWith("~") ? Double.parseDouble(c.split(" ")[3].split("~")[1])
+									: Math.abs(z - Double.parseDouble(c.split(" ")[3]));
+							//double ry = Double.parseDouble(c.split(" ")[2]);
+							//double rz = Double.parseDouble(c.split(" ")[3]);
 							System.out.println("Move: " + (x + rx) + " " + (y + ry) + " " + (z + rz));
 							move(event, rx, ry, rz);
 						}
