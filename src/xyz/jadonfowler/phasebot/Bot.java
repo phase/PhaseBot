@@ -2,20 +2,22 @@ package xyz.jadonfowler.phasebot;
 
 import java.net.Proxy;
 
+import xyz.jadonfowler.phasebot.util.Vector3d;
+
 public class Bot {
 	
-	private String username;
-	private String password;
-	private String host;
-	private int port;
-	private Proxy proxy = Proxy.NO_PROXY;
+	String username;
+	String password;
+	String host;
+	int port;
+	Proxy proxy = Proxy.NO_PROXY;
 	
-	public double x = 0;
-	public double y = 0;
-	public double z = 0;
+	public Vector3d pos;
 	public float pitch = 0;
 	public float yaw = 0;
 	public int entityId = 0;
+	
+	public Vector3d[] positions;
 	
 	public Bot(String username, String password, String host, int port, Proxy proxy) {
 		super();
@@ -24,6 +26,7 @@ public class Bot {
 		this.host = host;
 		this.port = port;
 		this.proxy = proxy;
+		this.positions = new Vector3d[4]; //TODO May need more
 	}
 
 	public String getUsername() {
