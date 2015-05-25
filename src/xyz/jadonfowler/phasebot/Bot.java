@@ -21,7 +21,7 @@ public class Bot {
 	public float yaw = 0;
 	public int entityId = 0;
 
-	boolean isDerp = false;
+	public boolean isDerp = false;
 
 	public Vector3d[] positions;
 
@@ -75,7 +75,7 @@ public class Bot {
 	public void setProxy(Proxy proxy) {
 		this.proxy = proxy;
 	}
-
+	
 	public void derp(final Session s) {
 		new Thread(new Runnable() {
 			public void run() {
@@ -98,6 +98,58 @@ public class Bot {
 
 	public void swing(Session s) {
 		s.send(new ClientSwingArmPacket());
+	}
+	
+	public void move(Session s, double rx, double ry, double rz) {
+
+		double l = (pos.x + rx) - pos.x;
+		double w = (pos.z + rz) - pos.z;
+		double c = Math.sqrt(l * l + w * w);
+		double a1 = -Math.asin(l / c) / Math.PI * 180;
+		double a2 = Math.acos(w / c) / Math.PI * 180;
+		if (a2 > 90)
+			yaw = (float) (180 - a1);
+		else
+			yaw = (float) a1;
+
+		// double d = Math.sqrt(Math.pow(((bot.pos.x + rx) - bot.pos.x), 2) +
+		// Math.pow(((bot.pos.y + ry) - bot.pos.y), 2));
+		// System.out.println(d);
+		// System.out.println((bot.pos.y + ry) - bot.pos.y);
+		// bot.pitch = (float) Math.asin((bot.pos.y + ry)/d);
+		// System.out.println("p: " + bot.pitch + " y:" + bot.yaw);
+
+		// bot.pitch = (float) ((ry == 0) ? 0:
+		// (Math.asin(Math.sqrt(bot.pos.x*bot.pos.x+bot.pos.y+bot.pos.y+bot.pos.z*bot.pos.z))
+		// == 0) ? 0 :
+		// Math.asin(Math.sqrt(bot.pos.x*bot.pos.x+bot.pos.y+bot.pos.y+bot.pos.z*bot.pos.z)));
+
+		pitch = 0;// (float) (2*Math.PI-Math.asin(bot.pos.y));
+
+		System.out.println("p: " + pitch + " y:" + yaw);
+		int numberOfSteps = (int) ((int) 2.0 * Math
+				.floor(Math.sqrt(Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2))));
+		double sLx = rx / numberOfSteps;
+		double sLy = ry / numberOfSteps;
+		double sLz = rz / numberOfSteps;
+		System.out.println("m: " + sLx + " " + sLy + " " + sLz + " : " + numberOfSteps);
+		for (int i = 0; i < numberOfSteps; i++) {
+			s.send(
+					new ClientPlayerPositionRotationPacket(false, sLx + pos.x, sLy + pos.y, sLz + pos.z,
+							yaw, pitch));
+			pos.x = sLx + pos.x;
+			pos.y = sLy + pos.y;
+			pos.z = sLz + pos.z;
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		s.send(
+				new ClientPlayerPositionRotationPacket(false, ((int) pos.x) + 0.5d, ((int) pos.y),
+						((int) pos.z) + 0.5d, yaw, pitch));
 	}
 
 }
