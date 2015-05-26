@@ -85,7 +85,7 @@ public class Bot {
 	public Client getClient() {
 		return client;
 	}
-	
+
 	public void setClient(Client client) {
 		this.client = client;
 	}
@@ -114,7 +114,7 @@ public class Bot {
 	}
 
 	public void move(double rx, double ry, double rz) {
-
+		System.out.println("m: " + rx + " " + ry + " " + rz);
 		double l = (pos.x + rx) - pos.x;
 		double w = (pos.z + rz) - pos.z;
 		double c = Math.sqrt(l * l + w * w);
@@ -125,19 +125,7 @@ public class Bot {
 		else
 			yaw = (float) a1;
 
-		// double d = Math.sqrt(Math.pow(((bot.pos.x + rx) - bot.pos.x), 2) +
-		// Math.pow(((bot.pos.y + ry) - bot.pos.y), 2));
-		// System.out.println(d);
-		// System.out.println((bot.pos.y + ry) - bot.pos.y);
-		// bot.pitch = (float) Math.asin((bot.pos.y + ry)/d);
-		// System.out.println("p: " + bot.pitch + " y:" + bot.yaw);
-
-		// bot.pitch = (float) ((ry == 0) ? 0:
-		// (Math.asin(Math.sqrt(bot.pos.x*bot.pos.x+bot.pos.y+bot.pos.y+bot.pos.z*bot.pos.z))
-		// == 0) ? 0 :
-		// Math.asin(Math.sqrt(bot.pos.x*bot.pos.x+bot.pos.y+bot.pos.y+bot.pos.z*bot.pos.z)));
-
-		pitch = 0;// (float) (2*Math.PI-Math.asin(bot.pos.y));
+		pitch = 0;
 
 		System.out.println("p: " + pitch + " y:" + yaw);
 		int numberOfSteps = (int) ((int) 2.0 * Math
@@ -145,9 +133,10 @@ public class Bot {
 		double sLx = rx / numberOfSteps;
 		double sLy = ry / numberOfSteps;
 		double sLz = rz / numberOfSteps;
-		System.out.println("m: " + sLx + " " + sLy + " " + sLz + " : " + numberOfSteps);
+		System.out.println("s: " + sLx + " " + sLy + " " + sLz + " : " + numberOfSteps);
 		for (int i = 0; i < numberOfSteps; i++) {
-			client.getSession().send(new ClientPlayerPositionRotationPacket(false, sLx + pos.x, sLy + pos.y, sLz + pos.z, yaw, pitch));
+			client.getSession().send(
+					new ClientPlayerPositionRotationPacket(false, sLx + pos.x, sLy + pos.y, sLz + pos.z, yaw, pitch));
 			pos.x = sLx + pos.x;
 			pos.y = sLy + pos.y;
 			pos.z = sLz + pos.z;
@@ -158,13 +147,13 @@ public class Bot {
 			}
 		}
 
-		client.getSession().send(new ClientPlayerPositionRotationPacket(false, ((int) pos.x) + 0.5d, ((int) pos.y), ((int) pos.z) + 0.5d,
-				yaw, pitch));
+		client.getSession().send(
+				new ClientPlayerPositionRotationPacket(false, ((int) pos.x) + 0.5d, ((int) pos.y),
+						((int) pos.z) + 0.5d, yaw, pitch));
 	}
 
 	public void breakBlock(int rx, int ry, int rz) {
-		final Position p = new Position((int) (pos.x + rx), (int) (pos.y + ry),
-				(int) (pos.z + rz));
+		final Position p = new Position((int) (pos.x + rx), (int) (pos.y + ry), (int) (pos.z + rz));
 		PhaseBot.getBot().say("Digging at: " + p.getX() + " " + p.getY() + " " + p.getZ());
 		client.getSession().send(new ClientPlayerActionPacket(PlayerAction.START_DIGGING, p, Face.TOP));
 		client.getSession().send(new ClientPlayerActionPacket(PlayerAction.FINISH_DIGGING, p, Face.TOP));

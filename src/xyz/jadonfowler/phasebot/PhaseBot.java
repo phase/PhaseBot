@@ -12,6 +12,7 @@ import org.spacehq.mc.auth.exception.AuthenticationException;
 import org.spacehq.mc.protocol.MinecraftProtocol;
 import org.spacehq.mc.protocol.ProtocolConstants;
 import org.spacehq.mc.protocol.ProtocolMode;
+import org.spacehq.mc.protocol.data.game.values.entity.ObjectType;
 import org.spacehq.mc.protocol.data.message.Message;
 import org.spacehq.mc.protocol.data.status.ServerStatusInfo;
 import org.spacehq.mc.protocol.data.status.handler.ServerInfoHandler;
@@ -20,7 +21,13 @@ import org.spacehq.mc.protocol.packet.ingame.client.ClientChatPacket;
 import org.spacehq.mc.protocol.packet.ingame.client.player.ClientPlayerPositionRotationPacket;
 import org.spacehq.mc.protocol.packet.ingame.server.ServerChatPacket;
 import org.spacehq.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
+import org.spacehq.mc.protocol.packet.ingame.server.entity.ServerCollectItemPacket;
+import org.spacehq.mc.protocol.packet.ingame.server.entity.ServerDestroyEntitiesPacket;
 import org.spacehq.mc.protocol.packet.ingame.server.entity.player.ServerPlayerPositionRotationPacket;
+import org.spacehq.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnGlobalEntityPacket;
+import org.spacehq.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnMobPacket;
+import org.spacehq.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnObjectPacket;
+import org.spacehq.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnPlayerPacket;
 import org.spacehq.packetlib.Client;
 import org.spacehq.packetlib.Session;
 import org.spacehq.packetlib.event.session.DisconnectedEvent;
@@ -28,8 +35,10 @@ import org.spacehq.packetlib.event.session.PacketReceivedEvent;
 import org.spacehq.packetlib.event.session.SessionAdapter;
 import org.spacehq.packetlib.tcp.TcpSessionFactory;
 
+import xyz.jadonfowler.phasebot.block.Entity;
 import xyz.jadonfowler.phasebot.cmd.Command;
 import xyz.jadonfowler.phasebot.cmd.CommandManager;
+import xyz.jadonfowler.phasebot.cmd.chat.Entities;
 import xyz.jadonfowler.phasebot.cmd.chat.JavaScript;
 import xyz.jadonfowler.phasebot.cmd.chat.Ruby;
 import xyz.jadonfowler.phasebot.cmd.chat.Say;
@@ -88,6 +97,7 @@ public class PhaseBot {
 		new Ruby();
 		new Say();
 		new Slap();
+		new Entities();
 		new Derp();
 		new Swing();
 		new Look();
@@ -98,7 +108,7 @@ public class PhaseBot {
 		new Dig();
 
 		bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
-		
+
 		// status();
 		login();
 	}
@@ -153,9 +163,9 @@ public class PhaseBot {
 		}
 
 		Client client = new Client(HOST, PORT, protocol, new TcpSessionFactory(PROXY));
-		
+
 		bot.setClient(client);
-		
+
 		client.getSession().addListener(new SessionAdapter() {
 			@Override
 			public void packetReceived(PacketReceivedEvent event) {
@@ -172,8 +182,36 @@ public class PhaseBot {
 					event.getSession().send(
 							new ClientPlayerPositionRotationPacket(false, bot.pos.x, bot.pos.y, bot.pos.z, bot.pitch,
 									bot.yaw));
+				} else if (event.getPacket() instanceof ServerSpawnObjectPacket) {
+					int entityId = event.<ServerSpawnObjectPacket> getPacket().getEntityId();
+					double x = event.<ServerSpawnObjectPacket> getPacket().getX();
+					double y = event.<ServerSpawnObjectPacket> getPacket().getY();
+					double z = event.<ServerSpawnObjectPacket> getPacket().getZ();
+					String type = event.<ServerSpawnObjectPacket> getPacket().getType().toString();
+					System.out.println(new Entity(entityId, type, x, y, z));
 				}
-
+				else if (event.getPacket() instanceof ServerSpawnPlayerPacket) {
+					int entityId = event.<ServerSpawnPlayerPacket> getPacket().getEntityId();
+					double x = event.<ServerSpawnPlayerPacket> getPacket().getX();
+					double y = event.<ServerSpawnPlayerPacket> getPacket().getY();
+					double z = event.<ServerSpawnPlayerPacket> getPacket().getZ();
+					System.out.println(new Entity(entityId, "PLAYER", x, y, z));
+				}
+				else if (event.getPacket() instanceof ServerSpawnMobPacket) {
+					int entityId = event.<ServerSpawnMobPacket> getPacket().getEntityId();
+					double x = event.<ServerSpawnMobPacket> getPacket().getX();
+					double y = event.<ServerSpawnMobPacket> getPacket().getY();
+					double z = event.<ServerSpawnMobPacket> getPacket().getZ();
+					String type = event.<ServerSpawnMobPacket> getPacket().getType().toString();
+					System.out.println(new Entity(entityId, type, x, y, z));
+				}else if(event.getPacket() instanceof ServerCollectItemPacket) {
+                    Entity.byId(event.<ServerCollectItemPacket> getPacket().getCollectedEntityId()).remove();
+                } else if(event.getPacket() instanceof ServerDestroyEntitiesPacket) {
+                	for(int i : event.<ServerDestroyEntitiesPacket> getPacket().getEntityIds()){
+                		if(Entity.entities.containsKey(i))
+                			Entity.byId(i).remove();
+                	}
+                }
 				else if (event.getPacket() instanceof ServerChatPacket) {
 
 					Message message = event.<ServerChatPacket> getPacket().getMessage();
