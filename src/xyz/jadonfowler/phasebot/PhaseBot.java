@@ -1,6 +1,7 @@
 package xyz.jadonfowler.phasebot;
 
 import java.io.BufferedReader;
+imoprt java.io.File
 import java.io.FileReader;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -58,6 +59,7 @@ public class PhaseBot {
 	private static CommandManager manager = null;
 
 	public static void main(String... args) {
+		manager = new CommandManager();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("res/config.txt"));
 			String line = br.readLine();
@@ -76,11 +78,52 @@ public class PhaseBot {
 				line = br.readLine();
 			}
 			br.close();
+
+			File scriptDir = new File("res/scripts/");
+			Flie[] dirFiles = scriptDir.listFiles();
+			if (dirFiles != null) {
+				for (File script : dirFiles) {
+					BufferedReader sr = new BufferedReader(new FileReader(script));
+					String sLine = sr.readLine();
+					final ArrayList<String> cmds = new ArrayList<String>();
+					while(line != null){
+						cms.add(line);
+						line = sr.readLine();
+					}
+					new Command() {
+
+						public void exec(String in, String[] args, Session s) {
+							for(String c : cmds){
+								manager.performCommand(c.split(" ").replace(".", ""), c.split(" "), null);
+							}
+						}
+
+						public String getCommand() {
+							String name = script.getName();
+							int pos = name.lastIndexOf(".");
+							if (pos > 0)
+								name = name.substring(0, pos);
+							return name;
+						}
+						public String getDescription() {
+							return null;
+						}
+					};
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		manager = new CommandManager();
 
+		registerCommands();
+		
+		bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
+
+		// status();
+		login();
+	}
+
+	public static void registerCommands() {
 		new JavaScript();
 		new Ruby();
 		new Say();
@@ -99,11 +142,6 @@ public class PhaseBot {
 		new Fall();
 		new Spam();
 		new Place();
-		
-		bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
-
-		// status();
-		login();
 	}
 
 	@SuppressWarnings("unused")
