@@ -26,6 +26,7 @@ import xyz.jadonfowler.phasebot.cmd.chat.JavaScript;
 import xyz.jadonfowler.phasebot.cmd.chat.Ruby;
 import xyz.jadonfowler.phasebot.cmd.chat.Say;
 import xyz.jadonfowler.phasebot.cmd.chat.Slap;
+import xyz.jadonfowler.phasebot.cmd.chat.UUIDCommand;
 import xyz.jadonfowler.phasebot.cmd.fun.Derp;
 import xyz.jadonfowler.phasebot.cmd.fun.Swing;
 import xyz.jadonfowler.phasebot.cmd.position.Dig;
@@ -81,6 +82,7 @@ public class PhaseBot {
 		new Say();
 		new Slap();
 		new Entities();
+		new UUIDCommand();
 		new Derp();
 		new Swing();
 		new Look();
@@ -89,6 +91,7 @@ public class PhaseBot {
 		new Set();
 		new Teleport();
 		new Dig();
+		new PhaseBot();
 
 		bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
 

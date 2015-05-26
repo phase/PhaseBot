@@ -17,6 +17,8 @@ import org.spacehq.mc.protocol.packet.ingame.server.entity.player.ServerUpdateHe
 import org.spacehq.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnMobPacket;
 import org.spacehq.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnObjectPacket;
 import org.spacehq.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnPlayerPacket;
+import org.spacehq.mc.protocol.packet.ingame.server.world.ServerChunkDataPacket;
+import org.spacehq.mc.protocol.packet.ingame.server.world.ServerMultiChunkDataPacket;
 import org.spacehq.packetlib.event.session.DisconnectedEvent;
 import org.spacehq.packetlib.event.session.PacketReceivedEvent;
 import org.spacehq.packetlib.event.session.SessionAdapter;
@@ -25,6 +27,9 @@ import xyz.jadonfowler.phasebot.entity.Entity;
 import xyz.jadonfowler.phasebot.entity.Player;
 
 public class PacketHandler extends SessionAdapter {
+
+	//private int chunkPacketCount = -1;
+
 	@Override
 	public void packetReceived(PacketReceivedEvent event) {
 		if (event.getPacket() instanceof ServerJoinGamePacket) {
@@ -64,8 +69,12 @@ public class PacketHandler extends SessionAdapter {
 			System.out.println(new Entity(entityId, type, x, y, z));
 		} else if (event.getPacket() instanceof ServerDestroyEntitiesPacket) {
 			for (int i : event.<ServerDestroyEntitiesPacket> getPacket().getEntityIds()) {
-				if (Entity.entities.containsKey(i))
-					Entity.byId(i).remove();
+				if (Entity.entities.containsKey(i)) {
+					Entity e = Entity.byId(i);
+					if (e instanceof Player)
+						Player.players.remove((Player) e);
+					e.remove();
+				}
 			}
 		} else if (event.getPacket() instanceof ServerUpdateHealthPacket) {
 			if (event.<ServerUpdateHealthPacket> getPacket().getHealth() <= 0) {
@@ -75,19 +84,40 @@ public class PacketHandler extends SessionAdapter {
 			ServerEntityMovementPacket p = event.<ServerEntityPositionRotationPacket> getPacket();
 			int id = p.getEntityId();
 			Entity e = Entity.byId(id);
-			System.out.println(e);
-			System.out.println("ServerEntityMovementPacket[id=" + id + ",x=" + p.getMovementX() + ",y=" + p.getMovementY() + ",z=" + p.getMovementZ() + "]");
 			e.x += p.getMovementX();
 			e.y += p.getMovementY();
 			e.z += p.getMovementZ();
 			e.pitch += p.getPitch();
 			e.yaw += p.getYaw();
-			System.out.println(e + "\n");
+		}
+
+		else if (event.getPacket() instanceof ServerChunkDataPacket) {
+		} else if (event.getPacket() instanceof ServerMultiChunkDataPacket) {
+//			chunkPacketCount++;
+//			for (int x = 0; x < 10; x++) {
+//				for (int y = 0; y < 16; y++) {
+//					PhaseBot.getBot().chunks[chunkPacketCount][x][y] = event.<ServerMultiChunkDataPacket> getPacket()
+//							.getChunks(x)[y];
+//				}
+//			}
+
+			for (int i = 0; i < 10; i++) {
+				int chunkX = event.<ServerMultiChunkDataPacket> getPacket().getX(i);
+				int chunkZ = event.<ServerMultiChunkDataPacket> getPacket().getZ(i);
+				for (int y = 0; y < 16; y++) {
+					int chunkY = y;
+					System.out.println(chunkX + " " + chunkY + " " + chunkZ);
+					PhaseBot.getBot().chunks
+					[chunkX]
+							[chunkZ]
+									[chunkY] = 
+									event.<ServerMultiChunkDataPacket> getPacket().getChunks(i)[y];
+				}
+			}
 		} else if (event.getPacket() instanceof ServerChatPacket) {
 
 			Message message = event.<ServerChatPacket> getPacket().getMessage();
 			System.out.println(message.getFullText());
-			try {
 				String c = message.getFullText().split(": ")[1];
 				if (!c.startsWith("."))
 					return;
@@ -100,8 +130,6 @@ public class PacketHandler extends SessionAdapter {
 				System.out.println("Performing command: " + c);
 				PhaseBot.getCommandManager().performCommand(c.split(" ")[0].replace(".", ""), c.split(" "),
 						event.getSession());
-			} catch (Exception e) {
-			}
 		}
 	}
 

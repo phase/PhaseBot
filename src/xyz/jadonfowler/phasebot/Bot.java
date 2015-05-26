@@ -2,6 +2,7 @@ package xyz.jadonfowler.phasebot;
 
 import java.net.Proxy;
 
+import org.spacehq.mc.protocol.data.game.Chunk;
 import org.spacehq.mc.protocol.data.game.Position;
 import org.spacehq.mc.protocol.data.game.values.Face;
 import org.spacehq.mc.protocol.data.game.values.entity.player.PlayerAction;
@@ -31,6 +32,8 @@ public class Bot {
 	private Client client;
 
 	public Vector3d[] positions;
+	
+	public Chunk[][][] chunks = new Chunk[512][512][512];
 
 	public Bot(String username, String password, String host, int port, Proxy proxy) {
 		super();
