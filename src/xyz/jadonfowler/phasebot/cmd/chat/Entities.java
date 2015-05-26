@@ -2,8 +2,8 @@ package xyz.jadonfowler.phasebot.cmd.chat;
 
 import org.spacehq.packetlib.Session;
 
-import xyz.jadonfowler.phasebot.block.Entity;
 import xyz.jadonfowler.phasebot.cmd.Command;
+import xyz.jadonfowler.phasebot.entity.Entity;
 
 public class Entities extends Command{
 

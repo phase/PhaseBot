@@ -12,6 +12,7 @@ import org.spacehq.mc.protocol.packet.ingame.client.player.ClientSwingArmPacket;
 import org.spacehq.packetlib.Client;
 import org.spacehq.packetlib.Session;
 
+import xyz.jadonfowler.phasebot.entity.Entity;
 import xyz.jadonfowler.phasebot.util.Vector3d;
 
 public class Bot {
@@ -113,6 +114,14 @@ public class Bot {
 		client.getSession().send(new ClientSwingArmPacket());
 	}
 
+	public void moveTo(Entity e) {
+		moveTo((int) Math.floor(e.x), (int) Math.floor(e.y), (int) Math.floor(e.z));
+	}
+
+	public void moveTo(int ax, int ay, int az) {
+		move(ax - pos.x, ay - pos.y, az - pos.z);
+	}
+
 	public void move(double rx, double ry, double rz) {
 		System.out.println("m: " + rx + " " + ry + " " + rz);
 		double l = (pos.x + rx) - pos.x;
@@ -153,8 +162,9 @@ public class Bot {
 	}
 
 	public void breakBlock(int rx, int ry, int rz) {
-		final Position p = new Position((int) (pos.x + rx), (int) (pos.y + ry), (int) (pos.z + rz));
-		PhaseBot.getBot().say("Digging at: " + p.getX() + " " + p.getY() + " " + p.getZ());
+		final Position p = new Position((int) Math.floor(pos.x + rx), (int) Math.floor(pos.y + ry),
+				(int) Math.floor(pos.z + rz));
+		System.out.println("Digging at: " + p.getX() + " " + p.getY() + " " + p.getZ());
 		client.getSession().send(new ClientPlayerActionPacket(PlayerAction.START_DIGGING, p, Face.TOP));
 		client.getSession().send(new ClientPlayerActionPacket(PlayerAction.FINISH_DIGGING, p, Face.TOP));
 	}

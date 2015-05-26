@@ -1,4 +1,4 @@
-package xyz.jadonfowler.phasebot.block;
+package xyz.jadonfowler.phasebot.entity;
 
 import java.util.HashMap;
 
