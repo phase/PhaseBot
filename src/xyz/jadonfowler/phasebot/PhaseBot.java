@@ -36,6 +36,7 @@ import xyz.jadonfowler.phasebot.cmd.chat.Say;
 import xyz.jadonfowler.phasebot.cmd.chat.Slap;
 import xyz.jadonfowler.phasebot.cmd.fun.Derp;
 import xyz.jadonfowler.phasebot.cmd.fun.Swing;
+import xyz.jadonfowler.phasebot.cmd.position.Dig;
 import xyz.jadonfowler.phasebot.cmd.position.Look;
 import xyz.jadonfowler.phasebot.cmd.position.Move;
 import xyz.jadonfowler.phasebot.cmd.position.Patrol;
@@ -81,7 +82,6 @@ public class PhaseBot {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
 		manager = new CommandManager();
 
 		new JavaScript();
@@ -95,7 +95,10 @@ public class PhaseBot {
 		new Patrol();
 		new Set();
 		new Teleport();
+		new Dig();
 
+		bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
+		
 		// status();
 		login();
 	}
@@ -150,10 +153,12 @@ public class PhaseBot {
 		}
 
 		Client client = new Client(HOST, PORT, protocol, new TcpSessionFactory(PROXY));
+		
+		bot.setClient(client);
+		
 		client.getSession().addListener(new SessionAdapter() {
 			@Override
 			public void packetReceived(PacketReceivedEvent event) {
-
 				if (event.getPacket() instanceof ServerJoinGamePacket) {
 					event.getSession().send(new ClientChatPacket("PhaseBot has joined the game."));
 					bot.entityId = event.<ServerJoinGamePacket> getPacket().getEntityId();

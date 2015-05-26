@@ -9,7 +9,7 @@ public class Swing extends Command {
 
 	@Override
 	public void exec(String in, String[] args, Session s) {
-		PhaseBot.getBot().swing(s);
+		PhaseBot.getBot().swing();
 	}
 
 	@Override

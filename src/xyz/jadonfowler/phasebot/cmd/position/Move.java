@@ -14,7 +14,7 @@ public class Move extends Command {
 		double rz = Double.parseDouble(args[3]);
 		System.out.println("Move: " + (PhaseBot.getBot().pos.x + rx) + " " + (PhaseBot.getBot().pos.y + ry) + " "
 				+ (PhaseBot.getBot().pos.z + rz));
-		PhaseBot.getBot().move(s, rx, ry, rz);
+		PhaseBot.getBot().move(rx, ry, rz);
 	}
 
 	@Override

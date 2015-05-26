@@ -11,7 +11,7 @@ public class Look extends Command {
 	public void exec(String in, String[] args, Session s) {
 		float p = Float.parseFloat(args[1]);
 		float y = Float.parseFloat(args[2]);
-		PhaseBot.getBot().look(s, y, p);
+		PhaseBot.getBot().look(y, p);
 	}
 
 	@Override

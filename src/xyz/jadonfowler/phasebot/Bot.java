@@ -2,8 +2,14 @@ package xyz.jadonfowler.phasebot;
 
 import java.net.Proxy;
 
+import org.spacehq.mc.protocol.data.game.Position;
+import org.spacehq.mc.protocol.data.game.values.Face;
+import org.spacehq.mc.protocol.data.game.values.entity.player.PlayerAction;
+import org.spacehq.mc.protocol.packet.ingame.client.ClientChatPacket;
+import org.spacehq.mc.protocol.packet.ingame.client.player.ClientPlayerActionPacket;
 import org.spacehq.mc.protocol.packet.ingame.client.player.ClientPlayerPositionRotationPacket;
 import org.spacehq.mc.protocol.packet.ingame.client.player.ClientSwingArmPacket;
+import org.spacehq.packetlib.Client;
 import org.spacehq.packetlib.Session;
 
 import xyz.jadonfowler.phasebot.util.Vector3d;
@@ -20,8 +26,8 @@ public class Bot {
 	public float pitch = 0;
 	public float yaw = 0;
 	public int entityId = 0;
-
 	public boolean isDerp = false;
+	private Client client;
 
 	public Vector3d[] positions;
 
@@ -75,14 +81,21 @@ public class Bot {
 	public void setProxy(Proxy proxy) {
 		this.proxy = proxy;
 	}
+
+	public Client getClient() {
+		return client;
+	}
 	
+	public void setClient(Client client) {
+		this.client = client;
+	}
+
 	public void derp(final Session s) {
 		new Thread(new Runnable() {
 			public void run() {
 				while (isDerp) {
-					look(s, (PhaseBot.random.nextFloat() * 10000) % 180,
-							((PhaseBot.random.nextFloat() * 10000) % 180));
-					swing(s);
+					look((PhaseBot.random.nextFloat() * 10000) % 180, ((PhaseBot.random.nextFloat() * 10000) % 180));
+					swing();
 					try {
 						Thread.sleep(40);
 					} catch (InterruptedException e) {
@@ -92,15 +105,15 @@ public class Bot {
 		}).start();
 	}
 
-	public void look(final Session s, float yaw, float pitch) {
-		s.send(new ClientPlayerPositionRotationPacket(false, pos.x, pos.y, pos.z, yaw, pitch));
+	public void look(float yaw, float pitch) {
+		client.getSession().send(new ClientPlayerPositionRotationPacket(false, pos.x, pos.y, pos.z, yaw, pitch));
 	}
 
-	public void swing(Session s) {
-		s.send(new ClientSwingArmPacket());
+	public void swing() {
+		client.getSession().send(new ClientSwingArmPacket());
 	}
-	
-	public void move(Session s, double rx, double ry, double rz) {
+
+	public void move(double rx, double ry, double rz) {
 
 		double l = (pos.x + rx) - pos.x;
 		double w = (pos.z + rz) - pos.z;
@@ -134,9 +147,7 @@ public class Bot {
 		double sLz = rz / numberOfSteps;
 		System.out.println("m: " + sLx + " " + sLy + " " + sLz + " : " + numberOfSteps);
 		for (int i = 0; i < numberOfSteps; i++) {
-			s.send(
-					new ClientPlayerPositionRotationPacket(false, sLx + pos.x, sLy + pos.y, sLz + pos.z,
-							yaw, pitch));
+			client.getSession().send(new ClientPlayerPositionRotationPacket(false, sLx + pos.x, sLy + pos.y, sLz + pos.z, yaw, pitch));
 			pos.x = sLx + pos.x;
 			pos.y = sLy + pos.y;
 			pos.z = sLz + pos.z;
@@ -147,9 +158,20 @@ public class Bot {
 			}
 		}
 
-		s.send(
-				new ClientPlayerPositionRotationPacket(false, ((int) pos.x) + 0.5d, ((int) pos.y),
-						((int) pos.z) + 0.5d, yaw, pitch));
+		client.getSession().send(new ClientPlayerPositionRotationPacket(false, ((int) pos.x) + 0.5d, ((int) pos.y), ((int) pos.z) + 0.5d,
+				yaw, pitch));
+	}
+
+	public void breakBlock(int rx, int ry, int rz) {
+		final Position p = new Position((int) (pos.x + rx), (int) (pos.y + ry),
+				(int) (pos.z + rz));
+		PhaseBot.getBot().say("Digging at: " + p.getX() + " " + p.getY() + " " + p.getZ());
+		client.getSession().send(new ClientPlayerActionPacket(PlayerAction.START_DIGGING, p, Face.TOP));
+		client.getSession().send(new ClientPlayerActionPacket(PlayerAction.FINISH_DIGGING, p, Face.TOP));
+	}
+
+	public void say(String s) {
+		client.getSession().send(new ClientChatPacket(s));
 	}
 
 }
