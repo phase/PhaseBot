@@ -18,15 +18,15 @@ public class Block {
 	public Block(Vector3d p) {
 		this.pos = p;
 		this.chunk = getChunk();
-		System.out.println("BLOCK VECTOR: " + p);
+		Vector3d b = new Vector3d(pos.x % 16, pos.y % 16, pos.z % 16);
+		System.out.println(b);
 		int id = 
 				getChunk()
 				.getBlocks()
 				.getBlock(
-						(int) Math.floor(pos.x % 16), 
-						(int) Math.floor(pos.y % 16), 
-						(int) Math.floor(pos.z % 16));
-		System.out.println("ID: " + id);
+						(int) b.x, 
+						(int) b.y, 
+						(int) b.z);
 		m = Material.getMaterial(id);
 	}
 
@@ -43,7 +43,7 @@ public class Block {
 		return PhaseBot.getBot().chunks
 				[(int) Math.floor(c.x)]
 				[(int) Math.floor(c.z)]
-				[(int) Math.floor(c.y)+1];
+				[(int) Math.floor(c.y)];
 	}
 	
 	public Material getMaterial(){

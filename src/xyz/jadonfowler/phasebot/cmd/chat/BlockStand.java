@@ -10,14 +10,11 @@ public class BlockStand extends Command {
 
 	@Override
 	public void exec(String in, String[] args, Session s) {
-		System.out.println("B: " + PhaseBot.getBot().pos.x + " " + 
-				(PhaseBot.getBot().pos.y-2) + " " + 
-				PhaseBot.getBot().pos.z);
 		PhaseBot.getBot()
 		.say("I am standing on: "
 						+ new Block(
 								PhaseBot.getBot().pos.x,
-								PhaseBot.getBot().pos.y-2,
+								PhaseBot.getBot().pos.y-1,
 								PhaseBot.getBot().pos.z).
 								getMaterial().toString());
 	}
