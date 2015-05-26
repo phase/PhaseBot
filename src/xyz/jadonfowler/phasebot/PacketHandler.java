@@ -10,6 +10,8 @@ import org.spacehq.mc.protocol.packet.ingame.client.player.ClientPlayerPositionR
 import org.spacehq.mc.protocol.packet.ingame.server.ServerChatPacket;
 import org.spacehq.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
 import org.spacehq.mc.protocol.packet.ingame.server.entity.ServerDestroyEntitiesPacket;
+import org.spacehq.mc.protocol.packet.ingame.server.entity.ServerEntityMovementPacket;
+import org.spacehq.mc.protocol.packet.ingame.server.entity.ServerEntityPositionRotationPacket;
 import org.spacehq.mc.protocol.packet.ingame.server.entity.player.ServerPlayerPositionRotationPacket;
 import org.spacehq.mc.protocol.packet.ingame.server.entity.player.ServerUpdateHealthPacket;
 import org.spacehq.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnMobPacket;
@@ -69,6 +71,18 @@ public class PacketHandler extends SessionAdapter {
 			if (event.<ServerUpdateHealthPacket> getPacket().getHealth() <= 0) {
 				event.getSession().send(new ClientRequestPacket(ClientRequest.RESPAWN));
 			}
+		} else if (event.getPacket() instanceof ServerEntityPositionRotationPacket) {
+			ServerEntityMovementPacket p = event.<ServerEntityPositionRotationPacket> getPacket();
+			int id = p.getEntityId();
+			Entity e = Entity.byId(id);
+			System.out.println(e);
+			System.out.println("ServerEntityMovementPacket[id=" + id + ",x=" + p.getMovementX() + ",y=" + p.getMovementY() + ",z=" + p.getMovementZ() + "]");
+			e.x += p.getMovementX();
+			e.y += p.getMovementY();
+			e.z += p.getMovementZ();
+			e.pitch += p.getPitch();
+			e.yaw += p.getYaw();
+			System.out.println(e + "\n");
 		} else if (event.getPacket() instanceof ServerChatPacket) {
 
 			Message message = event.<ServerChatPacket> getPacket().getMessage();

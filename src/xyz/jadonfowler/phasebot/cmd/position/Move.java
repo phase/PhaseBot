@@ -19,21 +19,21 @@ public class Move extends Command {
 		double rx, ry, rz;
 
 		if (args.length == 2) {
-			try {
+			if(args[1].matches("[-+]?\\d*\\.?\\d+")){
 				int id = Integer.parseInt(args[1]);
 				Entity e = Entity.byId(id);
 				PhaseBot.getBot().moveTo(e);
-				return;
-			} catch (Exception e) {
-
+			} else {
 				try {
 					UUIDFetcher uf = new UUIDFetcher(Arrays.asList(args[1]));
 					UUID u = uf.call().get(args[1]);
 					Player p = Player.byUUID(u);
 					PhaseBot.getBot().moveTo(p);
-				} catch (Exception e1) {
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
+			return;
 		}
 
 		if (args[1].contains("*"))
