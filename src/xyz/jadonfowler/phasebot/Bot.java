@@ -13,6 +13,8 @@ import org.spacehq.mc.protocol.packet.ingame.client.player.ClientSwingArmPacket;
 import org.spacehq.packetlib.Client;
 import org.spacehq.packetlib.Session;
 
+import xyz.jadonfowler.phasebot.block.Block;
+import xyz.jadonfowler.phasebot.block.Material;
 import xyz.jadonfowler.phasebot.entity.Entity;
 import xyz.jadonfowler.phasebot.util.Vector3d;
 
@@ -32,7 +34,7 @@ public class Bot {
 	private Client client;
 
 	public Vector3d[] positions;
-	
+
 	public Chunk[][][] chunks = new Chunk[512][512][512];
 
 	public Bot(String username, String password, String host, int port, Proxy proxy) {
@@ -175,5 +177,33 @@ public class Bot {
 	public void say(String s) {
 		client.getSession().send(new ClientChatPacket(s));
 	}
-
+	
+	public Vector3d relativeToAbsolute(Vector3d d){
+		return new Vector3d(pos.x+d.x, pos.y+d.y, pos.z+d.z);
+	}
+	
+	public Face getPlaceFace(Vector3d d) {
+		for (int x = -1; x < 2; x++) {
+			for (int y = -1; y < 2; y++) {
+				for (int z = -1; z < 2; z++) {
+					Block b = new Block(new Vector3d(x+d.x, y+d.y, z+d.z));
+					if (b.getMaterial() != Material.AIR) {
+						if ((x == -1 && z == 0 && y == 0))
+							return Face.WEST;
+						else if ((x == 1 && z == 0 && y == 0))
+							return Face.EAST;
+						else if ((x == 0 && z == 0 && y == 1))
+							return Face.BOTTOM;
+						else if ((x == 0 && z == 0 && y == -1))
+							return Face.TOP;
+						else if ((x == 0 && z == 1 && y == 0))
+							return Face.SOUTH;
+						else if ((x == 0 && z == -1 && y == 0))
+							return Face.NORTH;
+					}
+				}
+			}
+		}
+		return Face.INVALID;
+	}
 }

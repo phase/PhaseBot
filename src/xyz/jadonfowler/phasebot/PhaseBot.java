@@ -36,6 +36,7 @@ import xyz.jadonfowler.phasebot.cmd.position.Fall;
 import xyz.jadonfowler.phasebot.cmd.position.Look;
 import xyz.jadonfowler.phasebot.cmd.position.Move;
 import xyz.jadonfowler.phasebot.cmd.position.Patrol;
+import xyz.jadonfowler.phasebot.cmd.position.Place;
 import xyz.jadonfowler.phasebot.cmd.position.Set;
 import xyz.jadonfowler.phasebot.cmd.position.Teleport;
 
@@ -97,7 +98,8 @@ public class PhaseBot {
 		new BlockStand();
 		new Fall();
 		new Spam();
-
+		new Place();
+		
 		bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
 
 		// status();
