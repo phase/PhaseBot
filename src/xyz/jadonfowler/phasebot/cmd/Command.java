@@ -16,4 +16,7 @@ public abstract class Command {
 
 	public abstract String getDescription();
 	
+	public String toString(){
+		return getCommand();
+	}
 }

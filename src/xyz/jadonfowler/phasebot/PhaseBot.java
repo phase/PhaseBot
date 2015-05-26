@@ -30,15 +30,26 @@ import org.spacehq.packetlib.tcp.TcpSessionFactory;
 
 import xyz.jadonfowler.phasebot.cmd.Command;
 import xyz.jadonfowler.phasebot.cmd.CommandManager;
+import xyz.jadonfowler.phasebot.cmd.chat.JavaScript;
+import xyz.jadonfowler.phasebot.cmd.chat.Ruby;
+import xyz.jadonfowler.phasebot.cmd.chat.Say;
+import xyz.jadonfowler.phasebot.cmd.chat.Slap;
+import xyz.jadonfowler.phasebot.cmd.fun.Derp;
+import xyz.jadonfowler.phasebot.cmd.fun.Swing;
+import xyz.jadonfowler.phasebot.cmd.position.Look;
+import xyz.jadonfowler.phasebot.cmd.position.Move;
+import xyz.jadonfowler.phasebot.cmd.position.Patrol;
+import xyz.jadonfowler.phasebot.cmd.position.Set;
+import xyz.jadonfowler.phasebot.cmd.position.Teleport;
 
 public class PhaseBot {
 
 	private static String USERNAME = "username";
 	private static String PASSWORD = "password";
-	//private static String HOST = "mort.openredstone.org";
-	//private static int PORT = 25569;
-	private static String HOST = "nick.openredstone.org";
+	private static String HOST = "mort.openredstone.org";
 	private static int PORT = 25569;
+	// private static String HOST = "nick.openredstone.org";
+	// private static int PORT = 25569;
 	private static Proxy PROXY = Proxy.NO_PROXY;
 	private static boolean VERIFY_USERS = true;
 	public static Random random = new Random();
@@ -46,7 +57,7 @@ public class PhaseBot {
 	public static ArrayList<Command> commands = new ArrayList<Command>();
 
 	private static Bot bot;
-	static CommandManager manager;
+	private static CommandManager manager = null;
 
 	public static void main(String... args) {
 		try {
@@ -71,6 +82,19 @@ public class PhaseBot {
 			e.printStackTrace();
 		}
 		bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
+		manager = new CommandManager();
+
+		new JavaScript();
+		new Ruby();
+		new Say();
+		new Slap();
+		new Derp();
+		new Swing();
+		new Look();
+		new Move();
+		new Patrol();
+		new Set();
+		new Teleport();
 
 		// status();
 		login();
@@ -111,6 +135,7 @@ public class PhaseBot {
 	}
 
 	private static void login() {
+		System.out.println("PhaseBot starting...");
 		MinecraftProtocol protocol = null;
 		if (VERIFY_USERS) {
 			try {
@@ -143,7 +168,7 @@ public class PhaseBot {
 							new ClientPlayerPositionRotationPacket(false, bot.pos.x, bot.pos.y, bot.pos.z, bot.pitch,
 									bot.yaw));
 				}
-				
+
 				else if (event.getPacket() instanceof ServerChatPacket) {
 
 					Message message = event.<ServerChatPacket> getPacket().getMessage();
@@ -158,7 +183,8 @@ public class PhaseBot {
 							// ClientChatPacket("You're not my master! D:"));
 							return;
 						}
-						manager.performCommand(c.split(" ")[0].split(".")[1], c.split(" "), event.getSession());
+						System.out.println("Performing command: " + c);
+						manager.performCommand(c.split(" ")[0].replace(".", ""), c.split(" "), event.getSession());
 					} catch (Exception e) {
 					}
 				}
@@ -173,24 +199,9 @@ public class PhaseBot {
 		client.getSession().connect();
 	}
 
-	// public static Vector3d bez(Vector3d p0, Vector3d p1, int t) {
-	// return new Vector3d(p0.x + (p0.x - p1.x) / t, p0.y + (p0.y - p1.y) / t,
-	// p0.z + (p0.z - p1.z) / t);
-	// }
-	//
-	// public static void spline(PacketReceivedEvent event) {
-	// move(event, bot.positions[0].x, bot.positions[0].y, bot.positions[0].z);
-	// Vector3d tmp = new Vector3d(0, 0, 0);
-	// for (int i = 1; i < 100; i++) {
-	// tmp = bez(bez(bez(bot.positions[0], bot.positions[1], i),
-	// bez(bot.positions[1], bot.positions[2], i), i),
-	// bez(bez(bot.positions[1], bot.positions[2], i), bez(bot.positions[2],
-	// bot.positions[3], i), i), i);
-	// move(event, tmp.x, tmp.y, tmp.z);
-	// }
-	// }
-
 	public static CommandManager getCommandManager() {
+		if (manager == null)
+			manager = new CommandManager();
 		return manager;
 	}
 
