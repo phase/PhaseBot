@@ -106,7 +106,7 @@ public class PacketHandler extends SessionAdapter {
 				int chunkZ = event.<ServerMultiChunkDataPacket> getPacket().getZ(i);
 				for (int y = 0; y < 16; y++) {
 					int chunkY = y;
-					System.out.println(chunkX + " " + chunkY + " " + chunkZ);
+					//System.out.println(chunkX + " " + chunkY + " " + chunkZ);
 					PhaseBot.getBot().chunks
 					[chunkX]
 							[chunkZ]
@@ -117,6 +117,7 @@ public class PacketHandler extends SessionAdapter {
 		} else if (event.getPacket() instanceof ServerChatPacket) {
 
 			Message message = event.<ServerChatPacket> getPacket().getMessage();
+			try{
 			System.out.println(message.getFullText());
 				String c = message.getFullText().split(": ")[1];
 				if (!c.startsWith("."))
@@ -130,6 +131,9 @@ public class PacketHandler extends SessionAdapter {
 				System.out.println("Performing command: " + c);
 				PhaseBot.getCommandManager().performCommand(c.split(" ")[0].replace(".", ""), c.split(" "),
 						event.getSession());
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 	}
 

@@ -21,15 +21,18 @@ import org.spacehq.packetlib.tcp.TcpSessionFactory;
 
 import xyz.jadonfowler.phasebot.cmd.Command;
 import xyz.jadonfowler.phasebot.cmd.CommandManager;
+import xyz.jadonfowler.phasebot.cmd.chat.BlockStand;
 import xyz.jadonfowler.phasebot.cmd.chat.Entities;
 import xyz.jadonfowler.phasebot.cmd.chat.JavaScript;
 import xyz.jadonfowler.phasebot.cmd.chat.Ruby;
 import xyz.jadonfowler.phasebot.cmd.chat.Say;
 import xyz.jadonfowler.phasebot.cmd.chat.Slap;
+import xyz.jadonfowler.phasebot.cmd.chat.Spam;
 import xyz.jadonfowler.phasebot.cmd.chat.UUIDCommand;
 import xyz.jadonfowler.phasebot.cmd.fun.Derp;
 import xyz.jadonfowler.phasebot.cmd.fun.Swing;
 import xyz.jadonfowler.phasebot.cmd.position.Dig;
+import xyz.jadonfowler.phasebot.cmd.position.Fall;
 import xyz.jadonfowler.phasebot.cmd.position.Look;
 import xyz.jadonfowler.phasebot.cmd.position.Move;
 import xyz.jadonfowler.phasebot.cmd.position.Patrol;
@@ -91,7 +94,9 @@ public class PhaseBot {
 		new Set();
 		new Teleport();
 		new Dig();
-		new PhaseBot();
+		new BlockStand();
+		new Fall();
+		new Spam();
 
 		bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
 
