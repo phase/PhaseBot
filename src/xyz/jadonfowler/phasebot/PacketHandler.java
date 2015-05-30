@@ -29,12 +29,11 @@ import org.spacehq.packetlib.event.session.PacketReceivedEvent;
 import org.spacehq.packetlib.event.session.SessionAdapter;
 
 import xyz.jadonfowler.phasebot.block.Block;
+import xyz.jadonfowler.phasebot.block.ChunkColumn;
 import xyz.jadonfowler.phasebot.entity.Entity;
 import xyz.jadonfowler.phasebot.entity.Player;
 
 public class PacketHandler extends SessionAdapter {
-
-	// private int chunkPacketCount = -1;
 
 	@Override
 	public void packetReceived(PacketReceivedEvent event) {
@@ -106,21 +105,12 @@ public class PacketHandler extends SessionAdapter {
 			e.yaw = p.getYaw();
 		} else if (event.getPacket() instanceof ServerChunkDataPacket) {
 			ServerChunkDataPacket p = event.<ServerChunkDataPacket> getPacket();
-			int chunkX = p.getX();
-			int chunkZ = p.getZ();
-			for (int y = 0; y < 16; y++) {
-				int chunkY = y;
-				PhaseBot.getBot().chunks[chunkX][chunkZ][chunkY] = p.getChunks()[y];
-			}
+			new ChunkColumn(p.getX(), p.getZ(), p.getChunks());
 		} else if (event.getPacket() instanceof ServerMultiChunkDataPacket) {
 			for (int i = 0; i < 10; i++) {
 				int chunkX = event.<ServerMultiChunkDataPacket> getPacket().getX(i);
 				int chunkZ = event.<ServerMultiChunkDataPacket> getPacket().getZ(i);
-				for (int y = 0; y < 16; y++) {
-					int chunkY = y;
-					PhaseBot.getBot().chunks[chunkX][chunkZ][chunkY] = event.<ServerMultiChunkDataPacket> getPacket()
-							.getChunks(i)[y];
-				}
+				new ChunkColumn(chunkX, chunkZ, event.<ServerMultiChunkDataPacket>getPacket().getChunks(i));
 			}
 		} else if (event.getPacket() instanceof ServerMultiBlockChangePacket) {
 			ServerMultiBlockChangePacket packet = event.<ServerMultiBlockChangePacket> getPacket();
