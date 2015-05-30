@@ -139,7 +139,7 @@ public class Bot {
 		else
 			yaw = (float) a1;
 
-		pitch = 0;
+		pitch = 0; //pitch is waaay too hard
 
 		System.out.println("p: " + pitch + " y:" + yaw);
 		int numberOfSteps = (int) ((int) 2.0 * Math
@@ -171,6 +171,7 @@ public class Bot {
 				(int) Math.floor(pos.z + rz));
 		System.out.println("Digging at: " + p.getX() + " " + p.getY() + " " + p.getZ());
 		client.getSession().send(new ClientPlayerActionPacket(PlayerAction.START_DIGGING, p, Face.TOP));
+		swing();
 		client.getSession().send(new ClientPlayerActionPacket(PlayerAction.FINISH_DIGGING, p, Face.TOP));
 	}
 
