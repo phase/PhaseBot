@@ -3,7 +3,6 @@ package xyz.jadonfowler.phasebot.block;
 import org.spacehq.mc.protocol.data.game.Chunk;
 import org.spacehq.mc.protocol.data.game.Position;
 
-import xyz.jadonfowler.phasebot.PhaseBot;
 import xyz.jadonfowler.phasebot.util.Vector3d;
 
 public class Block {
@@ -35,12 +34,13 @@ public class Block {
 
 	public Chunk getChunk() {
 		Vector3d c = toChunkCoords();
-		return PhaseBot.getBot().chunks[(int) Math.floor(c.x)][(int) Math.floor(c.z)][(int) Math.floor(c.y)];
+		return ChunkColumn.getChunk(c);
 	}
 
 	public static void setBlock(Position p, int id) {
-		Chunk c = PhaseBot.getBot().chunks[(int) Math.floor(p.getX() / 16)][(int) Math.floor(p.getZ() / 16)][(int) Math
+		//Chunk c = PhaseBot.getBot().chunks[(int) Math.floor(p.getX() / 16)][(int) Math.floor(p.getZ() / 16)][(int) Math
 				.floor(p.getY() / 16)];
+		Chunk c = ChunkColumn.getChunk((int) Math.floor(p.getX() / 16), (int) Math.floor(p.getY() / 16), (int) Math.floor(p.getZ() / 16));
 		c.getBlocks().set((int) p.getX() % 16, (int) p.getY() % 16, (int) p.getZ() % 16, id);
 	}
 
