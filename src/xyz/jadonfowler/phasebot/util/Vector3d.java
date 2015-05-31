@@ -2,19 +2,13 @@ package xyz.jadonfowler.phasebot.util;
 
 import org.spacehq.mc.protocol.data.game.Position;
 
+import lombok.*;
+
+@ToString
+@AllArgsConstructor
 public class Vector3d {
 
-	public double x, y, z;
-
-	public Vector3d(double x, double y, double z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-
-	public String toString(){
-		return "Vector[x=" + x + ",y=" + y + ",z=" + z + "]";
-	}
+	@Getter public double x = 0.0d, y = 0.0d, z = 0.0d;
 
 	public Vector3d floor(){
 		this.x = Math.floor(x);
@@ -41,12 +35,25 @@ public class Vector3d {
 		return new Vector3d(this.x, this.y, this.z);
 	}
 	
-	public static Vector3d fromPosition(Position p){
+	public static Vector3d fromPosition(@NotNull Position p){
 		return new Vector3d(p.getX(), p.getY(), p.getZ());
 	}
 	
-	public static Position toPosition(Vector3d d){
+	public static Position toPosition(@NotNull Vector3d d){
 		return new Position((int)Math.floor(d.x), (int)Math.floor(d.y), (int)Math.floor(d.z));
+	}
+
+	public static Vector3d fromString(@NotNull String s){
+		//String format: "X Y Z"
+		try{
+			double x = Double.parseDouble(s.split(" ")[0]);
+			double y = Double.parseDouble(s.split(" ")[1]);
+			double z = Double.parseDouble(s.split(" ")[2]);
+			return new Vector3d(x, y, z);
+		catch(Exception e){
+			throw new IllegalArgumentException(s);
+			return null;
+		}
 	}
 
 }
