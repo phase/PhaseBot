@@ -6,12 +6,15 @@ import java.util.UUID;
 
 import xyz.jadonfowler.phasebot.util.NameFetcher;
 
+imoprt lombok.*;
+
+@ToString(exclude={"pitch", "yaw"})
 public class Player extends Entity {
 
 	public static ArrayList<Player> players = new ArrayList<Player>();
 
-	private UUID uuid;
-	private String name;
+	@Getter private UUID uuid;
+	@Getter private String name;
 	
 	public Player(int i, UUID uuid, double x, double y, double z) {
 		this(i, uuid, x, y, z, 0, 0);
@@ -29,23 +32,11 @@ public class Player extends Entity {
 		players.add(this);
 	}
 
-	public UUID getUUID() {
-		return uuid;
-	}
-
-	public String getName() {
-		return name;
-	}
-
 	public static Player byUUID(UUID u) {
 		for (Player p : players)
 			if (p.getUUID().equals(u))
 				return p;
 		return null;
-	}
-	
-	public String toString(){
-		return "Player[entityId=" + entityId + ",name=" + name + ",uuid=" + uuid + ",x=" + x + ",y=" + y + ",z=" + z + "]";
 	}
 
 }
