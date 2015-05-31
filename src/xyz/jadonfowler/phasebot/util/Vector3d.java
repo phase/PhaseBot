@@ -17,15 +17,28 @@ public class Vector3d {
 	}
 
 	public Vector3d floor(){
-		return new Vector3d(Math.floor(x), Math.floor(y), Math.floor(z));
+		this.x = Math.floor(x);
+		this.y = Math.floor(y);
+		this.z = Math.floor(z);
+		return this;
 	}
 
 	public Vector3d ceil(){
-		return new Vector3d(Math.ceil(x), Math.ceil(y), Math.ceil(z));
+		this.x = Math.ceil(x);
+		this.y = Math.ceil(y);
+		this.z = Math.ceil(z);
+		return this;
 	}
 
 	public Vector3d int(){
-		return new Vector3d((int) x, (int) y, (int) z);
+		this.x = (int) x;
+		this.y = (int) y;
+		this.z = (int) z;
+		return this;
+	}
+
+	public Vector3d clone(){
+		return new Vector3d(this.x, this.y, this.z);
 	}
 	
 	public static Vector3d fromPosition(Position p){
