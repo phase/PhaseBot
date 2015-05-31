@@ -5,11 +5,13 @@ import org.spacehq.mc.protocol.data.game.Position;
 
 import xyz.jadonfowler.phasebot.util.Vector3d;
 
+import lombok.*;
+
 public class Block {
 
-	public Chunk chunk;
+	@Getter public Chunk chunk;
 	public Vector3d pos;
-	public Material m;
+	@Getter public Material m;
 
 	public Block(Position p) {
 		this(Vector3d.fromPosition(p));
@@ -21,7 +23,7 @@ public class Block {
 
 	public Block(Vector3d p) {
 		this.pos = p;
-		this.chunk = getChunk();
+		this.chunk = ChunkColumn.getChunk(toChunkCoords());
 		Vector3d b = new Vector3d(pos.x % 16, pos.y % 16, pos.z % 16);
 		System.out.println(b);
 		int id = getChunk().getBlocks().getBlock((int) b.x, (int) b.y, (int) b.z);
@@ -32,20 +34,9 @@ public class Block {
 		return new Vector3d(pos.x / 16, pos.y / 16, pos.z / 16);
 	}
 
-	public Chunk getChunk() {
-		Vector3d c = toChunkCoords();
-		return ChunkColumn.getChunk(c);
-	}
-
 	public static void setBlock(Position p, int id) {
-		//Chunk c = PhaseBot.getBot().chunks[(int) Math.floor(p.getX() / 16)][(int) Math.floor(p.getZ() / 16)][(int) Math
-				.floor(p.getY() / 16)];
 		Chunk c = ChunkColumn.getChunk((int) Math.floor(p.getX() / 16), (int) Math.floor(p.getY() / 16), (int) Math.floor(p.getZ() / 16));
 		c.getBlocks().set((int) p.getX() % 16, (int) p.getY() % 16, (int) p.getZ() % 16, id);
-	}
-
-	public Material getMaterial() {
-		return m;
 	}
 
 	public void printChunk(Chunk c) {
