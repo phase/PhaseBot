@@ -168,7 +168,7 @@ public enum Material {
 		if (byId.length > id && id >= 0) {
 			return byId[id];
 		} else {
-			return null;
+			return byId[0];
 		}
 	}
 
