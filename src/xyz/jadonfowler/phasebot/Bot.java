@@ -18,24 +18,24 @@ import xyz.jadonfowler.phasebot.block.Material;
 import xyz.jadonfowler.phasebot.entity.Entity;
 import xyz.jadonfowler.phasebot.util.Vector3d;
 
+import lombok.*;
+
 public class Bot {
 
-	String username;
-	String password;
-	String host;
-	int port;
-	Proxy proxy = Proxy.NO_PROXY;
+	@Getter @Setter private String username;
+	@Getter @Setter private String password;
+	@Getter @Setter private String host;
+	@Getter @Setter private int port;
+	@Getter @Setter private Proxy proxy = Proxy.NO_PROXY;
 
 	public Vector3d pos;
 	public float pitch = 0;
 	public float yaw = 0;
 	public int entityId = 0;
 	public boolean isDerp = false;
-	private Client client;
+	@Getter @Setter private Client client;
 
 	public Vector3d[] positions;
-
-	public Chunk[][][] chunks = new Chunk[512][512][512];
 
 	public Bot(String username, String password, String host, int port, Proxy proxy) {
 		super();
@@ -46,54 +46,6 @@ public class Bot {
 		this.proxy = proxy;
 		this.positions = new Vector3d[4]; // TODO May need more
 		this.pos = new Vector3d(0, 0, 0);
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getHost() {
-		return host;
-	}
-
-	public void setHost(String host) {
-		this.host = host;
-	}
-
-	public int getPort() {
-		return port;
-	}
-
-	public void setPort(int port) {
-		this.port = port;
-	}
-
-	public Proxy getProxy() {
-		return proxy;
-	}
-
-	public void setProxy(Proxy proxy) {
-		this.proxy = proxy;
-	}
-
-	public Client getClient() {
-		return client;
-	}
-
-	public void setClient(Client client) {
-		this.client = client;
 	}
 
 	public void derp(final Session s) {
