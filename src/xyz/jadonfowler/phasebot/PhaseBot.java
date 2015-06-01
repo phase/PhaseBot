@@ -31,14 +31,7 @@ import xyz.jadonfowler.phasebot.cmd.chat.Spam;
 import xyz.jadonfowler.phasebot.cmd.chat.UUIDCommand;
 import xyz.jadonfowler.phasebot.cmd.fun.Derp;
 import xyz.jadonfowler.phasebot.cmd.fun.Swing;
-import xyz.jadonfowler.phasebot.cmd.position.Dig;
-import xyz.jadonfowler.phasebot.cmd.position.Fall;
-import xyz.jadonfowler.phasebot.cmd.position.Look;
-import xyz.jadonfowler.phasebot.cmd.position.Move;
-import xyz.jadonfowler.phasebot.cmd.position.Patrol;
-import xyz.jadonfowler.phasebot.cmd.position.Place;
-import xyz.jadonfowler.phasebot.cmd.position.Set;
-import xyz.jadonfowler.phasebot.cmd.position.Teleport;
+import xyz.jadonfowler.phasebot.cmd.position.*;
 
 public class PhaseBot {
 
@@ -143,6 +136,7 @@ public class PhaseBot {
 		new Swing();
 		new Look();
 		new Move();
+		new PathfindCommand();
 		new Patrol();
 		new Set();
 		new Teleport();

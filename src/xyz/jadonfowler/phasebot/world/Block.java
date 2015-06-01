@@ -24,7 +24,6 @@ public class Block {
 		this.pos = p;
 		this.chunk = ChunkColumn.getChunk(this);
 		Vector3d b = new Vector3d(pos.x % 16, pos.y % 16, pos.z % 16);
-		System.out.println(toChunkCoords() + " : " + b);
 		int id = 0;
 		try {
 			id = chunk.getBlocks().getBlock((int) b.x, (int) b.y, (int) b.z);
@@ -37,5 +36,13 @@ public class Block {
 
 	public Vector3d toChunkCoords() {
 		return new Vector3d(pos.x / 16, pos.y / 16, pos.z / 16).floor().round();
+	}
+
+	public Block getRelative(int rx, int ry, int rz) {
+		return new Block(pos.x+rx, pos.y+ry, pos.z+rz);
+	}
+
+	public int getTypeId() {
+		return material.getId();
 	}
 }

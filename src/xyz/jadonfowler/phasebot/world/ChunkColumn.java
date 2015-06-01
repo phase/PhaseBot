@@ -18,7 +18,6 @@ public class ChunkColumn {
 		for (Chunk c : y) {
 			if (x == 55 && z == 39)
 				if (c == null || c.getBlocks() == null){
-					System.out.println("Null chunk: " + x + "," + z);
 					c = new Chunk(true);
 				}
 		}

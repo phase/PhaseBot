@@ -136,7 +136,7 @@ public class PacketHandler extends SessionAdapter {
 						event.getSession());
 			}
 			catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 	}
