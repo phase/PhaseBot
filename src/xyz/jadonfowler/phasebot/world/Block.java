@@ -6,7 +6,7 @@ import xyz.jadonfowler.phasebot.util.*;
 
 public class Block {
 
-	@Getter
+	@Getter @NonNull
 	public Chunk chunk;
 
 	@Getter
@@ -20,7 +20,7 @@ public class Block {
 	}
 
 	public Block(double ax, double ay, double az) {
-		this(new Vector3d((int) Math.floor(ax), (int) Math.floor(ay), (int) Math.floor(az)));
+		this(new Vector3d(ax, ay, az).floor().round());
 	}
 
 	public Block(Vector3d p) {
@@ -28,9 +28,14 @@ public class Block {
 		this.chunk = ChunkColumn.getChunk(this);
 		Vector3d b = new Vector3d(pos.x % 16, pos.y % 16, pos.z % 16);
 		System.out.println(toChunkCoords() + " : " + b);
+		ChunkColumn.printChunk(chunk);
 		int id = 0;
 		try {
-			id = chunk.getBlocks().getBlock((int) b.x, (int) b.y, (int) b.z);
+			id = 
+					chunk
+					.getBlocks()
+					.getBlock(
+							(int) b.x, (int) b.y, (int) b.z);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
