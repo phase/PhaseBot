@@ -17,10 +17,13 @@ public class ChunkColumn {
 		this.z = z;
 		for (Chunk c : y) {
 			if (x == 55 && z == 39)
-				if (c == null || c.getBlocks() == null)
+				if (c == null || c.getBlocks() == null){
 					System.out.println("Null chunk: " + x + "," + z);
+					c = new Chunk(true);
+				}
 		}
 		this.y = y;
+		chunks.add(this);
 	}
 
 	public static Chunk getChunk(Vector3d v) {
@@ -38,6 +41,7 @@ public class ChunkColumn {
 	public static Chunk getChunk(int x, int y, int z) {
 		for (ChunkColumn cl : chunks)
 			if (cl.x == x && cl.z == z) {
+				if(cl.y[y].getBlocks() == null) continue;
 				return cl.y[y];
 			}
 		return null;

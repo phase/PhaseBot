@@ -102,6 +102,8 @@ public class Bot {
 			yaw = (float) (180 - a1);
 		else
 			yaw = (float) a1;
+		if(rx == 0 && rz == 0)
+			yaw = 0;
 
 		pitch = 0; // pitch is waaay too hard
 

@@ -7,30 +7,18 @@ import xyz.jadonfowler.phasebot.world.*;
 
 public class Fall extends Command {
 
-	boolean s;
-
-	@Override
-	public void exec(String in, String[] args, Session ses) {
-		while (new Block(PhaseBot.getBot().pos.x, PhaseBot.getBot().pos.y - 2, PhaseBot.getBot().pos.z).getMaterial() != Material.AIR) {
-			if (s) {
-				PhaseBot.getBot().move(1, -1, 1);
-				s = !s;
-			} else {
-				PhaseBot.getBot().move(-1, -1, -1);
-				s = !s;
-			}
+	@Override public void exec(String in, String[] args, Session ses) {
+		while (new Block(PhaseBot.getBot().pos.x, PhaseBot.getBot().pos.y - 1, PhaseBot.getBot().pos.z).getMaterial() != Material.AIR) {
+			PhaseBot.getBot().move(0, -1, 0);
 		}
 	}
 
-	@Override
-	public String getCommand() {
+	@Override public String getCommand() {
 		return "fall";
 	}
 
-	@Override
-	public String getDescription() {
+	@Override public String getDescription() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

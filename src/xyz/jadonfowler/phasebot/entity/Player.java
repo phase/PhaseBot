@@ -22,7 +22,7 @@ public class Player extends Entity {
 		try {
 			name = nf.call().get(uuid);
 		} catch (Exception e) {
-			e.printStackTrace();
+			name = "NULL";
 		}
 		players.add(this);
 	}

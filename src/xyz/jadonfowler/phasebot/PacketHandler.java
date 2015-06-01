@@ -109,18 +109,18 @@ public class PacketHandler extends SessionAdapter {
 			for (BlockChangeRecord r : packet.getRecords()) {
 				Position p = r.getPosition();
 				int id = r.getBlock();
-				ChunkColumn.setBlock(p, id);
+				ChunkColumn.setBlock(p, id/16);
 			}
 		}
 		else if (event.getPacket() instanceof ServerBlockChangePacket) {
 			Position p = event.<ServerBlockChangePacket> getPacket().getRecord().getPosition();
 			int id = event.<ServerBlockChangePacket> getPacket().getRecord().getBlock();
-			ChunkColumn.setBlock(p, id);
+			ChunkColumn.setBlock(p, id/16);
 		}
 		else if (event.getPacket() instanceof ServerChatPacket) {
 			Message message = event.<ServerChatPacket> getPacket().getMessage();
 			try {
-				System.out.println(message.getFullText());
+				//System.out.println(message.getFullText());
 				if (!message.getFullText().contains(": ")) return;
 				String c = message.getFullText().split(": ")[1];
 				if (!c.startsWith(".")) return;
