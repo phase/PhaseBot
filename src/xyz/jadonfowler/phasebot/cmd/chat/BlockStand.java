@@ -1,10 +1,9 @@
 package xyz.jadonfowler.phasebot.cmd.chat;
 
 import org.spacehq.packetlib.Session;
-
 import xyz.jadonfowler.phasebot.PhaseBot;
-import xyz.jadonfowler.phasebot.block.Block;
 import xyz.jadonfowler.phasebot.cmd.Command;
+import xyz.jadonfowler.phasebot.world.*;
 
 public class BlockStand extends Command {
 

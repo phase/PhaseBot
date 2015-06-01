@@ -1,11 +1,10 @@
 package xyz.jadonfowler.phasebot.cmd.position;
 
-import org.spacehq.mc.protocol.data.game.values.Face;
-import org.spacehq.packetlib.Session;
-
-import xyz.jadonfowler.phasebot.PhaseBot;
-import xyz.jadonfowler.phasebot.cmd.Command;
-import xyz.jadonfowler.phasebot.util.Vector3d;
+import org.spacehq.mc.protocol.data.game.values.*;
+import org.spacehq.packetlib.*;
+import xyz.jadonfowler.phasebot.*;
+import xyz.jadonfowler.phasebot.cmd.*;
+import xyz.jadonfowler.phasebot.util.*;
 
 public class Place extends Command {
 

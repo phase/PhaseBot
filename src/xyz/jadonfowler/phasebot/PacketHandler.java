@@ -1,42 +1,26 @@
 package xyz.jadonfowler.phasebot;
 
-import java.util.UUID;
-
-import org.spacehq.mc.protocol.data.game.Position;
-import org.spacehq.mc.protocol.data.game.values.ClientRequest;
-import org.spacehq.mc.protocol.data.game.values.world.block.BlockChangeRecord;
-import org.spacehq.mc.protocol.data.message.Message;
-import org.spacehq.mc.protocol.packet.ingame.client.ClientChatPacket;
-import org.spacehq.mc.protocol.packet.ingame.client.ClientRequestPacket;
-import org.spacehq.mc.protocol.packet.ingame.client.player.ClientPlayerPositionRotationPacket;
-import org.spacehq.mc.protocol.packet.ingame.server.ServerChatPacket;
-import org.spacehq.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
-import org.spacehq.mc.protocol.packet.ingame.server.entity.ServerDestroyEntitiesPacket;
-import org.spacehq.mc.protocol.packet.ingame.server.entity.ServerEntityMovementPacket;
-import org.spacehq.mc.protocol.packet.ingame.server.entity.ServerEntityPositionRotationPacket;
-import org.spacehq.mc.protocol.packet.ingame.server.entity.ServerEntityTeleportPacket;
-import org.spacehq.mc.protocol.packet.ingame.server.entity.player.ServerPlayerPositionRotationPacket;
-import org.spacehq.mc.protocol.packet.ingame.server.entity.player.ServerUpdateHealthPacket;
-import org.spacehq.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnMobPacket;
-import org.spacehq.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnObjectPacket;
-import org.spacehq.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnPlayerPacket;
-import org.spacehq.mc.protocol.packet.ingame.server.world.ServerBlockChangePacket;
-import org.spacehq.mc.protocol.packet.ingame.server.world.ServerChunkDataPacket;
-import org.spacehq.mc.protocol.packet.ingame.server.world.ServerMultiBlockChangePacket;
-import org.spacehq.mc.protocol.packet.ingame.server.world.ServerMultiChunkDataPacket;
-import org.spacehq.packetlib.event.session.DisconnectedEvent;
-import org.spacehq.packetlib.event.session.PacketReceivedEvent;
-import org.spacehq.packetlib.event.session.SessionAdapter;
-
-import xyz.jadonfowler.phasebot.block.Block;
-import xyz.jadonfowler.phasebot.block.ChunkColumn;
-import xyz.jadonfowler.phasebot.entity.Entity;
-import xyz.jadonfowler.phasebot.entity.Player;
+import java.util.*;
+import org.spacehq.mc.protocol.data.game.*;
+import org.spacehq.mc.protocol.data.game.values.*;
+import org.spacehq.mc.protocol.data.game.values.world.block.*;
+import org.spacehq.mc.protocol.data.message.*;
+import org.spacehq.mc.protocol.packet.ingame.client.*;
+import org.spacehq.mc.protocol.packet.ingame.client.player.*;
+import org.spacehq.mc.protocol.packet.ingame.server.*;
+import org.spacehq.mc.protocol.packet.ingame.server.entity.*;
+import org.spacehq.mc.protocol.packet.ingame.server.entity.player.*;
+import org.spacehq.mc.protocol.packet.ingame.server.entity.spawn.*;
+import org.spacehq.mc.protocol.packet.ingame.server.world.*;
+import org.spacehq.packetlib.event.session.*;
+import xyz.jadonfowler.phasebot.entity.*;
+import xyz.jadonfowler.phasebot.world.*;
 
 public class PacketHandler extends SessionAdapter {
 
 	@Override
 	public void packetReceived(PacketReceivedEvent event) {
+
 		if (event.getPacket() instanceof ServerJoinGamePacket) {
 			event.getSession().send(new ClientChatPacket("PhaseBot has joined the game."));
 			PhaseBot.getBot().entityId = event.<ServerJoinGamePacket> getPacket().getEntityId();
@@ -74,7 +58,7 @@ public class PacketHandler extends SessionAdapter {
 			System.out.println(new Entity(entityId, type, x, y, z));
 		} else if (event.getPacket() instanceof ServerDestroyEntitiesPacket) {
 			for (int i : event.<ServerDestroyEntitiesPacket> getPacket().getEntityIds()) {
-				if (Entity.entities.containsKey(i)) {
+				if (Entity.getEntities().containsKey(i)) {
 					Entity e = Entity.byId(i);
 					if (e instanceof Player)
 						Player.players.remove((Player) e);
@@ -110,19 +94,19 @@ public class PacketHandler extends SessionAdapter {
 			for (int i = 0; i < 10; i++) {
 				int chunkX = event.<ServerMultiChunkDataPacket> getPacket().getX(i);
 				int chunkZ = event.<ServerMultiChunkDataPacket> getPacket().getZ(i);
-				new ChunkColumn(chunkX, chunkZ, event.<ServerMultiChunkDataPacket>getPacket().getChunks(i));
+				new ChunkColumn(chunkX, chunkZ, event.<ServerMultiChunkDataPacket> getPacket().getChunks(i));
 			}
 		} else if (event.getPacket() instanceof ServerMultiBlockChangePacket) {
 			ServerMultiBlockChangePacket packet = event.<ServerMultiBlockChangePacket> getPacket();
-			for(BlockChangeRecord r : packet.getRecords()){
+			for (BlockChangeRecord r : packet.getRecords()) {
 				Position p = r.getPosition();
 				int id = r.getBlock();
-				Block.setBlock(p, id);
+				ChunkColumn.setBlock(p, id);
 			}
 		} else if (event.getPacket() instanceof ServerBlockChangePacket) {
 			Position p = event.<ServerBlockChangePacket> getPacket().getRecord().getPosition();
 			int id = event.<ServerBlockChangePacket> getPacket().getRecord().getBlock();
-			Block.setBlock(p, id);
+			ChunkColumn.setBlock(p, id);
 		}
 
 		else if (event.getPacket() instanceof ServerChatPacket) {
@@ -130,7 +114,7 @@ public class PacketHandler extends SessionAdapter {
 			Message message = event.<ServerChatPacket> getPacket().getMessage();
 			try {
 				System.out.println(message.getFullText());
-				if(!message.getFullText().contains(": "))
+				if (!message.getFullText().contains(": "))
 					return;
 				String c = message.getFullText().split(": ")[1];
 				if (!c.startsWith("."))
@@ -153,6 +137,7 @@ public class PacketHandler extends SessionAdapter {
 
 	@Override
 	public void disconnected(DisconnectedEvent event) {
+
 		System.out.println("Disconnected: " + Message.fromString(event.getReason()).getFullText());
 	}
 }

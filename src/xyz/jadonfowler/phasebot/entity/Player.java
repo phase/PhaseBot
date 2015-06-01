@@ -1,14 +1,9 @@
 package xyz.jadonfowler.phasebot.entity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.UUID;
+import java.util.*;
+import lombok.*;
+import xyz.jadonfowler.phasebot.util.*;
 
-import xyz.jadonfowler.phasebot.util.NameFetcher;
-
-imoprt lombok.*;
-
-@ToString(exclude={"pitch", "yaw"})
 public class Player extends Entity {
 
 	public static ArrayList<Player> players = new ArrayList<Player>();
@@ -34,7 +29,7 @@ public class Player extends Entity {
 
 	public static Player byUUID(UUID u) {
 		for (Player p : players)
-			if (p.getUUID().equals(u))
+			if (p.uuid.equals(u))
 				return p;
 		return null;
 	}

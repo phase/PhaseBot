@@ -1,4 +1,4 @@
-package xyz.jadonfowler.phasebot.block;
+package xyz.jadonfowler.phasebot.world;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,9 +67,13 @@ public enum Material {
 			2263, 1), RECORD_9(2264, 1), RECORD_10(2265, 1), RECORD_11(2266, 1), RECORD_12(2267, 1), ;
 
 	private final int id;
+
 	private static Material[] byId = new Material[2270];
+
 	private final static Map<String, Material> BY_NAME = new HashMap<String, Material>();
+
 	private final int maxStack;
+
 	private final short durability;
 
 	private Material(final int id) {

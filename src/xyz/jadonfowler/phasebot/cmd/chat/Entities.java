@@ -9,7 +9,7 @@ public class Entities extends Command{
 
 	@Override
 	public void exec(String in, String[] args, Session s) {
-		for(Entity e : Entity.entities.values())
+		for(Entity e : Entity.getEntities().values())
 			System.out.println(e);
 	}
 

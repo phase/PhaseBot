@@ -1,14 +1,14 @@
 package xyz.jadonfowler.phasebot;
 
 import java.io.BufferedReader;
-imoprt java.io.File
+import java.io.File;
 import java.io.FileReader;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
-
+import lombok.Cleanup;
 import org.spacehq.mc.auth.exception.AuthenticationException;
 import org.spacehq.mc.protocol.MinecraftProtocol;
 import org.spacehq.mc.protocol.ProtocolConstants;
@@ -19,7 +19,6 @@ import org.spacehq.mc.protocol.data.status.handler.ServerPingTimeHandler;
 import org.spacehq.packetlib.Client;
 import org.spacehq.packetlib.Session;
 import org.spacehq.packetlib.tcp.TcpSessionFactory;
-
 import xyz.jadonfowler.phasebot.cmd.Command;
 import xyz.jadonfowler.phasebot.cmd.CommandManager;
 import xyz.jadonfowler.phasebot.cmd.chat.BlockStand;
@@ -44,18 +43,26 @@ import xyz.jadonfowler.phasebot.cmd.position.Teleport;
 public class PhaseBot {
 
 	private static String USERNAME = "username";
+
 	private static String PASSWORD = "password";
+
 	private static String HOST = "mort.openredstone.org";
+
 	private static int PORT = 25569;
+
 	// private static String HOST = "nick.openredstone.org";
 	// private static int PORT = 25569;
+
 	private static Proxy PROXY = Proxy.NO_PROXY;
+
 	private static boolean VERIFY_USERS = true;
+
 	public static Random random = new Random();
 
 	public static ArrayList<Command> commands = new ArrayList<Command>();
 
 	private static Bot bot;
+
 	private static CommandManager manager = null;
 
 	public static void main(String... args) {
@@ -80,21 +87,22 @@ public class PhaseBot {
 			br.close();
 
 			File scriptDir = new File("res/scripts/");
-			Flie[] dirFiles = scriptDir.listFiles();
+			File[] dirFiles = scriptDir.listFiles();
 			if (dirFiles != null) {
-				for (File script : dirFiles) {
+				for (final File script : dirFiles) {
+					@Cleanup
 					BufferedReader sr = new BufferedReader(new FileReader(script));
-					String sLine = sr.readLine();
+					String sline = sr.readLine();
 					final ArrayList<String> cmds = new ArrayList<String>();
-					while(line != null){
-						cms.add(line);
-						line = sr.readLine();
+					while (sline != null) {
+						cmds.add(sline);
+						sline = sr.readLine();
 					}
 					new Command() {
 
 						public void exec(String in, String[] args, Session s) {
-							for(String c : cmds){
-								manager.performCommand(c.split(" ").replace(".", ""), c.split(" "), null);
+							for (String c : cmds) {
+								manager.performCommand(c.replace(".", "").split(" ")[0], c.split(" "), null);
 							}
 						}
 
@@ -105,6 +113,7 @@ public class PhaseBot {
 								name = name.substring(0, pos);
 							return name;
 						}
+
 						public String getDescription() {
 							return null;
 						}
@@ -116,10 +125,10 @@ public class PhaseBot {
 		}
 
 		registerCommands();
-		
+
 		bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
 
-		// status();
+		status();
 		login();
 	}
 
@@ -144,11 +153,11 @@ public class PhaseBot {
 		new Place();
 	}
 
-	@SuppressWarnings("unused")
 	private static void status() {
 		MinecraftProtocol protocol = new MinecraftProtocol(ProtocolMode.STATUS);
 		Client client = new Client(HOST, PORT, protocol, new TcpSessionFactory(PROXY));
 		client.getSession().setFlag(ProtocolConstants.SERVER_INFO_HANDLER_KEY, new ServerInfoHandler() {
+
 			@Override
 			public void handle(Session session, ServerStatusInfo info) {
 				System.out.println("Version: " + info.getVersionInfo().getVersionName() + ", "
@@ -162,6 +171,7 @@ public class PhaseBot {
 		});
 
 		client.getSession().setFlag(ProtocolConstants.SERVER_PING_TIME_HANDLER_KEY, new ServerPingTimeHandler() {
+
 			@Override
 			public void handle(Session session, long pingTime) {
 				System.out.println("Server ping took " + pingTime + "ms");
@@ -194,7 +204,6 @@ public class PhaseBot {
 		}
 
 		Client client = new Client(HOST, PORT, protocol, new TcpSessionFactory(PROXY));
-
 		bot.setClient(client);
 		client.getSession().addListener(new PacketHandler());
 		client.getSession().connect();

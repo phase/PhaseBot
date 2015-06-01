@@ -1,11 +1,9 @@
 package xyz.jadonfowler.phasebot.cmd.position;
 
 import org.spacehq.packetlib.Session;
-
 import xyz.jadonfowler.phasebot.PhaseBot;
-import xyz.jadonfowler.phasebot.block.Block;
-import xyz.jadonfowler.phasebot.block.Material;
 import xyz.jadonfowler.phasebot.cmd.Command;
+import xyz.jadonfowler.phasebot.world.*;
 
 public class Fall extends Command {
 
