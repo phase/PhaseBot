@@ -45,8 +45,8 @@ public class Vector3d {
         this.z = -z;
         return this;
     }
-    
-    public Vector3d add(Vector3d v){
+
+    public Vector3d add(Vector3d v) {
         this.x += v.x;
         this.y += v.y;
         this.z += v.z;
