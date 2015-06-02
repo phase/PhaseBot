@@ -57,7 +57,7 @@ public class Bot {
                 while (isDerp) {
                     look((PhaseBot.random.nextFloat() * 10000) % 180, ((PhaseBot.random.nextFloat() * 10000) % 180));
                     swing();
-                    //jump(0, 1, 0);
+                    // jump(0, 1, 0);
                     try {
                         Thread.sleep(40);
                     }
@@ -155,16 +155,11 @@ public class Bot {
         // System.out.println("s: " + sx + " " + sy + " " + sz + " : " +
         // numberOfSteps);
         for (int i = 0; i < numberOfSteps; i++) {
-            client.getSession().send(
-                    new ClientPlayerPositionRotationPacket(false, 
-                            sx + pos.x, 
-                            sy + pos.y, 
-                            sz + pos.z, 
-                            yaw, pitch));
-            pos.x += sx;
-            pos.y += sy;
-            pos.z += sz;
-            // System.out.println(pos);
+            rx += pos.x > 0 ? sx : -sx;
+            ry += pos.y > 0 ? sy : -sy;
+            rz += pos.z > 0 ? sz : -sz;
+            System.out.println("Moving "+pos);
+            client.getSession().send(new ClientPlayerPositionRotationPacket(false, pos.x, pos.y, pos.z, yaw, pitch));
             try {
                 Thread.sleep(50);
             }
