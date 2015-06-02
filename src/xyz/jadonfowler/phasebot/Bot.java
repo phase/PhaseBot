@@ -156,7 +156,11 @@ public class Bot {
         // numberOfSteps);
         for (int i = 0; i < numberOfSteps; i++) {
             client.getSession().send(
-                    new ClientPlayerPositionRotationPacket(false, sx + pos.x, sy + pos.y, sz + pos.z, yaw, pitch));
+                    new ClientPlayerPositionRotationPacket(false, 
+                            sx + pos.x, 
+                            sy + pos.y, 
+                            sz + pos.z, 
+                            yaw, pitch));
             pos.x += sx;
             pos.y += sy;
             pos.z += sz;

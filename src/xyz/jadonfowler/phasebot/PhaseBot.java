@@ -43,13 +43,13 @@ public class PhaseBot {
     // private static String HOST = "beta.redstone-server.info";
     // private static int PORT = 25565;
     // Build Server
-    private static String HOST = "mort.openredstone.org";
+    // private static String HOST = "mort.openredstone.org";
+    // private static int PORT = 25569;
+    // Survival Server
+    private static String HOST = "nick.openredstone.org";
 
     private static int PORT = 25569;
 
-    // Survival Server
-    // private static String HOST = "nick.openredstone.org";
-    // private static int PORT = 25569;
     private static Proxy PROXY = Proxy.NO_PROXY;
 
     private static boolean VERIFY_USERS = true;

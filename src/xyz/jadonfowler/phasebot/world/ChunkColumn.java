@@ -46,10 +46,16 @@ public class ChunkColumn {
     }
 
     public static void setBlock(Position p, int id) {
-        Chunk c = getChunk((int) Math.floor(p.getX() / 16), (int) Math.floor(p.getY() / 16),
-                (int) Math.floor(p.getZ() / 16));
-        c.getBlocks().setBlock((int) Math.floor(Math.abs(p.getX()) % 16), (int) Math.floor(Math.abs(p.getY()) % 16),
-                (int) Math.floor(Math.abs(p.getZ()) % 16), id);
+        Vector3d v = new Vector3d(
+                p.getX() > 0 ? Math.floor(p.getX() / 16) : -1 + Math.ceil(p.getX() / 16), 
+                p.getY() > 0 ? Math.floor(p.getY() / 16) : -1 + Math.ceil(p.getY() / 16), 
+                p.getZ() > 0 ? Math.floor(p.getZ() / 16) : -1 + Math.ceil(p.getZ() / 16));
+        Chunk c = getChunk((int) v.x, (int) v.y, (int) v.z);
+        Vector3d b = new Vector3d(
+                Math.floor(p.getX() > 0 ? p.getX() % 16 : 16 - (Math.abs(p.getX()) % 16)),
+                Math.floor(p.getY() > 0 ? p.getY() % 16 : 16 - (Math.abs(p.getY()) % 16)), 
+                Math.floor(p.getZ() > 0 ? p.getZ() % 16 : 16 - (Math.abs(p.getZ()) % 16)));
+        c.getBlocks().setBlock((int) b.x, (int) b.y, (int) b.z, id);
     }
 
     public static void printChunk(Chunk c) {
