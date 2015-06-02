@@ -41,7 +41,7 @@ public class PacketHandler extends SessionAdapter {
             double y = event.<ServerSpawnObjectPacket> getPacket().getY();
             double z = event.<ServerSpawnObjectPacket> getPacket().getZ();
             String type = event.<ServerSpawnObjectPacket> getPacket().getType().toString();
-            System.out.println(new Entity(entityId, type, x, y, z));
+            new Entity(entityId, type, x, y, z);
         }
         else if (event.getPacket() instanceof ServerSpawnPlayerPacket) {
             int entityId = event.<ServerSpawnPlayerPacket> getPacket().getEntityId();
@@ -49,7 +49,7 @@ public class PacketHandler extends SessionAdapter {
             double y = event.<ServerSpawnPlayerPacket> getPacket().getY();
             double z = event.<ServerSpawnPlayerPacket> getPacket().getZ();
             UUID u = event.<ServerSpawnPlayerPacket> getPacket().getUUID();
-            System.out.println(new Player(entityId, u, x, y, z));
+            new Player(entityId, u, x, y, z);
         }
         else if (event.getPacket() instanceof ServerSpawnMobPacket) {
             int entityId = event.<ServerSpawnMobPacket> getPacket().getEntityId();
@@ -57,7 +57,7 @@ public class PacketHandler extends SessionAdapter {
             double y = event.<ServerSpawnMobPacket> getPacket().getY();
             double z = event.<ServerSpawnMobPacket> getPacket().getZ();
             String type = event.<ServerSpawnMobPacket> getPacket().getType().toString();
-            System.out.println(new Entity(entityId, type, x, y, z));
+            new Entity(entityId, type, x, y, z);
         }
         else if (event.getPacket() instanceof ServerDestroyEntitiesPacket) {
             for (int i : event.<ServerDestroyEntitiesPacket> getPacket().getEntityIds()) {

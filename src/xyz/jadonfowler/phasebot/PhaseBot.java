@@ -148,6 +148,7 @@ public class PhaseBot {
         new Fall();
         new Spam();
         new Place();
+        new FollowCommand();
     }
 
     private static void status() {

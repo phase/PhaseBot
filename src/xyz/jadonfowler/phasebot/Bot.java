@@ -57,6 +57,7 @@ public class Bot {
                 while (isDerp) {
                     look((PhaseBot.random.nextFloat() * 10000) % 180, ((PhaseBot.random.nextFloat() * 10000) % 180));
                     swing();
+                    //jump(0, 1, 0);
                     try {
                         Thread.sleep(40);
                     }
@@ -105,7 +106,10 @@ public class Bot {
         jump(v.x, v.y, v.z);
     }
 
+    public boolean pathing = false;
+
     public void moveAlong(ArrayList<Tile> tiles) {
+        pathing = true;
         final Iterator<Tile> itr = tiles.iterator();
         final Vector3d start = pos.clone();
         itr.next();
@@ -118,6 +122,7 @@ public class Bot {
                         Vector3d v = t.getLocation(start.clone()).clone().add(new Vector3d(0.5, 0, 0.5));
                         moveTo(v);
                     }
+                    pathing = false;
                 }
                 catch (Exception e) {
                     e.printStackTrace();

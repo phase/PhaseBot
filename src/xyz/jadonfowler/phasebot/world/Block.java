@@ -31,9 +31,7 @@ public class Block {
         try {
             id = chunk.getBlocks().getBlock((int) b.x, (int) b.y, (int) b.z);
         }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        catch (Exception e) {}
         material = Material.getMaterial(id);
         cache.add(this);
     }

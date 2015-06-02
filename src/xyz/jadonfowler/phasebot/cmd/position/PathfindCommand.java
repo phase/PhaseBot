@@ -4,6 +4,7 @@ import java.util.*;
 import org.spacehq.packetlib.*;
 import xyz.jadonfowler.phasebot.*;
 import xyz.jadonfowler.phasebot.cmd.*;
+import xyz.jadonfowler.phasebot.entity.*;
 import xyz.jadonfowler.phasebot.pathfind.*;
 import xyz.jadonfowler.phasebot.pathfind.AStar.InvalidPathException;
 import xyz.jadonfowler.phasebot.util.*;
@@ -12,12 +13,34 @@ public class PathfindCommand extends Command {
 
     @Override public void exec(String in, String[] args, Session s) {
         try {
-            // get our vars
-            double x = Double.parseDouble(args[1]);
-            double y = Double.parseDouble(args[2]);
-            double z = Double.parseDouble(args[3]);
             Vector3d start = PhaseBot.getBot().getPos().clone().addY(-1);
-            Vector3d end = PhaseBot.getBot().relativeToAbsolute(new Vector3d(x, y, z)).clone().addY(-1);
+            Vector3d end = null;
+            if (args.length == 2) {
+                if (args[1].matches("[-+]?\\d*\\.?\\d+")) {
+                    int id = Integer.parseInt(args[1]);
+                    Entity e = Entity.byId(id);
+                    end = new Vector3d(e.getX(), e.getY()-1, e.getZ());
+                }
+                else {
+                    try {
+                        UUIDFetcher uf = new UUIDFetcher(Arrays.asList(args[1]));
+                        UUID u = uf.call().get(args[1]);
+                        Player e = Player.byUUID(u);
+                        end = new Vector3d(e.getX(), e.getY()-1, e.getZ());
+                        PhaseBot.getBot().say("I'm moving towards " + args[1] + " at " + end.clone().floor());
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            // get our vars
+            if (end == null) {
+                double x = Double.parseDouble(args[1]);
+                double y = Double.parseDouble(args[2]);
+                double z = Double.parseDouble(args[3]);
+                end = PhaseBot.getBot().relativeToAbsolute(new Vector3d(x, y, z)).clone().addY(-1);
+            }
             System.out.println("start= " + start + " \nend= " + end);
             // create our pathfinder
             AStar path = new AStar(start, end, 100);

@@ -39,7 +39,7 @@ public class ChunkColumn {
     public static Chunk getChunk(int x, int y, int z) {
         for (ChunkColumn cl : chunks)
             if (cl.x == x && cl.z == z) {
-                if (cl.y[y].getBlocks() == null) continue;
+                if (cl.y[y] == null || cl.y[y].getBlocks() == null) continue;
                 return cl.y[y];
             }
         return null;
@@ -48,8 +48,8 @@ public class ChunkColumn {
     public static void setBlock(Position p, int id) {
         Chunk c = getChunk((int) Math.floor(p.getX() / 16), (int) Math.floor(p.getY() / 16),
                 (int) Math.floor(p.getZ() / 16));
-        c.getBlocks().setBlock((int) Math.floor(p.getX() % 16), (int) Math.floor(p.getY() % 16),
-                (int) Math.floor(p.getZ() % 16), id);
+        c.getBlocks().setBlock((int) Math.floor(Math.abs(p.getX()) % 16), (int) Math.floor(Math.abs(p.getY()) % 16),
+                (int) Math.floor(Math.abs(p.getZ()) % 16), id);
     }
 
     public static void printChunk(Chunk c) {

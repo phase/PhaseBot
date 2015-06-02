@@ -1,7 +1,8 @@
 package xyz.jadonfowler.phasebot.entity;
 
-import java.util.HashMap;
+import java.util.*;
 import lombok.*;
+import xyz.jadonfowler.phasebot.util.*;
 
 @ToString(exclude = { "pitch", "yaw" }) public class Entity {
 
@@ -36,5 +37,9 @@ import lombok.*;
 
     public static Entity byId(int id) {
         return entities.get(id);
+    }
+    
+    public Vector3d getPos(){
+        return new Vector3d(x, y, z);
     }
 }
