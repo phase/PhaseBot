@@ -229,8 +229,7 @@ public class AStar {
              * 0).getData()); return (g.isOpen() ? (b.getRelative(0, 2,
              * 0).getTypeId() == 0) : false);//TODO support this }
              */
-            return (canBlockBeWalkedThrough(b.getRelative(0, 1, 0).getTypeId()) && canBlockBeWalkedThrough(b
-                    .getRelative(0, 2, 0).getTypeId()));
+            return (canBlockBeWalkedThrough(b.getRelative(0, 1, 0).getTypeId()));
         }
         else {
             return false;
@@ -242,8 +241,7 @@ public class AStar {
         int i = b.getTypeId();
         if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0 && (!canBlockBeWalkedThrough(i))) {
             // make sure the blocks above are air or can be walked through
-            return (canBlockBeWalkedThrough(b.getRelative(0, 1, 0).getTypeId()) && canBlockBeWalkedThrough(b
-                    .getRelative(0, 2, 0).getTypeId()));
+            return (canBlockBeWalkedThrough(b.getRelative(0, 1, 0).getTypeId()));
         }
         else {
             return false;

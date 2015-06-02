@@ -125,6 +125,6 @@ public class Vector3d {
     }
 
     public Block getBlock() {
-        return new Block(floor().round());
+        return Block.getBlock(floor().round());
     }
 }

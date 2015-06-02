@@ -74,6 +74,24 @@ public class Bot {
         client.getSession().send(new ClientSwingArmPacket());
     }
 
+    public void centerPosition() {
+        client.getSession().send(
+                new ClientPlayerPositionRotationPacket(false, ((int) pos.x) + 0.5d, ((int) pos.y),
+                        ((int) pos.z) + 0.5d, yaw, pitch));
+    }
+
+    public void fall() {
+        while (Block.getBlock(pos.x, pos.y - 1, pos.z).getMaterial() == Material.AIR)
+            move(0, -1, 0);
+    }
+
+    public void jump(double x, double y, double z) {
+        if (y > 0) move(0, Math.abs(y), 0);
+        move(x, 0, z);
+        fall();
+        centerPosition();
+    }
+
     public void moveTo(Entity e) {
         moveTo((int) Math.floor(e.x), (int) Math.floor(e.y), (int) Math.floor(e.z));
     }
@@ -84,22 +102,35 @@ public class Bot {
 
     public void moveTo(Vector3d to) {
         Vector3d v = new Vector3d(to.x - pos.x, to.y - pos.y, to.z - pos.z).floor();
-        move(v.x, v.y, v.z);
+        jump(v.x, v.y, v.z);
     }
 
     public void moveAlong(ArrayList<Tile> tiles) {
         final Iterator<Tile> itr = tiles.iterator();
-        final Vector3d start = pos;
+        final Vector3d start = pos.clone();
         itr.next();
-        while (itr.hasNext()) {
-            Tile t = itr.next();
-            Vector3d v = t.getLocation(start).clone().add(new Vector3d(0.5, 0, 0.5));
-            System.out.println(pos + " ; " + v);
-            moveTo(v);
-        }
+        new Thread(new Runnable() {
+
+            public void run() {
+                try {
+                    while (itr.hasNext()) {
+                        Tile t = itr.next();
+                        Vector3d v = t.getLocation(start.clone()).clone().add(new Vector3d(0.5, 0, 0.5));
+                        moveTo(v);
+                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     public void move(double rx, double ry, double rz) {
+        if (isDiagonal(rx, ry, rz)) {
+            moveDiagonal(rx, ry, rz);
+            return;
+        }
         // System.out.println("m: " + rx + " " + ry + " " + rz);
         double l = (pos.x + rx) - pos.x;
         double w = (pos.z + rz) - pos.z;
@@ -116,14 +147,15 @@ public class Bot {
         double sx = rx / numberOfSteps;
         double sy = ry / numberOfSteps;
         double sz = rz / numberOfSteps;
-        System.out.println("s: " + sx + " " + sy + " " + sz + " : " + numberOfSteps);
+        // System.out.println("s: " + sx + " " + sy + " " + sz + " : " +
+        // numberOfSteps);
         for (int i = 0; i < numberOfSteps; i++) {
             client.getSession().send(
                     new ClientPlayerPositionRotationPacket(false, sx + pos.x, sy + pos.y, sz + pos.z, yaw, pitch));
             pos.x += sx;
             pos.y += sy;
             pos.z += sz;
-            System.out.println(pos);
+            // System.out.println(pos);
             try {
                 Thread.sleep(50);
             }
@@ -131,9 +163,26 @@ public class Bot {
                 e.printStackTrace();
             }
         }
-        client.getSession().send(
-                new ClientPlayerPositionRotationPacket(false, ((int) pos.x) + 0.5d, ((int) pos.y),
-                        ((int) pos.z) + 0.5d, yaw, pitch));
+        centerPosition();
+    }
+
+    private void moveDiagonal(double x, double y, double z) {
+        pos.x += x;
+        pos.y += y;
+        pos.z += z;
+        centerPosition();
+        try {
+            Thread.sleep(100);
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean isDiagonal(double x, double y, double z) {
+        if ((x == 1 && z == 1 && y == 0) || (x == 1 && z == -1 && y == 0) || (x == -1 && z == 1 && y == 0)
+                || (x == -1 && z == -1 && y == 0)) return true;
+        return false;
     }
 
     public void breakBlock(int rx, int ry, int rz) {
@@ -157,7 +206,7 @@ public class Bot {
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
                 for (int z = -1; z < 2; z++) {
-                    Block b = new Block(new Vector3d(x + d.x, y + d.y, z + d.z));
+                    Block b = Block.getBlock(new Vector3d(x + d.x, y + d.y, z + d.z));
                     if (b.getMaterial() != Material.AIR) {
                         if ((x == -1 && z == 0 && y == 0)) return Face.WEST;
                         else if ((x == 1 && z == 0 && y == 0)) return Face.EAST;

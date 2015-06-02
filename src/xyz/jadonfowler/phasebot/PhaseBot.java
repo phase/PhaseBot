@@ -39,10 +39,15 @@ public class PhaseBot {
 
     private static String PASSWORD = "password";
 
+    // Stym's
+    // private static String HOST = "beta.redstone-server.info";
+    // private static int PORT = 25565;
+    // Build Server
     private static String HOST = "mort.openredstone.org";
 
     private static int PORT = 25569;
 
+    // Survival Server
     // private static String HOST = "nick.openredstone.org";
     // private static int PORT = 25569;
     private static Proxy PROXY = Proxy.NO_PROXY;
@@ -134,6 +139,7 @@ public class PhaseBot {
         new Look();
         new Move();
         new PathfindCommand();
+        new JumpCommand();
         new Patrol();
         new Set();
         new Teleport();

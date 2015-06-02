@@ -98,7 +98,7 @@ public class PacketHandler extends SessionAdapter {
             new ChunkColumn(p.getX(), p.getZ(), p.getChunks());
         }
         else if (event.getPacket() instanceof ServerMultiChunkDataPacket) {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < event.<ServerMultiChunkDataPacket> getPacket().getColumns(); i++) {
                 int chunkX = event.<ServerMultiChunkDataPacket> getPacket().getX(i);
                 int chunkZ = event.<ServerMultiChunkDataPacket> getPacket().getZ(i);
                 new ChunkColumn(chunkX, chunkZ, event.<ServerMultiChunkDataPacket> getPacket().getChunks(i));
@@ -125,8 +125,7 @@ public class PacketHandler extends SessionAdapter {
                 String c = message.getFullText().split(": ")[1];
                 if (!c.startsWith(".")) return;
                 if (!(message.getFullText().contains("Phase") || message.getFullText().contains("Voltz")
-                        || message.getFullText().contains("chibill") || message.getFullText().contains("tyler") || message
-                        .getFullText().contains("_Skyden_"))) {
+                        || message.getFullText().contains("tyler") || message.getFullText().contains("_Skyden_"))) {
                     // event.getSession().send(new
                     // ClientChatPacket("You're not my master! D:"));
                     return;

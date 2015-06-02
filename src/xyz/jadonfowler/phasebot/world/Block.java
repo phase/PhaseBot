@@ -1,5 +1,6 @@
 package xyz.jadonfowler.phasebot.world;
 
+import java.util.*;
 import lombok.*;
 import org.spacehq.mc.protocol.data.game.*;
 import xyz.jadonfowler.phasebot.util.*;
@@ -10,20 +11,22 @@ public class Block {
 
     @Getter public Vector3d pos;
 
-    @Getter(AccessLevel.PUBLIC) public Material material;
+    @Getter public Material material;
 
-    public Block(Position p) {
+    @Getter private static ArrayList<Block> cache = new ArrayList<Block>();
+
+    private Block(Position p) {
         this(Vector3d.fromPosition(p));
     }
 
-    public Block(double ax, double ay, double az) {
+    private Block(double ax, double ay, double az) {
         this(new Vector3d(ax, ay, az).floor().round());
     }
 
-    public Block(Vector3d p) {
+    private Block(Vector3d p) {
         this.pos = p;
         this.chunk = ChunkColumn.getChunk(this);
-        Vector3d b = new Vector3d(pos.x % 16, pos.y % 16, pos.z % 16);
+        Vector3d b = new Vector3d(Math.abs(pos.x) % 16, Math.abs(pos.y) % 16, Math.abs(pos.z) % 16);
         int id = 0;
         try {
             id = chunk.getBlocks().getBlock((int) b.x, (int) b.y, (int) b.z);
@@ -32,6 +35,7 @@ public class Block {
             e.printStackTrace();
         }
         material = Material.getMaterial(id);
+        cache.add(this);
     }
 
     public Vector3d toChunkCoords() {
@@ -44,5 +48,15 @@ public class Block {
 
     public int getTypeId() {
         return material.getId();
+    }
+
+    public static Block getBlock(Vector3d p) {
+        for (Block b : cache)
+            if (b.getPos().equals(p)) return b;
+        return new Block(p);
+    }
+
+    public static Block getBlock(double x, double y, double z) {
+        return getBlock(new Vector3d(x, y, z));
     }
 }
