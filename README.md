@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/phase/PhaseBot.png?label=ready&title=Ready)](https://waffle.io/phase/PhaseBot)
 # PhaseBot
 A Minecraft bot that does various tasks
 
