@@ -1,5 +1,7 @@
 #PhaseBot
-[![Stories in Ready](https://badge.waffle.io/phase/PhaseBot.png?label=ready&title=Ready)](https://waffle.io/phase/PhaseBot)[![Build Status](https://travis-ci.org/phase/PhaseBot.svg)](https://travis-ci.org/phase/PhaseBot)
+[![Stories in Ready](https://badge.waffle.io/phase/PhaseBot.png?label=ready&title=Ready)](https://waffle.io/phase/PhaseBot)
+[![Build Status](https://travis-ci.org/phase/PhaseBot.svg)](https://travis-ci.org/phase/PhaseBot)
+
 A Minecraft bot that does various tasks
 
 ## Current Features
