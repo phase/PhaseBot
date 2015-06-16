@@ -1,15 +1,18 @@
 package xyz.jadonfowler.phasebot.inventory;
 
+import lombok.Getter;
+import org.spacehq.mc.protocol.data.game.ItemStack;
+
 public class Inventory {
 
-    @Getter ItemStack[] items = new ItemStack[44];
+    @Getter ItemStack[] items;
     
     public Inventory(ItemStack[] i) {
-        for(int j = 0; j < i.length; j++) {
-            items[j] = i[j];
-        }
+        items = i;
     }
 
-    public ItemStack getItem(int i){ return items[i]; }
+    public ItemStack getItem(int i) {
+        return items[i];
+    }
 
 }
