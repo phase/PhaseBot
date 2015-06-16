@@ -4,10 +4,16 @@ sourceSets {
     main {
         java {
             srcDir 'src'
-            testDir 'test'
+            exclude '**/*Test.java'
         }
         resources {
             srcDir 'res'
+        }
+    }
+    test {
+        java {
+            srcDir 'src'
+            include '**/*Test.java'
         }
     }
 }
