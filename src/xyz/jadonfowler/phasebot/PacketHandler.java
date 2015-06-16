@@ -122,7 +122,7 @@ public class PacketHandler extends SessionAdapter {
         else if (event.getPacket() instanceof ServerWindowItemsPacket) {
             ServerWindowItemsPacket p = event.<ServerWindowItemsPacket>getPacket();
             if (p.getWindowId() == 0) {//Player's inventory
-                new Inventory(p.getItems()); //add object to Bot
+                PhaseBot.getBot().setInventory(new Inventory(p.getItems()));
             }
         }
         else if (event.getPacket() instanceof ServerChatPacket) {
