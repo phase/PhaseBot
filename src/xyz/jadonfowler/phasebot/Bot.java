@@ -158,9 +158,9 @@ public class Bot {
         // System.out.println("s: " + sx + " " + sy + " " + sz + " : " +
         // numberOfSteps);
         for (int i = 0; i < numberOfSteps; i++) {
-            rx += pos.x > 0 ? sx : -sx;
-            ry += pos.y > 0 ? sy : -sy;
-            rz += pos.z > 0 ? sz : -sz;
+            pos.x += sx;
+            pos.y += sy;
+            pos.z += sz;
             System.out.println("Moving "+pos);
             client.getSession().send(new ClientPlayerPositionRotationPacket(false, pos.x, pos.y, pos.z, yaw, pitch));
             try {
