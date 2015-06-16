@@ -151,7 +151,7 @@ public class PhaseBot {
         new FollowCommand();
     }
 
-    private static void status() {
+    public static void status() {
         MinecraftProtocol protocol = new MinecraftProtocol(ProtocolMode.STATUS);
         Client client = new Client(HOST, PORT, protocol, new TcpSessionFactory(PROXY));
         client.getSession().setFlag(ProtocolConstants.SERVER_INFO_HANDLER_KEY, new ServerInfoHandler() {
