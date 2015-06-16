@@ -10,6 +10,7 @@ import org.spacehq.mc.protocol.packet.ingame.client.*;
 import org.spacehq.mc.protocol.packet.ingame.client.player.*;
 import org.spacehq.packetlib.*;
 import xyz.jadonfowler.phasebot.entity.*;
+import xyz.jadonfowler.phasebot.inventory.*;
 import xyz.jadonfowler.phasebot.pathfind.*;
 import xyz.jadonfowler.phasebot.util.*;
 import xyz.jadonfowler.phasebot.world.*;
@@ -28,17 +29,19 @@ public class Bot {
 
     @Getter public Vector3d pos;
 
-    public float pitch = 0;
+    @Getter public float pitch = 0;
 
-    public float yaw = 0;
+    @Getter public float yaw = 0;
 
-    public int entityId = 0;
+    @Getter public int entityId = 0;
 
     public boolean isDerp = false;
 
     @Getter @Setter private Client client;
 
-    public Vector3d[] positions;
+    @Getter @Setter public Inventory inventory;
+
+    public Vector3d[] positions; //Do we still need this?
 
     public Bot(String username, String password, String host, int port, Proxy proxy) {
         this.username = username;
