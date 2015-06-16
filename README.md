@@ -1,4 +1,6 @@
 #PhaseBot
+
+[![Join the chat at https://gitter.im/phase/PhaseBot](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/phase/PhaseBot?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Stories in Ready](https://badge.waffle.io/phase/PhaseBot.png?label=ready&title=Ready)](https://waffle.io/phase/PhaseBot)
 [![Build Status](https://travis-ci.org/phase/PhaseBot.svg)](https://travis-ci.org/phase/PhaseBot)
 
