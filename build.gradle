@@ -3,7 +3,8 @@ apply plugin: 'java'
 sourceSets {
     main {
         java {
-            srcDir 'src/java'
+            srcDir 'src'
+            testDir 'test'
         }
         resources {
             srcDir 'res'
