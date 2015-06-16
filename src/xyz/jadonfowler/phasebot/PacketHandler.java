@@ -11,9 +11,11 @@ import org.spacehq.mc.protocol.packet.ingame.server.*;
 import org.spacehq.mc.protocol.packet.ingame.server.entity.*;
 import org.spacehq.mc.protocol.packet.ingame.server.entity.player.*;
 import org.spacehq.mc.protocol.packet.ingame.server.entity.spawn.*;
+import org.spacehq.mc.protocol.packet.ingame.server.window.*;
 import org.spacehq.mc.protocol.packet.ingame.server.world.*;
 import org.spacehq.packetlib.event.session.*;
 import xyz.jadonfowler.phasebot.entity.*;
+import xyz.jadonfowler.phasebot.inventory.*;
 import xyz.jadonfowler.phasebot.world.*;
 
 public class PacketHandler extends SessionAdapter {
@@ -109,13 +111,19 @@ public class PacketHandler extends SessionAdapter {
             for (BlockChangeRecord r : packet.getRecords()) {
                 Position p = r.getPosition();
                 int id = r.getBlock();
-                ChunkColumn.setBlock(p, id / 16);
+                ChunkColumn.setBlock(p, id / 16); //Why is this 16? I don't think I should have to do anything with it.
             }
         }
         else if (event.getPacket() instanceof ServerBlockChangePacket) {
             Position p = event.<ServerBlockChangePacket> getPacket().getRecord().getPosition();
             int id = event.<ServerBlockChangePacket> getPacket().getRecord().getBlock();
             ChunkColumn.setBlock(p, id / 16);
+        }
+        else if (event.getPacket() instanceof ServerWindowItemsPacket) {
+            ServerWindowItemsPacket p = event.<ServerWindowItemsPacket>getPacket();
+            if (p.getWindowId() == 0) {//Player's inventory
+                new Inventory(p.getItems()); //add object to Bot
+            }
         }
         else if (event.getPacket() instanceof ServerChatPacket) {
             Message message = event.<ServerChatPacket> getPacket().getMessage();
