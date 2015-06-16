@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'jacoco'
 
 sourceSets {
     main {
@@ -18,11 +19,10 @@ sourceSets {
     }
 }
 
-repositories {
-    mavenCentral()
+jacoco {
+    toolVersion = "0.5.8.201207111220"
 }
 
 dependencies {
-    compile 'org.jacoco:java-maven-plugin:0.5.8.201207111220'
     compile fileTree(dir: 'lib', include: ['*.jar'])
 }
