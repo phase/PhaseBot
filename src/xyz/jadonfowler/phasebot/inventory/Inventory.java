@@ -15,4 +15,9 @@ public class Inventory {
         return items[i];
     }
 
+    public Inventory setItem(int i, ItemStack s) {
+        items[i] = s;
+        return this;
+    }
+
 }
