@@ -41,7 +41,7 @@ public class Bot {
 
     @Getter @Setter public Inventory inventory;
 
-    public Vector3d[] positions; //Do we still need this?
+    public Vector3d[] positions; // Do we still need this?
 
     public Bot(String username, String password, String host, int port, Proxy proxy) {
         this.username = username;
@@ -161,10 +161,10 @@ public class Bot {
             pos.x += sx;
             pos.y += sy;
             pos.z += sz;
-            System.out.println("Moving "+pos);
+            System.out.println("Moving " + pos);
             client.getSession().send(new ClientPlayerPositionRotationPacket(false, pos.x, pos.y, pos.z, yaw, pitch));
             try {
-                Thread.sleep(50);
+                Thread.sleep(25);
             }
             catch (InterruptedException e) {
                 e.printStackTrace();

@@ -70,6 +70,8 @@ public class PathfindCommand extends Command {
             if (e.isStartNotSolid()) {
                 System.out.println("Start block is not walkable");
             }
+        } catch(Exception e){
+            e.printStackTrace();
         }
     }
 

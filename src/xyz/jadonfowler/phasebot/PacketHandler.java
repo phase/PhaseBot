@@ -111,7 +111,9 @@ public class PacketHandler extends SessionAdapter {
             for (BlockChangeRecord r : packet.getRecords()) {
                 Position p = r.getPosition();
                 int id = r.getBlock();
-                ChunkColumn.setBlock(p, id / 16); //Why is this 16? I don't think I should have to do anything with it.
+                ChunkColumn.setBlock(p, id / 16); // Why is this 16? I don't
+                                                  // think I should have to do
+                                                  // anything with it.
             }
         }
         else if (event.getPacket() instanceof ServerBlockChangePacket) {
@@ -120,16 +122,17 @@ public class PacketHandler extends SessionAdapter {
             ChunkColumn.setBlock(p, id / 16);
         }
         else if (event.getPacket() instanceof ServerWindowItemsPacket) {
-            ServerWindowItemsPacket p = event.<ServerWindowItemsPacket>getPacket();
-            if (p.getWindowId() == 0) {//Player's inventory
+            ServerWindowItemsPacket p = event.<ServerWindowItemsPacket> getPacket();
+            if (p.getWindowId() == 0) {// Player's inventory
                 PhaseBot.getBot().setInventory(new Inventory(p.getItems()));
                 System.out.println("Inventory recieved!");
             }
         }
         else if (event.getPacket() instanceof ServerSetSlotPacket) {
-            ServerSetSlotPacket p = event.<ServerSetSlotPacket>getPacket();
-            if (p.getWindowId == 0) {//Player's Inventory
+            ServerSetSlotPacket p = event.<ServerSetSlotPacket> getPacket();
+            if (p.getWindowId() == 0) {// Player's Inventory
                 PhaseBot.getBot().getInventory().setItem(p.getSlot(), p.getItem());
+                System.out.println("Slot " + p.getSlot() + " change to  " + p.getItem());
             }
         }
         else if (event.getPacket() instanceof ServerChatPacket) {
