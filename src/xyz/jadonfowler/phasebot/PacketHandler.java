@@ -126,6 +126,12 @@ public class PacketHandler extends SessionAdapter {
                 System.out.println("Inventory recieved!");
             }
         }
+        else if (event.getPacket() instanceof ServerSetSlotPacket) {
+            ServerSetSlotPacket p = event.<ServerSetSlotPacket>getPacket();
+            if (p.getWindowId == 0) {//Player's Inventory
+                PhaseBot.getBot().getInventory().setItem(p.getSlot(), p.getItem());
+            }
+        }
         else if (event.getPacket() instanceof ServerChatPacket) {
             Message message = event.<ServerChatPacket> getPacket().getMessage();
             try {
