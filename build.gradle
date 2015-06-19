@@ -1,5 +1,4 @@
 apply plugin: 'java'
-apply plugin: 'jacoco'
 apply plugin: 'application'
 
 mainClassName = 'xyz.jadonfowler.phasebot.PhaseBot'
@@ -20,10 +19,6 @@ sourceSets {
             include '**/*Test.java'
         }
     }
-}
-
-jacoco {
-    toolVersion = "0.5.8.201207111220"
 }
 
 repositories {
