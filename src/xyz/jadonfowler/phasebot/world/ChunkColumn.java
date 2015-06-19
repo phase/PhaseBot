@@ -55,6 +55,9 @@ public class ChunkColumn {
                 Math.floor(p.getX() > 0 ? p.getX() % 16 : 16 - (Math.abs(p.getX()) % 16)),
                 Math.floor(p.getY() > 0 ? p.getY() % 16 : 16 - (Math.abs(p.getY()) % 16)), 
                 Math.floor(p.getZ() > 0 ? p.getZ() % 16 : 16 - (Math.abs(p.getZ()) % 16)));
+        if(c == null || c.getBlocks() == null){
+            c = new Chunk(false);
+        }
         c.getBlocks().setBlock((int) b.x, (int) b.y, (int) b.z, id);
     }
 

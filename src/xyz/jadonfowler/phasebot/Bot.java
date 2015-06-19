@@ -16,31 +16,18 @@ import xyz.jadonfowler.phasebot.util.*;
 import xyz.jadonfowler.phasebot.world.*;
 
 public class Bot {
-
     @Getter @Setter private String username;
-
     @Getter @Setter private String password;
-
     @Getter @Setter private String host;
-
     @Getter @Setter private int port;
-
     @Getter @Setter private Proxy proxy = Proxy.NO_PROXY;
-
     @Getter public Vector3d pos;
-
     @Getter public float pitch = 0;
-
     @Getter public float yaw = 0;
-
     @Getter public int entityId = 0;
-
     public boolean isDerp = false;
-
     @Getter @Setter private Client client;
-
     @Getter @Setter public Inventory inventory;
-
     public Vector3d[] positions; // Do we still need this?
 
     public Bot(String username, String password, String host, int port, Proxy proxy) {
@@ -55,7 +42,6 @@ public class Bot {
 
     public void derp(final Session s) {
         new Thread(new Runnable() {
-
             public void run() {
                 while (isDerp) {
                     look((PhaseBot.random.nextFloat() * 10000) % 180, ((PhaseBot.random.nextFloat() * 10000) % 180));
@@ -101,7 +87,7 @@ public class Bot {
     }
 
     public void moveTo(int ax, int ay, int az) {
-        move(ax - pos.x, ay - pos.y, az - pos.z);
+        moveTo(new Vector3d(ax, ay, az));
     }
 
     public void moveTo(Vector3d to) {
@@ -117,7 +103,6 @@ public class Bot {
         final Vector3d start = pos.clone();
         itr.next();
         new Thread(new Runnable() {
-
             public void run() {
                 try {
                     while (itr.hasNext()) {
@@ -161,10 +146,10 @@ public class Bot {
             pos.x += sx;
             pos.y += sy;
             pos.z += sz;
-            System.out.println("Moving " + pos);
+            // System.out.println("Moving " + pos);
             client.getSession().send(new ClientPlayerPositionRotationPacket(false, pos.x, pos.y, pos.z, yaw, pitch));
             try {
-                Thread.sleep(25);
+                Thread.sleep(0);
             }
             catch (InterruptedException e) {
                 e.printStackTrace();
@@ -179,7 +164,7 @@ public class Bot {
         pos.z += z;
         centerPosition();
         try {
-            Thread.sleep(100);
+            Thread.sleep(0);
         }
         catch (InterruptedException e) {
             e.printStackTrace();
@@ -226,5 +211,9 @@ public class Bot {
             }
         }
         return Face.INVALID;
+    }
+
+    public void openChest() {
+        // client.getSession().send(new Client);
     }
 }
