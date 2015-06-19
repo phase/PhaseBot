@@ -139,12 +139,11 @@ public class PacketHandler extends SessionAdapter {
             try {
                 ChatMessage m = new ChatMessage(message.getFullText());
                 if (!m.isCommand()) return;
-                System.out.println("command called: " + m.getCommand());
                 if (!(m.getSender().contains("Phase"))) {
                     event.getSession().send(new ClientChatPacket("/msg " + m.getSender() + " You are not my master!"));
                     return;
                 }
-                PhaseBot.getCommandManager().performCommand(m.getCommand(), m.getMessage().split(" "),
+                PhaseBot.getCommandManager().performCommand(m.getCommand(), m.getMessage().split(PhaseBot.getPrefix())[1].split(" "),
                         event.getSession());
             }
             catch (Exception e) {
