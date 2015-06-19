@@ -137,29 +137,18 @@ public class PacketHandler extends SessionAdapter {
         else if (event.getPacket() instanceof ServerChatPacket) {
             Message message = event.<ServerChatPacket> getPacket().getMessage();
             try {
-                // System.out.println(message.getFullText());
-//                if (!message.getFullText().contains(": ")) return;
-//                String c = message.getFullText().split(": ")[1];
-//                if (!c.startsWith(".")) return;
-//                if (!(message.getFullText().contains("Phase") || message.getFullText().contains("Voltz")
-//                        || message.getFullText().contains("tyler") || message.getFullText().contains("_Skyden_"))) {
-//                    // event.getSession().send(new
-//                    // ClientChatPacket("You're not my master! D:"));
-//                    return;
-//                }
-//                System.out.println("Performing command: " + c);
-//                PhaseBot.getCommandManager().performCommand(c.split(" ")[0].replace(".", ""), c.split(" "),
-//                        event.getSession());
                 ChatMessage m = new ChatMessage(message.getFullText());
+                if (!m.isCommand()) return;
+                System.out.println("command called: " + m.getCommand());
                 if (!(m.getSender().contains("Phase"))) {
                     event.getSession().send(new ClientChatPacket("/msg " + m.getSender() + " You are not my master!"));
                     return;
                 }
-                PhaseBot.getCommandManager().performCommand(m.getMessage().split(" ")[0], m.getMessage().split(" "),
+                PhaseBot.getCommandManager().performCommand(m.getCommand(), m.getMessage().split(" "),
                         event.getSession());
             }
             catch (Exception e) {
-                // e.printStackTrace();
+                e.printStackTrace();
             }
         }
     }

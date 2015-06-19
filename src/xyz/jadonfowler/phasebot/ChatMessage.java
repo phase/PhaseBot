@@ -1,16 +1,27 @@
 package xyz.jadonfowler.phasebot;
 
-import lombok.Getter;
+import lombok.*;
 
 public class ChatMessage {
-    @Getter private String message = null;
-    @Getter private String sender = null;
+    @Getter @Setter private String message = null;
+    @Getter @Setter private String sender = null;
+    @Getter private String command = null;
 
     public ChatMessage(String full) {
-        if (full.matches("\\[(.*)\\](.*):(.*)")) {
+        if (full.matches("\\[(.*)\\](.*): (.*)")) {
             sender = full.split("]")[1].split(": ")[0];
             message = full.split(": ")[1];
-            System.out.println("Got message: " + sender + "::" + message);
         }
+        if (full.matches("\\[\\[(.*)\\](.*) -> me\\] (.*)")) {
+            sender = full.split("]")[1].split(" ")[0];
+            //private messages don't need to put prefix
+            message = PhaseBot.getPrefix() + full.split("] ")[1];
+        }
+        if(message != null && message.startsWith(PhaseBot.getPrefix()))
+            command = message.split(PhaseBot.getPrefix())[1].split(" ")[0];
+    }
+    
+    public boolean isCommand() {
+        return command != null;
     }
 }

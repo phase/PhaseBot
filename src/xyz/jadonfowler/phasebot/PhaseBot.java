@@ -201,4 +201,8 @@ public class PhaseBot {
     public static Bot getBot() {
         return bot;
     }
+
+    public static String getPrefix() {
+        return "owk, ";
+    }
 }
