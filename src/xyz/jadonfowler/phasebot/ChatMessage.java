@@ -10,15 +10,22 @@ public class ChatMessage {
 
     public ChatMessage(String full) {
         try {
+            //System.out.println(full);
             if (full.matches("\\[(.*)\\](.*): (.*)")) {
                 sender = full.split("]")[1].split(": ")[0];
                 message = full.split(": ")[1];
             }
-            if (full.matches("\\[\\[(.*)\\](.*) -> me\\] (.*)")) {
+            else if (full.matches("\\[\\[(.*)\\](.*) -> me\\] (.*)")) {
                 sender = full.split("]")[1].split(" ")[0];
                 // private messages don't need to put prefix
                 message = PhaseBot.getPrefix() + full.split("] ")[1];
             }
+            else if (full.matches("<(.+)> (.+)")) {
+                sender = full.split("<")[1].split(">")[0];
+                message = full.split("> ")[1];
+                System.out.println(sender + ": " + message);
+            }
+            
             if (PhaseBot.getPrefix().equals(".")) message = "." + message;
             if (message != null && message.startsWith(PhaseBot.getPrefix()))
                 command = message.split(PhaseBot.getPrefix())[1].split(" ")[0];

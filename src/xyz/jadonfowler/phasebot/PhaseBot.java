@@ -21,6 +21,9 @@ public class PhaseBot {
     // Build Server
     private static String HOST = "mort.openredstone.org";
     private static int PORT = 25569;
+    // Voltz Server
+    // private static String HOST = "173.58.127.167";
+    // private static int PORT = 25565;
     // Survival Server
     // private static String HOST = "nick.openredstone.org";
     // private static int PORT = 25569;
@@ -81,11 +84,11 @@ public class PhaseBot {
         }
     }
 
-    public static void reloadScripts(){
+    public static void reloadScripts() {
         scripts = new ArrayList<Script>();
         loadScripts();
     }
-    
+
     public static void loadScripts() {
         File scriptDir = new File("res/scripts/");
         File[] dirFiles = scriptDir.listFiles();
