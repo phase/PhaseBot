@@ -3,7 +3,7 @@ package xyz.jadonfowler.phasebot.script;
 import lombok.*;
 import xyz.jadonfowler.phasebot.*;
 
-public class Script implements Runnable {
+public class Script {
 
     @Getter private final String[] lines;
     @Getter private String name;
@@ -13,7 +13,7 @@ public class Script implements Runnable {
         this.name = name;
     }
 
-    @Override public void run() {
+    public void run(String[] inputArguments) {
         for (int i = 0; i < lines.length; i++) {
             String s = lines[i];
             if (s.startsWith(".")) {
@@ -26,7 +26,8 @@ public class Script implements Runnable {
                         for (int a = 0; a < amount; a++) {
                             for (int j = 0; j < lines; j++) {
                                 String command = this.lines[j + i + 1];
-                                PhaseBot.getBot().runCommand(command.replace(".i", a + "").trim());
+                                PhaseBot.getBot()
+                                        .runCommand(replaceArguments(s, inputArguments).replace(".i", a + "").trim());
                                 Thread.sleep(200);
                             }
                         }
@@ -36,7 +37,7 @@ public class Script implements Runnable {
                 catch (Exception e) {}
             }
             else {
-                PhaseBot.getBot().runCommand(s);
+                PhaseBot.getBot().runCommand(replaceArguments(s, inputArguments));
                 try {
                     Thread.sleep(200);
                 }
@@ -45,5 +46,15 @@ public class Script implements Runnable {
                 }
             }
         }
+    }
+
+    private String replaceArguments(String s, String[] args) {
+        for (int i = 0; i < args.length; i++) {
+            try {
+                s = s.replace(".a" + i, args[i + 1]);
+            }
+            catch (Exception e) {}
+        }
+        return s;
     }
 }

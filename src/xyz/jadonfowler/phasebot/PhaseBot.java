@@ -111,7 +111,7 @@ public class PhaseBot {
                         public void exec(String in, String[] args, Session s) {
                             for (Script t : PhaseBot.scripts) {
                                 if (t.getName().equalsIgnoreCase(args[0])) {
-                                    t.run();
+                                    t.run(args);
                                     return;
                                 }
                             }

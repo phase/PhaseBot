@@ -232,7 +232,8 @@ public class Bot {
         Face face = Face.INVALID;
         Vector3d blockLocation = null;
         float cursorX = 0, cursorY = 0, cursorZ = 0;
-        getBlock: for (int x = -1; x < 2; x++) {
+        getBlock:
+        for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
                 for (int z = -1; z < 2; z++) {
                     Block b = Block.getBlock(new Vector3d(x + location.x, y + location.y, z + location.z));
@@ -271,7 +272,10 @@ public class Bot {
                 }
             }
         }
-        if (face == Face.INVALID) throw new IllegalArgumentException("Block cannot be place at " + location + ".");
+        if (face == Face.INVALID) {
+            System.out.println("Block cannot be place at " + location + ".");
+            return;
+        }
         switch (face) {
         case TOP:
             look(0, 90);
@@ -313,9 +317,11 @@ public class Bot {
         default:
             return;
         }
-        System.out.println(face + " " + cursorX + " " + cursorY + " " + cursorZ + " :: " + blockLocation);
+        //System.out.println(face + " " + cursorX + " " + cursorY + " " + cursorZ + " :: " + blockLocation);
         client.getSession().send(new ClientPlayerPlaceBlockPacket(Vector3d.toPosition(blockLocation), face,
                 inventory.getHeldItem(), cursorX, cursorY, cursorZ));
+        if (Material.getMaterial(inventory.getHeldItem().getId()).isBlock())
+            ChunkColumn.setBlock(Vector3d.toPosition(location), inventory.getHeldItem().getId());
     }
 
     public void setSlot(int i) {
