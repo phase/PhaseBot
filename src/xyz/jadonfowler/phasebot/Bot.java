@@ -16,6 +16,7 @@ import xyz.jadonfowler.phasebot.util.*;
 import xyz.jadonfowler.phasebot.world.*;
 
 public class Bot {
+
     @Getter @Setter private String username;
     @Getter @Setter private String password;
     @Getter @Setter private String host;
@@ -42,6 +43,7 @@ public class Bot {
 
     public void derp(final Session s) {
         new Thread(new Runnable() {
+
             public void run() {
                 while (isDerp) {
                     look((PhaseBot.random.nextFloat() * 10000) % 180, ((PhaseBot.random.nextFloat() * 10000) % 180));
@@ -65,9 +67,8 @@ public class Bot {
     }
 
     public void centerPosition() {
-        client.getSession().send(
-                new ClientPlayerPositionRotationPacket(false, ((int) pos.x) + 0.5d, ((int) pos.y),
-                        ((int) pos.z) + 0.5d, yaw, pitch));
+        client.getSession().send(new ClientPlayerPositionRotationPacket(false, ((int) pos.x) + 0.5d, ((int) pos.y),
+                ((int) pos.z) + 0.5d, yaw, pitch));
     }
 
     public void fall() {
@@ -103,6 +104,7 @@ public class Bot {
         final Vector3d start = pos.clone();
         itr.next();
         new Thread(new Runnable() {
+
             public void run() {
                 try {
                     while (itr.hasNext()) {
@@ -135,8 +137,8 @@ public class Bot {
         if (rx == 0 && rz == 0) yaw = 0;
         pitch = 0; // pitch is waaay too hard
         // System.out.println("p: " + pitch + " y:" + yaw);
-        int numberOfSteps = (int) ((int) 2.0 * Math
-                .floor(Math.sqrt(Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2))));
+        int numberOfSteps = (int) ((int) 2.0
+                * Math.floor(Math.sqrt(Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2))));
         double sx = rx / numberOfSteps;
         double sy = ry / numberOfSteps;
         double sz = rz / numberOfSteps;
@@ -173,7 +175,8 @@ public class Bot {
 
     private boolean isDiagonal(double x, double y, double z) {
         if ((x == 1 && z == 1 && y == 0) || (x == 1 && z == -1 && y == 0) || (x == -1 && z == 1 && y == 0)
-                || (x == -1 && z == -1 && y == 0)) return true;
+                || (x == -1 && z == -1 && y == 0))
+            return true;
         return false;
     }
 
@@ -211,6 +214,23 @@ public class Bot {
             }
         }
         return Face.INVALID;
+    }
+
+    public void placeBlock(Vector3d location) {
+        Face face = getPlaceFace(location);
+        if (face == Face.INVALID) throw new IllegalArgumentException("Block cannot be place at " + location + ".");
+        float cursorX = 0, cursorY = 0, cursorZ = 0;
+        client.getSession().send(new ClientPlayerPlaceBlockPacket(Vector3d.toPosition(location), face,
+                inventory.getHeldItem(), cursorX, cursorY, cursorZ));
+    }
+
+    public void setSlot(int i) {
+        System.out.println("Changing slot to " + i);
+        client.getSession().send(new ClientChangeHeldItemPacket(i));
+        inventory.setHeldSlot(i);
+        // Fucking Mojang is fucking stupid because they don't update a
+        // Player's slot until they move. THANKS DUMBASSES
+        move(0, 0, 0);
     }
 
     public void openChest() {

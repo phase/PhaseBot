@@ -8,7 +8,7 @@ public class Inventory {
 
     @Getter ItemStack[] items;
     @Getter @Setter int heldSlot;
-    
+
     public Inventory(ItemStack[] i) {
         items = i;
     }
@@ -21,8 +21,8 @@ public class Inventory {
         items[i] = s;
         return this;
     }
-    
-    public ItemStack getHeldItem(){
-        return items[heldSlot];
+
+    public ItemStack getHeldItem() {
+        return items[heldSlot + 36 /* Magic value is magic */];
     }
 }

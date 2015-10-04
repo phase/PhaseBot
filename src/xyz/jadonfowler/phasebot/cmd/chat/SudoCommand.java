@@ -9,7 +9,7 @@ public class SudoCommand extends Command {
 
     @Override public void exec(String in, String[] args, Session s) {
         String m = "";
-        for(int i = 2; i < args.length; i++){
+        for(int i = 1; i < args.length; i++){
             m += args[i] + " ";
         }
         PhaseBot.getBot().say(m);
