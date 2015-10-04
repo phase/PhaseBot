@@ -1,2 +1,2 @@
-.for 1 6
-msg Phasesaber test
+.for 1 3
+msg Phasesaber .i

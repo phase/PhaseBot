@@ -27,7 +27,7 @@ public class PathfindCommand extends Command {
                         UUID u = uf.call().get(args[1]);
                         Player e = Player.byUUID(u);
                         end = new Vector3d(e.getX(), e.getY()-1, e.getZ());
-                        PhaseBot.getBot().say("I'm moving towards " + args[1] + " at " + end.clone().floor());
+                        System.out.println("I'm moving towards " + args[1] + " at " + end.clone().floor());
                     }
                     catch (Exception e) {
                         e.printStackTrace();

@@ -27,7 +27,7 @@ public class Bot {
     @Getter public float yaw = 0;
     @Getter public int entityId = 0;
     public boolean isDerp = false;
-    @Getter @Setter private boolean blockChanged = false;
+    @Getter @Setter private boolean interuptMoveAlong = false;
     @Getter @Setter private Client client;
     @Getter @Setter public Inventory inventory;
     public Vector3d[] positions; // Do we still need this?
@@ -104,7 +104,7 @@ public class Bot {
     public boolean pathing = false;
 
     public void moveAlong(ArrayList<Tile> tiles) {
-        blockChanged = false;
+        interuptMoveAlong = false;
         pathing = true;
         final Iterator<Tile> itr = tiles.iterator();
         final Vector3d start = pos.clone();
@@ -114,10 +114,10 @@ public class Bot {
             public void run() {
                 try {
                     while (itr.hasNext()) {
-                        if (!blockChanged) {
-                            say("Block changed! Rerouting path...");
+                        if (interuptMoveAlong) {
+                            System.out.println("Block changed! Rerouting path...");
                             PhaseBot.getCommandManager().performLastCommand();
-                            blockChanged = false;
+                            interuptMoveAlong = false;
                             return;
                         }
                         Tile t = itr.next();

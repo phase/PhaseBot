@@ -113,14 +113,14 @@ public class PacketHandler extends SessionAdapter {
                 ChunkColumn.setBlock(p, id / 16); // Why is this 16? I don't
                                                   // think I should have to do
                                                   // anything with it.
-                PhaseBot.getBot().setBlockChanged(true);
+                PhaseBot.getBot().setInteruptMoveAlong(true);
             }
         }
         else if (event.getPacket() instanceof ServerBlockChangePacket) {
             Position p = event.<ServerBlockChangePacket> getPacket().getRecord().getPosition();
             int id = event.<ServerBlockChangePacket> getPacket().getRecord().getBlock();
             ChunkColumn.setBlock(p, id / 16);
-            PhaseBot.getBot().setBlockChanged(true);
+            PhaseBot.getBot().setInteruptMoveAlong(true);
         }
         else if (event.getPacket() instanceof ServerWindowItemsPacket) {
             ServerWindowItemsPacket p = event.<ServerWindowItemsPacket> getPacket();
@@ -141,7 +141,10 @@ public class PacketHandler extends SessionAdapter {
             try {
                 ChatMessage m = new ChatMessage(message.getFullText());
                 if (!m.isCommand()) return;
-                if (!(m.getSender().contains("Phase"))) {
+                ArrayList<String> owners = new ArrayList<String>();
+                owners.add("PhaseHexBro");
+                owners.add("VoltzLive");
+                if (!owners.contains(m.getSender())) {
                     event.getSession().send(new ClientChatPacket("/msg " + m.getSender() + " You are not my master!"));
                     return;
                 }
