@@ -12,6 +12,7 @@ import org.spacehq.packetlib.*;
 import org.spacehq.packetlib.tcp.*;
 import lombok.*;
 import xyz.jadonfowler.phasebot.cmd.*;
+import xyz.jadonfowler.phasebot.script.*;
 
 public class PhaseBot {
 
@@ -29,8 +30,9 @@ public class PhaseBot {
     private static boolean VERIFY_USERS = true;
     public static Random random = new Random();
     public static ArrayList<Command> commands = new ArrayList<Command>();
-    private static Bot bot;
     private static CommandManager manager = null;
+    public static ArrayList<Script> scripts = new ArrayList<Script>();
+    private static Bot bot;
 
     public static void main(String... args) {
         manager = new CommandManager();
@@ -55,10 +57,36 @@ public class PhaseBot {
                 line = br.readLine();
             }
             br.close();
-            File scriptDir = new File("res/scripts/");
-            File[] dirFiles = scriptDir.listFiles();
-            if (dirFiles != null) {
-                for (final File script : dirFiles) {
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        registerCommands();
+        loadScripts();
+        bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
+        status();
+        login();
+    }
+
+    public static void registerCommands() {
+        Reflections reflections = new Reflections("xyz.jadonfowler.phasebot.cmd");
+        Set<Class<? extends Command>> subTypes = reflections.getSubTypesOf(Command.class);
+        for (Class<? extends Command> c : subTypes) {
+            try {
+                c.getConstructor().newInstance();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void loadScripts() {
+        File scriptDir = new File("res/scripts/");
+        File[] dirFiles = scriptDir.listFiles();
+        if (dirFiles != null) {
+            for (final File script : dirFiles) {
+                try {
                     @Cleanup BufferedReader sr = new BufferedReader(new FileReader(script));
                     String sline = sr.readLine();
                     final ArrayList<String> cmds = new ArrayList<String>();
@@ -66,11 +94,18 @@ public class PhaseBot {
                         cmds.add(sline);
                         sline = sr.readLine();
                     }
+                    String name = script.getName();
+                    int pos = name.lastIndexOf(".");
+                    if (pos > 0) name = name.substring(0, pos);
+                    scripts.add(new Script(name, cmds.toArray(new String[cmds.size()])));
                     new Command() {
 
                         public void exec(String in, String[] args, Session s) {
-                            for (String c : cmds) {
-                                manager.performCommand(c.replace(".", "").split(" ")[0], c.split(" "), null);
+                            for (Script t : PhaseBot.scripts) {
+                                if (t.getName().equalsIgnoreCase(args[0])) {
+                                    t.run();
+                                    return;
+                                }
                             }
                         }
 
@@ -86,26 +121,9 @@ public class PhaseBot {
                         }
                     };
                 }
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        registerCommands();
-        bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
-        status();
-        login();
-    }
-
-    public static void registerCommands() {
-        Reflections reflections = new Reflections("xyz.jadonfowler.phasebot.cmd");
-        Set<Class<? extends Command>> subTypes = reflections.getSubTypesOf(Command.class);
-        for (Class<? extends Command> c : subTypes) {
-            try {
-                c.getConstructor().newInstance();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

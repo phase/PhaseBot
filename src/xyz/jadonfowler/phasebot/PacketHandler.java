@@ -19,6 +19,7 @@ import xyz.jadonfowler.phasebot.inventory.*;
 import xyz.jadonfowler.phasebot.world.*;
 
 public class PacketHandler extends SessionAdapter {
+
     @Override public void packetReceived(PacketReceivedEvent event) {
         if (event.getPacket() instanceof ServerJoinGamePacket) {
             event.getSession().send(new ClientChatPacket("PhaseBot has joined the game."));
@@ -32,9 +33,8 @@ public class PacketHandler extends SessionAdapter {
             PhaseBot.getBot().yaw = event.<ServerPlayerPositionRotationPacket> getPacket().getYaw();
             System.out.println("Err, My Position: " + PhaseBot.getBot().pos.x + "," + PhaseBot.getBot().pos.y + ","
                     + PhaseBot.getBot().pos.z);
-            event.getSession().send(
-                    new ClientPlayerPositionRotationPacket(false, PhaseBot.getBot().pos.x, PhaseBot.getBot().pos.y,
-                            PhaseBot.getBot().pos.z, PhaseBot.getBot().pitch, PhaseBot.getBot().yaw));
+            event.getSession().send(new ClientPlayerPositionRotationPacket(false, PhaseBot.getBot().pos.x,
+                    PhaseBot.getBot().pos.y, PhaseBot.getBot().pos.z, PhaseBot.getBot().pitch, PhaseBot.getBot().yaw));
         }
         else if (event.getPacket() instanceof ServerSpawnObjectPacket) {
             int entityId = event.<ServerSpawnObjectPacket> getPacket().getEntityId();
@@ -113,12 +113,14 @@ public class PacketHandler extends SessionAdapter {
                 ChunkColumn.setBlock(p, id / 16); // Why is this 16? I don't
                                                   // think I should have to do
                                                   // anything with it.
+                PhaseBot.getBot().setBlockChanged(true);
             }
         }
         else if (event.getPacket() instanceof ServerBlockChangePacket) {
             Position p = event.<ServerBlockChangePacket> getPacket().getRecord().getPosition();
             int id = event.<ServerBlockChangePacket> getPacket().getRecord().getBlock();
             ChunkColumn.setBlock(p, id / 16);
+            PhaseBot.getBot().setBlockChanged(true);
         }
         else if (event.getPacket() instanceof ServerWindowItemsPacket) {
             ServerWindowItemsPacket p = event.<ServerWindowItemsPacket> getPacket();
@@ -143,8 +145,8 @@ public class PacketHandler extends SessionAdapter {
                     event.getSession().send(new ClientChatPacket("/msg " + m.getSender() + " You are not my master!"));
                     return;
                 }
-                PhaseBot.getCommandManager().performCommand(m.getCommand(), m.getMessage().split(PhaseBot.getPrefix())[1].split(" "),
-                        event.getSession());
+                PhaseBot.getCommandManager().performCommand(m.getCommand(),
+                        m.getMessage().split(PhaseBot.getPrefix())[1].split(" "), event.getSession());
             }
             catch (Exception e) {
                 e.printStackTrace();

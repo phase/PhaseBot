@@ -27,6 +27,7 @@ public class Bot {
     @Getter public float yaw = 0;
     @Getter public int entityId = 0;
     public boolean isDerp = false;
+    @Getter @Setter private boolean blockChanged = false;
     @Getter @Setter private Client client;
     @Getter @Setter public Inventory inventory;
     public Vector3d[] positions; // Do we still need this?
@@ -37,8 +38,12 @@ public class Bot {
         this.host = host;
         this.port = port;
         this.proxy = proxy;
-        this.positions = new Vector3d[4]; // TODO May need more
+        this.positions = new Vector3d[4];
         this.pos = new Vector3d(0, 0, 0);
+    }
+
+    public void runCommand(String s) {
+        PhaseBot.getCommandManager().performCommand(s, s.split(" "), client.getSession());
     }
 
     public void derp(final Session s) {
@@ -99,6 +104,7 @@ public class Bot {
     public boolean pathing = false;
 
     public void moveAlong(ArrayList<Tile> tiles) {
+        blockChanged = false;
         pathing = true;
         final Iterator<Tile> itr = tiles.iterator();
         final Vector3d start = pos.clone();
@@ -108,6 +114,12 @@ public class Bot {
             public void run() {
                 try {
                     while (itr.hasNext()) {
+                        if (!blockChanged) {
+                            say("Block changed! Rerouting path...");
+                            PhaseBot.getCommandManager().performLastCommand();
+                            blockChanged = false;
+                            return;
+                        }
                         Tile t = itr.next();
                         Vector3d v = t.getLocation(start.clone()).clone().add(new Vector3d(0.5, 0, 0.5));
                         moveTo(v);
