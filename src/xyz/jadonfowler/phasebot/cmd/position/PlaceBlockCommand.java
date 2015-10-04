@@ -13,7 +13,7 @@ public class PlaceBlockCommand extends Command {
             int y = Integer.parseInt(args[2]);
             int z = Integer.parseInt(args[3]);
             Vector3d v = PhaseBot.getBot().relativeToAbsolute(new Vector3d(x, y, z));
-            PhaseBot.getBot().say("I will place a block at " + v);
+            //PhaseBot.getBot().say("I will place a block at " + v);
             PhaseBot.getBot().placeBlock(v);
         }
         catch (Exception e) {

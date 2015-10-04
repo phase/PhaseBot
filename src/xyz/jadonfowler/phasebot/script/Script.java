@@ -26,7 +26,7 @@ public class Script implements Runnable {
                         for (int a = 0; a < amount; a++) {
                             for (int j = 0; j < lines; j++) {
                                 String command = this.lines[j + i + 1];
-                                PhaseBot.getBot().runCommand(command.replace(".i", a + ""));
+                                PhaseBot.getBot().runCommand(command.replace(".i", a + "").trim());
                                 Thread.sleep(200);
                             }
                         }

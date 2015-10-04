@@ -229,14 +229,57 @@ public class Bot {
     }
 
     public void placeBlock(Vector3d location) {
-        Face face = getPlaceFace(location);
+        Face face = Face.INVALID;
+        Vector3d blockLocation = null;
         float cursorX = 0, cursorY = 0, cursorZ = 0;
+        getBlock: for (int x = -1; x < 2; x++) {
+            for (int y = -1; y < 2; y++) {
+                for (int z = -1; z < 2; z++) {
+                    Block b = Block.getBlock(new Vector3d(x + location.x, y + location.y, z + location.z));
+                    if (b.getMaterial() != Material.AIR) {
+                        if ((x == -1 && z == 0 && y == 0)) {
+                            face = Face.WEST;
+                            blockLocation = b.getPos();
+                            break getBlock;
+                        }
+                        else if ((x == 1 && z == 0 && y == 0)) {
+                            face = Face.EAST;
+                            blockLocation = b.getPos();
+                            break getBlock;
+                        }
+                        else if ((x == 0 && z == 0 && y == 1)) {
+                            face = Face.BOTTOM;
+                            blockLocation = b.getPos();
+                            break getBlock;
+                        }
+                        else if ((x == 0 && z == 0 && y == -1)) {
+                            face = Face.TOP;
+                            blockLocation = b.getPos();
+                            break getBlock;
+                        }
+                        else if ((x == 0 && z == 1 && y == 0)) {
+                            face = Face.SOUTH;
+                            blockLocation = b.getPos();
+                            break getBlock;
+                        }
+                        else if ((x == 0 && z == -1 && y == 0)) {
+                            face = Face.NORTH;
+                            blockLocation = b.getPos();
+                            break getBlock;
+                        }
+                    }
+                }
+            }
+        }
         if (face == Face.INVALID) throw new IllegalArgumentException("Block cannot be place at " + location + ".");
         switch (face) {
         case TOP:
             look(0, 90);
-            cursorX = 8;
-            cursorZ = 8;
+            // cursorX = 8;
+            // cursorZ = 8;
+            cursorX = 0;
+            cursorY = 0;
+            cursorZ = 0;
             break;
         case BOTTOM:
             look(0, -90);
@@ -270,8 +313,8 @@ public class Bot {
         default:
             return;
         }
-        System.out.println(face + " " + cursorX + " " + cursorY + " " + cursorZ);
-        client.getSession().send(new ClientPlayerPlaceBlockPacket(Vector3d.toPosition(location), face,
+        System.out.println(face + " " + cursorX + " " + cursorY + " " + cursorZ + " :: " + blockLocation);
+        client.getSession().send(new ClientPlayerPlaceBlockPacket(Vector3d.toPosition(blockLocation), face,
                 inventory.getHeldItem(), cursorX, cursorY, cursorZ));
     }
 
