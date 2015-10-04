@@ -38,4 +38,8 @@ public class CommandManager {
     public ArrayList<Command> getCommands() {
         return commands;
     }
+    
+    public void clearCommands(){
+        commands = new ArrayList<Command>();
+    }
 }

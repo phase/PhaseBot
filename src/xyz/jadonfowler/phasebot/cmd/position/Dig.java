@@ -14,7 +14,7 @@ public class Dig extends Command {
             PhaseBot.getBot().breakBlock(x, y, z);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 

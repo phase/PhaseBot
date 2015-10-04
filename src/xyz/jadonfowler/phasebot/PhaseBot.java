@@ -81,6 +81,11 @@ public class PhaseBot {
         }
     }
 
+    public static void reloadScripts(){
+        scripts = new ArrayList<Script>();
+        loadScripts();
+    }
+    
     public static void loadScripts() {
         File scriptDir = new File("res/scripts/");
         File[] dirFiles = scriptDir.listFiles();
