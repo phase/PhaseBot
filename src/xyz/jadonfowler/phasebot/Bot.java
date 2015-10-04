@@ -149,7 +149,7 @@ public class Bot {
             // System.out.println("Moving " + pos);
             client.getSession().send(new ClientPlayerPositionRotationPacket(false, pos.x, pos.y, pos.z, yaw, pitch));
             try {
-                Thread.sleep(0);
+                Thread.sleep(100);
             }
             catch (InterruptedException e) {
                 e.printStackTrace();

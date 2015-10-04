@@ -5,16 +5,16 @@ import org.spacehq.packetlib.Session;
 import xyz.jadonfowler.phasebot.cmd.Command;
 
 public class WelcomeCommand extends Command {
+
     @Override public void exec(String in, String[] args, Session s) {
-       String to = args[1];
-       String[] messages = {
-               "&l Welcome to the ORE!",
-               "To get started, make a thread",
-               "on the forums to apply",
-               "so you can become a builder!"
-       };
-       for(String m : messages)
-       s.send(new ClientChatPacket("/msg " + to + " " + m));
+        try {
+            String to = args[1];
+            String[] messages = { "&l Welcome to the ORE!", "To get started, make a thread", "on the forums to apply",
+                    "so you can become a builder!" };
+            for (String m : messages)
+                s.send(new ClientChatPacket("/msg " + to + " " + m));
+        }
+        catch (Exception e) {}
     }
 
     @Override public String getCommand() {

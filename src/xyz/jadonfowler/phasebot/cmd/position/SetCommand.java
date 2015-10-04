@@ -5,7 +5,7 @@ import org.spacehq.packetlib.Session;
 import xyz.jadonfowler.phasebot.PhaseBot;
 import xyz.jadonfowler.phasebot.cmd.Command;
 
-public class Set extends Command {
+public class SetCommand extends Command {
 
     @Override public void exec(String in, String[] args, Session s) {
         switch (args[1]) {

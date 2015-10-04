@@ -1,40 +1,20 @@
 package xyz.jadonfowler.phasebot;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
-import lombok.Cleanup;
-import org.spacehq.mc.auth.exception.AuthenticationException;
-import org.spacehq.mc.protocol.MinecraftProtocol;
-import org.spacehq.mc.protocol.ProtocolConstants;
-import org.spacehq.mc.protocol.ProtocolMode;
-import org.spacehq.mc.protocol.data.status.ServerStatusInfo;
-import org.spacehq.mc.protocol.data.status.handler.ServerInfoHandler;
-import org.spacehq.mc.protocol.data.status.handler.ServerPingTimeHandler;
-import org.spacehq.packetlib.Client;
-import org.spacehq.packetlib.Session;
-import org.spacehq.packetlib.tcp.TcpSessionFactory;
-import xyz.jadonfowler.phasebot.cmd.Command;
-import xyz.jadonfowler.phasebot.cmd.CommandManager;
-import xyz.jadonfowler.phasebot.cmd.chat.BlockStand;
-import xyz.jadonfowler.phasebot.cmd.chat.Entities;
-import xyz.jadonfowler.phasebot.cmd.chat.JavaScript;
-import xyz.jadonfowler.phasebot.cmd.chat.MessageCommand;
-import xyz.jadonfowler.phasebot.cmd.chat.Ruby;
-import xyz.jadonfowler.phasebot.cmd.chat.Say;
-import xyz.jadonfowler.phasebot.cmd.chat.Slap;
-import xyz.jadonfowler.phasebot.cmd.chat.Spam;
-import xyz.jadonfowler.phasebot.cmd.chat.UUIDCommand;
-import xyz.jadonfowler.phasebot.cmd.fun.Derp;
-import xyz.jadonfowler.phasebot.cmd.fun.Swing;
-import xyz.jadonfowler.phasebot.cmd.position.*;
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import org.reflections.*;
+import org.spacehq.mc.auth.exception.*;
+import org.spacehq.mc.protocol.*;
+import org.spacehq.mc.protocol.data.status.*;
+import org.spacehq.mc.protocol.data.status.handler.*;
+import org.spacehq.packetlib.*;
+import org.spacehq.packetlib.tcp.*;
+import lombok.*;
+import xyz.jadonfowler.phasebot.cmd.*;
 
 public class PhaseBot {
+
     private static String USERNAME = "username";
     private static String PASSWORD = "password";
     // Build Server
@@ -69,8 +49,8 @@ public class PhaseBot {
                     PORT = java.lang.Integer.parseInt(line.split(":")[2]);
                 }
                 else if (line.startsWith("Proxy")) { // Proxy:123.456.789:860
-                    PROXY = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(line.split(":")[1],
-                            java.lang.Integer.parseInt(line.split(":")[2])));
+                    PROXY = new Proxy(Proxy.Type.HTTP,
+                            new InetSocketAddress(line.split(":")[1], java.lang.Integer.parseInt(line.split(":")[2])));
                 }
                 line = br.readLine();
             }
@@ -87,6 +67,7 @@ public class PhaseBot {
                         sline = sr.readLine();
                     }
                     new Command() {
+
                         public void exec(String in, String[] args, Session s) {
                             for (String c : cmds) {
                                 manager.performCommand(c.replace(".", "").split(" ")[0], c.split(" "), null);
@@ -117,34 +98,23 @@ public class PhaseBot {
     }
 
     public static void registerCommands() {
-        new JavaScript();
-        new Ruby();
-        new Say();
-        new Slap();
-        new Entities();
-        new UUIDCommand();
-        new Derp();
-        new Swing();
-        new Look();
-        new Move();
-        new PathfindCommand();
-        new JumpCommand();
-        new Patrol();
-        new Set();
-        new Teleport();
-        new Dig();
-        new BlockStand();
-        new Fall();
-        new Spam();
-        new Place();
-        new FollowCommand();
-        new MessageCommand();
+        Reflections reflections = new Reflections("xyz.jadonfowler.phasebot.cmd");
+        Set<Class<? extends Command>> subTypes = reflections.getSubTypesOf(Command.class);
+        for (Class<? extends Command> c : subTypes) {
+            try {
+                c.getConstructor().newInstance();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void status() {
         MinecraftProtocol protocol = new MinecraftProtocol(ProtocolMode.STATUS);
         Client client = new Client(HOST, PORT, protocol, new TcpSessionFactory(PROXY));
         client.getSession().setFlag(ProtocolConstants.SERVER_INFO_HANDLER_KEY, new ServerInfoHandler() {
+
             @Override public void handle(Session session, ServerStatusInfo info) {
                 System.out.println("Version: " + info.getVersionInfo().getVersionName() + ", "
                         + info.getVersionInfo().getProtocolVersion());
@@ -156,6 +126,7 @@ public class PhaseBot {
             }
         });
         client.getSession().setFlag(ProtocolConstants.SERVER_PING_TIME_HANDLER_KEY, new ServerPingTimeHandler() {
+
             @Override public void handle(Session session, long pingTime) {
                 System.out.println("Server ping took " + pingTime + "ms");
             }

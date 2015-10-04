@@ -7,6 +7,7 @@ public abstract class Command {
 
     public Command() {
         PhaseBot.getCommandManager().addCommand(this);
+        System.out.println("  Command " + getCommand() + " initialized!");
     }
 
     public abstract void exec(String in, String[] args, Session s);

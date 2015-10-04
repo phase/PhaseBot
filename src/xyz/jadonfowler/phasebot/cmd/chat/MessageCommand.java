@@ -10,7 +10,7 @@ public class MessageCommand extends Command{
         String to = args[1];
         String m = "";
         for(int i = 2; i < args.length; i++){
-            m += args[i];
+            m += args[i] + " ";
         }
         PhaseBot.getBot().say("/msg " + to + " " + m);
     }
