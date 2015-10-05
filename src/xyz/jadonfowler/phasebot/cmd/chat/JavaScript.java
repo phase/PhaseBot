@@ -17,9 +17,9 @@ public class JavaScript extends Command {
         for (int i = 1; i < args.length; i++) {
             text.append(args[i] + " ");
         }
-        System.out.println(text.toString());
+        //System.out.println(text.toString());
         try {
-            System.out.println(engine.eval(text.toString()).toString());
+            //System.out.println(engine.eval(text.toString()).toString());
             PhaseBot.getBot().getVariables().put("eval", engine.eval(text.toString()).toString());
             //s.send(new ClientChatPacket("js> " + engine.eval(text.toString())));
         }

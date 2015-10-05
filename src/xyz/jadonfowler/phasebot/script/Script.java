@@ -30,7 +30,7 @@ public class Script {
                                 command = replaceArguments(command, inputArguments).replace("@i", a + "").trim();
                                 command = replaceVariables(command);
                                 PhaseBot.getBot().runCommand(command);
-                                Thread.sleep(200);
+                                Thread.sleep(20);
                             }
                         }
                         i += lines;
@@ -51,7 +51,7 @@ public class Script {
                                 command = replaceArguments(command, inputArguments).trim();
                                 command = replaceVariables(command);
                                 PhaseBot.getBot().runCommand(command);
-                                Thread.sleep(200);
+                                Thread.sleep(20);
                             }
                         }
                         i += lines;
@@ -64,7 +64,7 @@ public class Script {
                 command = replaceVariables(command);
                 PhaseBot.getBot().runCommand(command);
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(20);
                 }
                 catch (InterruptedException e) {
                     e.printStackTrace();
@@ -87,7 +87,7 @@ public class Script {
         for (String h : command.split(" ")) {
             if (h.startsWith("@")) {
                 h = h.replace("@", "");
-                System.out.println(command);
+                //System.out.println(command);
                 command = command.replace("@" + h, PhaseBot.getBot().getVariables().get(h));
             }
         }
