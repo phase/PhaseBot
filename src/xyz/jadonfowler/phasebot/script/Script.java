@@ -30,7 +30,7 @@ public class Script {
                                 command = replaceArguments(command, inputArguments).replace("@i", a + "").trim();
                                 command = replaceVariables(command);
                                 PhaseBot.getBot().runCommand(command);
-                                Thread.sleep(20);
+                                Thread.sleep(5);
                             }
                         }
                         i += lines;
@@ -64,7 +64,7 @@ public class Script {
                 command = replaceVariables(command);
                 PhaseBot.getBot().runCommand(command);
                 try {
-                    Thread.sleep(20);
+                    Thread.sleep(5);
                 }
                 catch (InterruptedException e) {
                     e.printStackTrace();
