@@ -242,12 +242,12 @@ public class Bot {
                     Block b = Block.getBlock(new Vector3d(x + location.x, y + location.y, z + location.z));
                     if (b.getMaterial() != Material.AIR) {
                         if ((x == -1 && z == 0 && y == 0)) {
-                            face = Face.WEST;
+                            face = Face.SOUTH;
                             blockLocation = b.getPos();
                             break getBlock;
                         }
                         else if ((x == 1 && z == 0 && y == 0)) {
-                            face = Face.EAST;
+                            face = Face.NORTH;
                             blockLocation = b.getPos();
                             break getBlock;
                         }
@@ -262,12 +262,12 @@ public class Bot {
                             break getBlock;
                         }
                         else if ((x == 0 && z == 1 && y == 0)) {
-                            face = Face.SOUTH;
+                            face = Face.EAST;
                             blockLocation = b.getPos();
                             break getBlock;
                         }
                         else if ((x == 0 && z == -1 && y == 0)) {
-                            face = Face.NORTH;
+                            face = Face.WEST;
                             blockLocation = b.getPos();
                             break getBlock;
                         }
@@ -313,15 +313,15 @@ public class Bot {
             break;
         case WEST:
             look(-90, 0);
-            cursorY = 8;
-            cursorZ = 8;
+            cursorX = 8;
+            cursorZ = 0;
             break;
         case INVALID:
         default:
             return;
         }
-        // System.out.println(face + " " + cursorX + " " + cursorY + " " +
-        // cursorZ + " :: " + blockLocation);
+        blockLocation = blockLocation.floor();
+        System.out.println(face + " " + cursorX + " " + cursorY + " " + cursorZ + " :: " + blockLocation);
         client.getSession().send(new ClientPlayerPlaceBlockPacket(Vector3d.toPosition(blockLocation), face,
                 inventory.getHeldItem(), cursorX, cursorY, cursorZ));
         if (Material.getMaterial(inventory.getHeldItem().getId()).isBlock())
