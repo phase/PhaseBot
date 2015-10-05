@@ -4,3 +4,5 @@ gettype @block
 say @type
 .ifeq 1 @type wool
 say THIS IS WOOL
+js type + "7"
+say @eval

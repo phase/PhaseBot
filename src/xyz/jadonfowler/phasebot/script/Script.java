@@ -23,9 +23,10 @@ public class Script {
                         Integer lines = Integer.parseInt(args[1]);
                         Integer amount = Integer.parseInt(args[2]);
                         System.out.println("FOR LOOP: " + lines + " " + amount);
-                        for (int a = 0; a < amount; a++) {
+                        loop: for (int a = 0; a < amount; a++) {
                             for (int j = 0; j < lines; j++) {
                                 String command = this.lines[j + i + 1];
+                                if(command.equalsIgnoreCase(".break")) break loop;
                                 command = replaceArguments(command, inputArguments).replace("@i", a + "").trim();
                                 command = replaceVariables(command);
                                 PhaseBot.getBot().runCommand(command);
@@ -86,6 +87,7 @@ public class Script {
         for (String h : command.split(" ")) {
             if (h.startsWith("@")) {
                 h = h.replace("@", "");
+                System.out.println(command);
                 command = command.replace("@" + h, PhaseBot.getBot().getVariables().get(h));
             }
         }
