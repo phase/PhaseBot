@@ -31,6 +31,8 @@ public class Bot {
     @Getter @Setter private Client client;
     @Getter @Setter public Inventory inventory;
     public Vector3d[] positions; // Do we still need this?
+    // Variables
+    @Getter private HashMap<String, String> variables = new HashMap<String, String>();
 
     public Bot(String username, String password, String host, int port, Proxy proxy) {
         this.username = username;
@@ -40,6 +42,7 @@ public class Bot {
         this.proxy = proxy;
         this.positions = new Vector3d[4];
         this.pos = new Vector3d(0, 0, 0);
+        variables.put("host", host);
     }
 
     public void runCommand(String s) {
@@ -317,7 +320,8 @@ public class Bot {
         default:
             return;
         }
-        //System.out.println(face + " " + cursorX + " " + cursorY + " " + cursorZ + " :: " + blockLocation);
+        // System.out.println(face + " " + cursorX + " " + cursorY + " " +
+        // cursorZ + " :: " + blockLocation);
         client.getSession().send(new ClientPlayerPlaceBlockPacket(Vector3d.toPosition(blockLocation), face,
                 inventory.getHeldItem(), cursorX, cursorY, cursorZ));
         if (Material.getMaterial(inventory.getHeldItem().getId()).isBlock())

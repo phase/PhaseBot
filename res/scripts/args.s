@@ -1,1 +1,1 @@
-say .a0 .a1
+say @a0 @a1

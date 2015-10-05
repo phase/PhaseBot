@@ -26,8 +26,30 @@ public class Script {
                         for (int a = 0; a < amount; a++) {
                             for (int j = 0; j < lines; j++) {
                                 String command = this.lines[j + i + 1];
-                                PhaseBot.getBot()
-                                        .runCommand(replaceArguments(s, inputArguments).replace(".i", a + "").trim());
+                                command = replaceArguments(command, inputArguments).replace("@i", a + "").trim();
+                                command = replaceVariables(command);
+                                PhaseBot.getBot().runCommand(command);
+                                Thread.sleep(200);
+                            }
+                        }
+                        i += lines;
+                    }
+                    else if (args[0]
+                            .equalsIgnoreCase(".ifeq")) {
+                        Integer lines = Integer.parseInt(args[1]);
+                        String a = args[2];
+                        a = replaceArguments(a, inputArguments);
+                        if (a.contains("@")) {
+                            a = a.replace("@", "");
+                            a = PhaseBot.getBot().getVariables().get(a);
+                        }
+                        String b = args[3];
+                        if (a.equals(b)) {
+                            for (int j = 0; j < lines; j++) {
+                                String command = this.lines[j + i + 1];
+                                command = replaceArguments(command, inputArguments).trim();
+                                command = replaceVariables(command);
+                                PhaseBot.getBot().runCommand(command);
                                 Thread.sleep(200);
                             }
                         }
@@ -37,7 +59,9 @@ public class Script {
                 catch (Exception e) {}
             }
             else {
-                PhaseBot.getBot().runCommand(replaceArguments(s, inputArguments));
+                String command = replaceArguments(s, inputArguments);
+                command = replaceVariables(command);
+                PhaseBot.getBot().runCommand(command);
                 try {
                     Thread.sleep(200);
                 }
@@ -51,10 +75,20 @@ public class Script {
     private String replaceArguments(String s, String[] args) {
         for (int i = 0; i < args.length; i++) {
             try {
-                s = s.replace(".a" + i, args[i + 1]);
+                s = s.replace("@a" + i, args[i + 1]);
             }
             catch (Exception e) {}
         }
         return s;
+    }
+
+    private String replaceVariables(String command) {
+        for (String h : command.split(" ")) {
+            if (h.startsWith("@")) {
+                h = h.replace("@", "");
+                command = command.replace("@" + h, PhaseBot.getBot().getVariables().get(h));
+            }
+        }
+        return command;
     }
 }
