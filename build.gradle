@@ -29,3 +29,9 @@ dependencies {
     testCompile 'junit:junit:4.11'
     compile fileTree(dir: 'lib', include: ['*.jar'])
 }
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}
