@@ -89,10 +89,24 @@ public class PhaseBot {
         loadScripts();
     }
 
+    public static ArrayList<File> getFiles(String directoryName) {
+        File directory = new File(directoryName);
+        ArrayList<File> files = new ArrayList<File>();
+        // Get all the files from a directory
+        File[] fList = directory.listFiles();
+        for (File file : fList) {
+            if (file.isFile()) {
+                files.add(file);
+            } else if (file.isDirectory()) {
+                files.addAll(getFiles(file.getAbsolutePath()));
+            }
+        }
+        return files;
+    }
+
     public static void loadScripts() {
-        File scriptDir = new File("res/scripts/");
-        File[] dirFiles = scriptDir.listFiles();
-        if (dirFiles != null) {
+        ArrayList<File> dirFiles = getFiles("res/scripts/");
+        if (!dirFiles.isEmpty()) {
             for (final File script : dirFiles) {
                 try {
                     @Cleanup BufferedReader sr = new BufferedReader(new FileReader(script));
