@@ -46,7 +46,8 @@ public class Bot {
     }
 
     public void runCommand(String s) {
-        PhaseBot.getCommandManager().performCommand(s, s.split(" "), client.getSession());
+        if (client.getSession() != null && client.getSession().isConnected())
+            PhaseBot.getCommandManager().performCommand(s, s.split(" "), client.getSession());
     }
 
     public void derp(final Session s) {
