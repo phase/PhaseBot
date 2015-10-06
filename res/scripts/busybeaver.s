@@ -1,5 +1,5 @@
 slot 0 
-/i wool
+sudo /i wool
 slot 1
-/i stone
+sudo /i stone
 scriptA

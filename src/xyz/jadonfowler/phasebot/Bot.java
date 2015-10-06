@@ -241,7 +241,12 @@ public class Bot {
                 for (int z = -1; z < 2; z++) {
                     Block b = Block.getBlock(new Vector3d(x + location.x, y + location.y, z + location.z));
                     if (b.getMaterial() != Material.AIR) {
-                        if ((x == -1 && z == 0 && y == 0)) {
+                        if ((x == 0 && z == 0 && y == -1)) {
+                            face = Face.TOP;
+                            blockLocation = b.getPos();
+                            break getBlock;
+                        }
+                        else if ((x == -1 && z == 0 && y == 0)) {
                             face = Face.SOUTH;
                             blockLocation = b.getPos();
                             break getBlock;
@@ -253,11 +258,6 @@ public class Bot {
                         }
                         else if ((x == 0 && z == 0 && y == 1)) {
                             face = Face.BOTTOM;
-                            blockLocation = b.getPos();
-                            break getBlock;
-                        }
-                        else if ((x == 0 && z == 0 && y == -1)) {
-                            face = Face.TOP;
                             blockLocation = b.getPos();
                             break getBlock;
                         }
@@ -279,6 +279,7 @@ public class Bot {
             System.out.println("Block cannot be place at " + location + ".");
             return;
         }
+        // $20 says this doesn't matter, thanks Mojang
         switch (face) {
         case TOP:
             look(0, 90);
@@ -324,8 +325,13 @@ public class Bot {
         System.out.println(face + " " + cursorX + " " + cursorY + " " + cursorZ + " :: " + blockLocation);
         client.getSession().send(new ClientPlayerPlaceBlockPacket(Vector3d.toPosition(blockLocation), face,
                 inventory.getHeldItem(), cursorX, cursorY, cursorZ));
-        if (Material.getMaterial(inventory.getHeldItem().getId()).isBlock())
-            ChunkColumn.setBlock(Vector3d.toPosition(location), inventory.getHeldItem().getId());
+        try {
+            if (Material.getMaterial(inventory.getHeldItem().getId()).isBlock())
+                ChunkColumn.setBlock(Vector3d.toPosition(location), inventory.getHeldItem().getId());
+        }
+        catch (Exception e) {
+            //Silently catch because that's good software design
+        }
     }
 
     public void setSlot(int i) {
