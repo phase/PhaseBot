@@ -28,9 +28,9 @@ public class Script {
             try {
                 String[] args = s.split(" ");
                 if (args[0].equalsIgnoreCase(".for")) {
-                    Integer lines = Integer.parseInt(args[1]);
-                    Integer amount = Integer.parseInt(args[2]);
-                    System.out.println("FOR LOOP: " + lines + " " + amount);
+                    int lines = Integer.parseInt(args[1]);
+                    int amount = Integer.parseInt(args[2]);
+                    // System.out.println("FOR LOOP: " + lines + " " + amount);
                     loop:
                     for (int a = 0; a < amount; a++) {
                         for (int j = 0; j < lines; j++) {
@@ -46,7 +46,7 @@ public class Script {
                     PC += lines;
                 }
                 else if (args[0].equalsIgnoreCase(".ifeq")) {
-                    Integer lines = Integer.parseInt(args[1]);
+                    int lines = Integer.parseInt(args[1]);
                     String a = args[2];
                     a = replaceArguments(a, inputArguments);
                     if (a.contains("@")) {
@@ -54,6 +54,11 @@ public class Script {
                         a = PhaseBot.getBot().getVariables().get(a);
                     }
                     String b = args[3];
+                    b = replaceArguments(b, inputArguments);
+                    if (b.contains("@")) {
+                        b = b.replace("@", "");
+                        b = PhaseBot.getBot().getVariables().get(b);
+                    }
                     if (a.equals(b)) {
                         for (int j = 0; j < lines; j++) {
                             String command = this.lines[j + PC + 1];
@@ -64,6 +69,16 @@ public class Script {
                         }
                     }
                     PC += lines;
+                }
+                else if (args[0].equalsIgnoreCase(".define")) {
+                    int lines = Integer.parseInt(args[1]);
+                    String name = args[2];
+                    String[] script = new String[lines];
+                    for (int j = 0; j < lines; j++) {
+                        String command = this.lines[j + PC + 1];
+                        script[j] = command;
+                    }
+                    
                 }
             }
             catch (Exception e) {}
