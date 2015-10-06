@@ -23,7 +23,8 @@ public class Script {
     }
 
     public void parseLine(String s, String[] inputArguments) {
-        if (s.startsWith(".")) {
+        if (s.trim().startsWith(";")) {/* Comment */}
+        else if (s.startsWith(".")) {
             try {
                 String[] args = s.split(" ");
                 if (args[0].equalsIgnoreCase(".for")) {
