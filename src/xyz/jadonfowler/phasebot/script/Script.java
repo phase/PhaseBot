@@ -2,6 +2,8 @@ package xyz.jadonfowler.phasebot.script;
 
 import lombok.*;
 import xyz.jadonfowler.phasebot.*;
+import xyz.jadonfowler.phasebot.cmd.*;
+import org.spacehq.packetlib.*;
 
 public class Script {
 
@@ -78,7 +80,38 @@ public class Script {
                         String command = this.lines[j + PC + 1];
                         script[j] = command;
                     }
-                    
+                    Script macro = new Script(name, script);
+                    PhaseBot.scripts.add(macro);
+                    new Command() {
+                        public void exec(String in, String[] args, Session s) {
+                            for (Script t : PhaseBot.scripts) {
+                                if (t.getName().equalsIgnoreCase(args[0])) {
+                                    t.run(args);
+                                    return;
+                                }
+                            }
+                        }
+
+                        public String getCommand() {
+                            return name;
+                        }
+
+                        public String getDescription() {
+                            return null;
+                        }
+                    };
+                }
+                // .val derp = I like @type
+                else if (args[0].equalsIgnoreCase(".val")) {
+                    String id = args[1];
+                    String value = "";
+                    for (int j = 3; j < args.length; j++) {
+                        String temp = args[j];
+                        if (temp.startsWith("@a")) temp = replaceArguments(temp, inputArguments);
+                        if (temp.startsWith("@")) temp = replaceVariables(temp);
+                        value += temp + " ";
+                    }
+                    PhaseBot.getBot().getVariables().put(id, value.trim());
                 }
             }
             catch (Exception e) {}
