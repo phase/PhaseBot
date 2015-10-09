@@ -102,8 +102,8 @@ public class PhaseBot {
                         PASSWORD = line.split(": ")[1];
                     }
                     else if (line.startsWith("Server: ")) { // Server:minecraft.net:25565
-                        HOST = line.split(": ")[1];
-                        PORT = Integer.parseInt(line.split(":")[2]);
+                        HOST = line.split(": ")[1].split(":")[0];
+                        PORT = Integer.parseInt(line.split(": ")[1].split(":")[1]);
                     }
                     else if (line.startsWith("Proxy")) { // Proxy:123.456.789:860
                         PROXY = new Proxy(Proxy.Type.HTTP,
@@ -143,7 +143,12 @@ public class PhaseBot {
 
     public static ArrayList<File> getFiles(String directoryName) {
         File directory = new File(directoryName);
+        
         ArrayList<File> files = new ArrayList<File>();
+        if(!directory.isDirectory()){
+            console.println("No files found in " + directoryName);
+            return files;
+        }
         // Get all the files from a directory
         File[] fList = directory.listFiles();
         for (File file : fList) {
