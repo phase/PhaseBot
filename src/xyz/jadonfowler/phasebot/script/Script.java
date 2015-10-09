@@ -10,6 +10,7 @@ public class Script {
     @Getter private final String[] lines;
     @Getter private String name;
     public int PC = 0;
+    @Getter @Setter private static boolean stop = false;
 
     public Script(String name, String... lines) {
         this.lines = lines;
@@ -18,13 +19,19 @@ public class Script {
 
     public void run(String[] inputArguments) {
         PC = 0;
-        while(PC != lines.length) {
-            //PhaseBot.getConsole().println(PC + "/" + lines.length);
+        while (PC != lines.length) {
+            if (stop) {
+                return;
+            }
+            // PhaseBot.getConsole().println(PC + "/" + lines.length);
             parseLine(lines[PC], inputArguments);
         }
     }
 
     public void parseLine(String s, String[] inputArguments) {
+        if (stop) {
+            return;
+        }
         if (s.trim().startsWith(";")) {/* Comment */}
         else if (s.startsWith(".")) {
             try {
@@ -32,14 +39,16 @@ public class Script {
                 if (args[0].equalsIgnoreCase(".for")) {
                     int lines = Integer.parseInt(args[1]);
                     int amount = Integer.parseInt(args[2]);
-                    // PhaseBot.getConsole().println("FOR LOOP: " + lines + " " + amount);
+                    // PhaseBot.getConsole().println("FOR LOOP: " + lines + " "
+                    // + amount);
                     loop:
                     for (int a = 0; a < amount; a++) {
                         for (int j = 0; j < lines; j++) {
                             String command = this.lines[j + PC + 1];
                             if (command.equalsIgnoreCase(".break")) break loop;
                             command = replaceArguments(command, inputArguments).replace("@i", a + "").trim();
-                            //PhaseBot.getConsole().println(command + " : " + PC);
+                            // PhaseBot.getConsole().println(command + " : " +
+                            // PC);
                             command = replaceVariables(command);
                             PhaseBot.getBot().runCommand(command);
                             Thread.sleep(5);
@@ -83,6 +92,7 @@ public class Script {
                     Script macro = new Script(name, script);
                     PhaseBot.scripts.add(macro);
                     new Command() {
+
                         public void exec(String in, String[] args, Session s) {
                             for (Script t : PhaseBot.scripts) {
                                 if (t.getName().equalsIgnoreCase(args[0])) {
@@ -144,7 +154,8 @@ public class Script {
     private String replaceVariables(String command) {
         for (String h : command.split(" ")) {
             if (h.startsWith("@")) {
-               // PhaseBot.getConsole().println(h + " : " + command + " : " + PC);
+                // PhaseBot.getConsole().println(h + " : " + command + " : " +
+                // PC);
                 h = h.replace("@", "");
                 // PhaseBot.getConsole().println(command);
                 try {

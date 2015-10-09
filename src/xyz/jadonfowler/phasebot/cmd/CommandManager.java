@@ -1,7 +1,7 @@
 package xyz.jadonfowler.phasebot.cmd;
 
-import java.util.ArrayList;
-import org.spacehq.packetlib.Session;
+import java.util.*;
+import org.spacehq.packetlib.*;
 
 public class CommandManager {
 
@@ -23,10 +23,12 @@ public class CommandManager {
     public void performCommand(String in, String[] args, Session s) {
         for (Command c : commands) {
             if (c.getCommand().equalsIgnoreCase(args[0].replace(".", ""))) {
+                //PhaseBot.getConsole().println(in + " : " + Arrays.toString(args));
                 latestIn = in;
                 latestArgs = args;
                 latestSession = s;
                 c.exec(in, args, s);
+                return;
             }
         }
     }

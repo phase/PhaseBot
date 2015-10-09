@@ -134,8 +134,8 @@ public class PacketHandler extends SessionAdapter {
             ServerSetSlotPacket p = event.<ServerSetSlotPacket> getPacket();
             if (p.getWindowId() == 0) {// Player's Inventory
                 PhaseBot.getBot().getInventory().setItem(p.getSlot(), p.getItem());
-                if(p.getItem() != null)
-                PhaseBot.getConsole().println("Inventory Slot #" + p.getSlot() + " change to " + p.getItem().getId());
+                //if(p.getItem() != null)
+                //PhaseBot.getConsole().println("Inventory Slot #" + p.getSlot() + " change to " + p.getItem().getId());
             }
         }
         else if (event.getPacket() instanceof ServerChatPacket) {
@@ -150,7 +150,7 @@ public class PacketHandler extends SessionAdapter {
                     event.getSession().send(new ClientChatPacket("/msg " + m.getSender() + " You are not my master!"));
                     return;
                 }
-                PhaseBot.getBot().runCommand(m.getCommand(), true);
+                PhaseBot.getBot().runCommand(m.getMessage().split(PhaseBot.getPrefix())[1], true);
             }
             catch (Exception e) {
                 e.printStackTrace();
