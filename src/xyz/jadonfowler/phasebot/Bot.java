@@ -91,8 +91,11 @@ public class Bot {
     }
 
     public void centerPosition() {
-        client.getSession().send(new ClientPlayerPositionRotationPacket(false, ((int) pos.x) + 0.5d, ((int) pos.y),
-                ((int) pos.z) + 0.5d, yaw, pitch));
+        //return;
+        double dx = pos.x > 0 ? Math.round(pos.x) + 0.5d : Math.round(pos.x) - 0.5d;
+        double dy = Math.round(pos.y);
+        double dz = pos.z > 0 ? Math.round(pos.z) + 0.5d : Math.round(pos.z) - 0.5d;
+        client.getSession().send(new ClientPlayerPositionRotationPacket(false, dx, dy, dz, yaw, pitch));
     }
 
     public void fall() {
@@ -171,7 +174,8 @@ public class Bot {
             double arx = Math.cos(tx > fx ? -t : t) * (tx - fx);
             double ary = Math.tan(ty < fy ? -t : t) * (ty - fy);
             double arz = Math.sin(tz > fz ? -t : t) * (tz - fz);
-            //PhaseBot.getConsole().println("ARC: " + arx + " " + ary + " " + arz);
+            // PhaseBot.getConsole().println("ARC: " + arx + " " + ary + " " +
+            // arz);
             move(arx, ary, arz);
             try {
                 Thread.sleep(100);

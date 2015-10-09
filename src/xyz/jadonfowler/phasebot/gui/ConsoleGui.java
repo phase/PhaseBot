@@ -63,15 +63,18 @@ public class ConsoleGui {
                 input.addKeyListener(new KeyListener() {
 
                     public void keyPressed(KeyEvent e) {
-                        if (e.getKeyCode() == KeyEvent.VK_UP) {
-                            if (recentInputId < (recentInputMax - 1) && recentInputId < (recentInputs.size() - 1))
-                                recentInputId++;
-                            input.setText(recentInputs.get(recentInputs.size() - 1 - recentInputId));
+                        try {
+                            if (e.getKeyCode() == KeyEvent.VK_UP) {
+                                if (recentInputId < (recentInputMax - 1) && recentInputId < (recentInputs.size() - 1))
+                                    recentInputId++;
+                                input.setText(recentInputs.get(recentInputs.size() - 1 - recentInputId));
+                            }
+                            else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                                if (recentInputId > 0) recentInputId--;
+                                input.setText(recentInputs.get(recentInputs.size() - 1 - recentInputId));
+                            }
                         }
-                        else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                            if (recentInputId > 0) recentInputId--;
-                            input.setText(recentInputs.get(recentInputs.size() - 1 - recentInputId));
-                        }
+                        catch (Exception x) {}
                     }
 
                     public void keyReleased(KeyEvent e) {}
