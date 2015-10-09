@@ -92,9 +92,9 @@ public class Bot {
 
     public void centerPosition() {
         //return;
-        double dx = pos.x > 0 ? Math.round(pos.x) + 0.5d : Math.round(pos.x) - 0.5d;
-        double dy = Math.round(pos.y);
-        double dz = pos.z > 0 ? Math.round(pos.z) + 0.5d : Math.round(pos.z) - 0.5d;
+        double dx = pos.x > 0 ? Math.floor(pos.x) + 0.5d : Math.round(pos.x) - 0.5d;
+        double dy = Math.floor(pos.y);
+        double dz = pos.z > 0 ? Math.floor(pos.z) + 0.5d : Math.round(pos.z) - 0.5d;
         client.getSession().send(new ClientPlayerPositionRotationPacket(false, dx, dy, dz, yaw, pitch));
     }
 
