@@ -74,7 +74,7 @@ public class Script {
                 }
                 else if (args[0].equalsIgnoreCase(".define")) {
                     int lines = Integer.parseInt(args[1]);
-                    String name = args[2];
+                    final String name = args[2];
                     String[] script = new String[lines];
                     for (int j = 0; j < lines; j++) {
                         String command = this.lines[j + PC + 1];
@@ -100,6 +100,7 @@ public class Script {
                             return null;
                         }
                     };
+                    PC += lines;
                 }
                 // .val derp = I like @type
                 else if (args[0].equalsIgnoreCase(".val")) {

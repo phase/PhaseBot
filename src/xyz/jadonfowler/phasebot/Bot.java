@@ -341,7 +341,7 @@ public class Bot {
         inventory.setHeldSlot(i);
         // Fucking Mojang is fucking stupid because they don't update a
         // Player's slot until they move. THANKS DUMBASSES
-        move(0, 0, 0);
+        look(yaw, pitch);
     }
 
     public void openChest() {

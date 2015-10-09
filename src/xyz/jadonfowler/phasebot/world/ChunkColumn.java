@@ -18,6 +18,7 @@ public class ChunkColumn {
         for (Chunk c : y) {
             if (x == 55 && z == 39) if (c == null || c.getBlocks() == null) {
                 c = new Chunk(true);
+                c.getBlocks().fill(0);
             }
         }
         this.y = y;
@@ -57,6 +58,7 @@ public class ChunkColumn {
                 Math.floor(p.getZ() > 0 ? p.getZ() % 16 : 16 - (Math.abs(p.getZ()) % 16)));
         if(c == null || c.getBlocks() == null){
             c = new Chunk(false);
+            c.getBlocks().fill(0);
         }
         c.getBlocks().setBlock((int) b.x, (int) b.y, (int) b.z, id);
     }
