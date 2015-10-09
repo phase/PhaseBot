@@ -96,8 +96,8 @@ public class Bot {
         moveTo((int) Math.floor(e.x), (int) Math.floor(e.y), (int) Math.floor(e.z));
     }
 
-    public void moveTo(int ax, int ay, int az) {
-        moveTo(new Vector3d(ax, ay, az));
+    public void moveTo(double tx, double ty, double tz) {
+        moveTo(new Vector3d(tx, ty, tz));
     }
 
     public void moveTo(Vector3d to) {
@@ -135,6 +135,37 @@ public class Bot {
                 }
             }
         }).start();
+    }
+
+    public void moveAlongArc(double rx, double ry, double rz) {
+        //Get absolute cords
+        final double tx = pos.x - rx;
+        final double ty = pos.y - ry;
+        final double tz = pos.z - rz;
+        final double fx = pos.x;
+        final double fy = pos.y;
+        final double fz = pos.z;
+        int[] angles = { 30, 45, 60 };
+        for (int t : angles) {
+            /* @formatter:off
+             * rz = sin(to.z > from.z ? -t : t) * (to.z - from.z) 
+             * rx = cos(to.x > from.x ? -t : t) * (to.x - from.x) 
+             * ry = tan(to.y < from.y ? -t : t) * (to.y - from.y)
+             * @formatter:on
+             */
+            double arx = Math.cos(tx > fx ? -t : t) * (tx - fx);
+            double ary = Math.tan(ty < fy ? -t : t) * (ty - fy);
+            double arz = Math.sin(tz > fz ? -t : t) * (tz - fz);
+            System.out.println("ARC: " + arx + " " + ary + " " + arz);
+            move(arx, ary, arz);
+            try {
+                Thread.sleep(100);
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        moveTo(tx, ty, tz);
     }
 
     public void move(double rx, double ry, double rz) {
@@ -331,7 +362,7 @@ public class Bot {
                 ChunkColumn.setBlock(Vector3d.toPosition(location), inventory.getHeldItem().getId());
         }
         catch (Exception e) {
-            //Silently catch because that's good software design
+            // Silently catch because that's good software design
         }
     }
 
