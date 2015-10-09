@@ -4,6 +4,8 @@ import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import javax.swing.*;
+import javax.swing.text.*;
 import org.reflections.*;
 import org.spacehq.mc.auth.*;
 import org.spacehq.mc.auth.exception.*;
@@ -41,40 +43,80 @@ public class PhaseBot {
     public static ArrayList<Script> scripts = new ArrayList<Script>();
     private static Bot bot;
     @Getter private static ConsoleGui console;
+    @Getter private static File configFile;
 
     public static void main(String... args) {
         manager = new CommandManager();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("res/config.txt"));
-            String line = br.readLine();
-            while (line != null) {
-                if (line.startsWith("Username: ")) { // Username:Notch
-                    USERNAME = line.split(": ")[1];
-                }
-                else if (line.startsWith("Password: ")) { // Password:Derp
-                    PASSWORD = line.split(": ")[1];
-                }
-                else if (line.startsWith("Server: ")) { // Server:minecraft.net:25565
-                    HOST = line.split(": ")[1];
-                    PORT = java.lang.Integer.parseInt(line.split(":")[2]);
-                }
-                else if (line.startsWith("Proxy")) { // Proxy:123.456.789:860
-                    PROXY = new Proxy(Proxy.Type.HTTP,
-                            new InetSocketAddress(line.split(":")[1], java.lang.Integer.parseInt(line.split(":")[2])));
-                }
-                line = br.readLine();
-            }
-            br.close();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        loadConfig();
         createConsole();
         registerCommands();
         loadScripts();
         bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
         status();
         login();
+    }
+
+    public static void loadConfig() {
+        try {
+            String configLocation;
+            // here, we assign the name of the OS, according to Java, to a
+            // variable...
+            String OS = (System.getProperty("os.name")).toUpperCase();
+            // to determine what the workingDirectory is.
+            // if it is some version of Windows
+            if (OS.contains("WIN")) {
+                // it is simply the location of the "AppData" folder
+                configLocation = System.getenv("AppData");
+            }
+            // Otherwise, we assume Linux or Mac
+            else {
+                // in either case, we would start in the user's home directory
+                configLocation = System.getProperty("user.home");
+                // if we are on a Mac, we are not done, we look for "Application
+                // Support"
+                configLocation += "/Library/Application Support/";
+            }
+            File config = new File(configLocation, "PhaseBot/config.txt");
+            configFile = config;
+            if (!config.exists()) {
+                File cl = new File(configLocation, "PhaseBot/");
+                if (!cl.exists()) {
+                    cl.mkdir();
+                }
+                if (config.createNewFile()) {
+                    BufferedWriter w = new BufferedWriter(new FileWriter(config));
+                    w.write("PhaseBot Configuration File\r\n");
+                    w.write("Username: Notch\r\n");
+                    w.write("Password: Derp");
+                    w.close();
+                }
+            }
+            else {
+                BufferedReader br = new BufferedReader(new FileReader(config));
+                String line = br.readLine();
+                while (line != null) {
+                    if (line.startsWith("Username: ")) { // Username:Notch
+                        USERNAME = line.split(": ")[1];
+                    }
+                    else if (line.startsWith("Password: ")) { // Password:Derp
+                        PASSWORD = line.split(": ")[1];
+                    }
+                    else if (line.startsWith("Server: ")) { // Server:minecraft.net:25565
+                        HOST = line.split(": ")[1];
+                        PORT = Integer.parseInt(line.split(":")[2]);
+                    }
+                    else if (line.startsWith("Proxy")) { // Proxy:123.456.789:860
+                        PROXY = new Proxy(Proxy.Type.HTTP,
+                                new InetSocketAddress(line.split(":")[1], Integer.parseInt(line.split(":")[2])));
+                    }
+                    line = br.readLine();
+                }
+                br.close();
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static void createConsole() {
@@ -117,6 +159,7 @@ public class PhaseBot {
 
     public static void loadScripts() {
         ArrayList<File> dirFiles = getFiles("res/scripts/");
+        dirFiles.addAll(getFiles(configFile.getAbsolutePath().split("config.txt")[0] + "scripts/"));
         if (!dirFiles.isEmpty()) {
             for (final File script : dirFiles) {
                 try {
@@ -205,7 +248,7 @@ public class PhaseBot {
                 console.println("Successfully authenticated user.");
             }
             catch (AuthenticationException e) {
-                e.printStackTrace();
+                console.print("Error > Invalid Credentials at " + configFile.getAbsolutePath(), false, Color.RED);
                 return;
             }
         }
