@@ -45,9 +45,24 @@ public class Bot {
         variables.put("host", host);
     }
 
+    public void runCommand(final String s, boolean newThread) {
+        if (newThread) {
+            new Thread(new Runnable() {
+
+                public void run() {
+                    if (client.getSession() != null && client.getSession().isConnected())
+                        PhaseBot.getCommandManager().performCommand(s, s.split(" "), client.getSession());
+                }
+            }).start();
+        }
+        else {
+            if (client.getSession() != null && client.getSession().isConnected())
+                PhaseBot.getCommandManager().performCommand(s, s.split(" "), client.getSession());
+        }
+    }
+
     public void runCommand(String s) {
-        if (client.getSession() != null && client.getSession().isConnected())
-            PhaseBot.getCommandManager().performCommand(s, s.split(" "), client.getSession());
+        runCommand(s, false);
     }
 
     public void derp(final Session s) {
@@ -87,7 +102,7 @@ public class Bot {
 
     public void jump(double x, double y, double z) {
         if (y > 0) move(0, Math.abs(y), 0);
-        move(x, 0, z);
+        if (x != 0 && z != 0) move(x, 0, z);
         fall();
         centerPosition();
     }
@@ -119,7 +134,7 @@ public class Bot {
                 try {
                     while (itr.hasNext()) {
                         if (interuptMoveAlong) {
-                            System.out.println("Block changed! Rerouting path...");
+                            PhaseBot.getConsole().println("Block changed! Rerouting path...");
                             PhaseBot.getCommandManager().performLastCommand();
                             interuptMoveAlong = false;
                             return;
@@ -138,7 +153,7 @@ public class Bot {
     }
 
     public void moveAlongArc(double rx, double ry, double rz) {
-        //Get absolute cords
+        // Get absolute cords
         final double tx = pos.x - rx;
         final double ty = pos.y - ry;
         final double tz = pos.z - rz;
@@ -156,7 +171,7 @@ public class Bot {
             double arx = Math.cos(tx > fx ? -t : t) * (tx - fx);
             double ary = Math.tan(ty < fy ? -t : t) * (ty - fy);
             double arz = Math.sin(tz > fz ? -t : t) * (tz - fz);
-            System.out.println("ARC: " + arx + " " + ary + " " + arz);
+            //PhaseBot.getConsole().println("ARC: " + arx + " " + ary + " " + arz);
             move(arx, ary, arz);
             try {
                 Thread.sleep(100);
@@ -173,29 +188,31 @@ public class Bot {
             moveDiagonal(rx, ry, rz);
             return;
         }
-        // System.out.println("m: " + rx + " " + ry + " " + rz);
+        // PhaseBot.getConsole().println("m: " + rx + " " + ry + " " + rz);
         double l = (pos.x + rx) - pos.x;
         double w = (pos.z + rz) - pos.z;
+        double h = (pos.y + ry) - pos.y;
         double c = Math.sqrt(l * l + w * w);
         double a1 = -Math.asin(l / c) / Math.PI * 180;
         double a2 = Math.acos(w / c) / Math.PI * 180;
         if (a2 > 90) yaw = (float) (180 - a1);
         else yaw = (float) a1;
         if (rx == 0 && rz == 0) yaw = 0;
-        pitch = 0; // pitch is waaay too hard
-        // System.out.println("p: " + pitch + " y:" + yaw);
+        pitch = (float) Math.atan((h / c));
+        // PhaseBot.getConsole().println("p: " + pitch + " y:" + yaw);
         int numberOfSteps = (int) ((int) 2.0
                 * Math.floor(Math.sqrt(Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2))));
         double sx = rx / numberOfSteps;
         double sy = ry / numberOfSteps;
         double sz = rz / numberOfSteps;
-        // System.out.println("s: " + sx + " " + sy + " " + sz + " : " +
+        // PhaseBot.getConsole().println("s: " + sx + " " + sy + " " + sz + " :
+        // " +
         // numberOfSteps);
         for (int i = 0; i < numberOfSteps; i++) {
             pos.x += sx;
             pos.y += sy;
             pos.z += sz;
-            // System.out.println("Moving " + pos);
+            // PhaseBot.getConsole().println("Moving " + pos);
             client.getSession().send(new ClientPlayerPositionRotationPacket(false, pos.x, pos.y, pos.z, yaw, pitch));
             try {
                 Thread.sleep(100);
@@ -230,7 +247,8 @@ public class Bot {
     public void breakBlock(int rx, int ry, int rz) {
         final Position p = new Position((int) Math.floor(pos.x + rx), (int) Math.floor(pos.y + ry),
                 (int) Math.floor(pos.z + rz));
-        System.out.println("Digging at: " + p.getX() + " " + p.getY() + " " + p.getZ());
+        // PhaseBot.getConsole().println("Digging at: " + p.getX() + " " +
+        // p.getY() + " " + p.getZ());
         client.getSession().send(new ClientPlayerActionPacket(PlayerAction.START_DIGGING, p, Face.TOP));
         swing();
         client.getSession().send(new ClientPlayerActionPacket(PlayerAction.FINISH_DIGGING, p, Face.TOP));
@@ -308,7 +326,7 @@ public class Bot {
             }
         }
         if (face == Face.INVALID) {
-            System.out.println("Block cannot be place at " + location + ".");
+            PhaseBot.getConsole().println("Block cannot be place at " + location + ".");
             return;
         }
         // $20 says this doesn't matter, thanks Mojang
@@ -354,7 +372,8 @@ public class Bot {
             return;
         }
         blockLocation = blockLocation.floor();
-        System.out.println(face + " " + cursorX + " " + cursorY + " " + cursorZ + " :: " + blockLocation);
+        // PhaseBot.getConsole().println(face + " " + cursorX + " " + cursorY +
+        // " " + cursorZ + " :: " + blockLocation);
         client.getSession().send(new ClientPlayerPlaceBlockPacket(Vector3d.toPosition(blockLocation), face,
                 inventory.getHeldItem(), cursorX, cursorY, cursorZ));
         try {
@@ -367,7 +386,7 @@ public class Bot {
     }
 
     public void setSlot(int i) {
-        System.out.println("Changing slot to " + i);
+        // PhaseBot.getConsole().println("Changing slot to " + i);
         client.getSession().send(new ClientChangeHeldItemPacket(i));
         inventory.setHeldSlot(i);
         // Fucking Mojang is fucking stupid because they don't update a

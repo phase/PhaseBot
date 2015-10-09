@@ -27,7 +27,7 @@ public class PathfindCommand extends Command {
                         UUID u = uf.call().get(args[1]);
                         Player e = Player.byUUID(u);
                         end = new Vector3d(e.getX(), e.getY()-1, e.getZ());
-                        System.out.println("I'm moving towards " + args[1] + " at " + end.clone().floor());
+                        PhaseBot.getConsole().println("I'm moving towards " + args[1] + " at " + end.clone().floor());
                     }
                     catch (Exception e) {
                         e.printStackTrace();
@@ -41,7 +41,7 @@ public class PathfindCommand extends Command {
                 double z = Double.parseDouble(args[3]);
                 end = PhaseBot.getBot().relativeToAbsolute(new Vector3d(x, y, z)).clone().addY(-1);
             }
-            System.out.println("start= " + start + " \nend= " + end);
+            PhaseBot.getConsole().println("start= " + start + " \nend= " + end);
             // create our pathfinder
             AStar path = new AStar(start, end, 100);
             // get the list of nodes to walk to as a Tile object
@@ -52,11 +52,11 @@ public class PathfindCommand extends Command {
             case SUCCESS:
                 // Path was successful. Do something here.
                 PhaseBot.getBot().moveAlong(route);
-                System.out.println("Path was found! :D");
+                PhaseBot.getConsole().println("Path was found! :D");
                 break;
             case NO_PATH:
                 // No path found, throw error.
-                System.out.println("No path found!");
+                PhaseBot.getConsole().println("No path found!");
                 break;
             default:
                 break;
@@ -65,10 +65,10 @@ public class PathfindCommand extends Command {
         catch (InvalidPathException e) {
             // InvalidPathException will be thrown if start or end block is air
             if (e.isEndNotSolid()) {
-                System.out.println("End block is not walkable");
+                PhaseBot.getConsole().println("End block is not walkable");
             }
             if (e.isStartNotSolid()) {
-                System.out.println("Start block is not walkable");
+                PhaseBot.getConsole().println("Start block is not walkable");
             }
         } catch(Exception e){
             e.printStackTrace();

@@ -32,7 +32,7 @@ public class Block {
                 pos.x > 0 ? pos.x % 16 : 16 - (Math.abs(pos.x) % 16), 
                 pos.y > 0 ? pos.y % 16 : 16 - (Math.abs(pos.y) % 16), 
                         pos.z > 0 ? pos.z % 16 : 16 - (Math.abs(pos.z) % 16));
-        //System.out.println(b);
+        //PhaseBot.getConsole().println(b);
         int id = 0;
         try {
             id = chunk.getBlocks().getBlock((int) b.x, (int) b.y, (int) b.z);

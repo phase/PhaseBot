@@ -38,8 +38,9 @@ public class Move extends Command {
         else ry = Double.parseDouble(args[2]);
         if (args[3].contains("*")) rz = Double.parseDouble(args[3].replace("*", "")) - PhaseBot.getBot().pos.z;
         else rz = Double.parseDouble(args[3]);
-        System.out.println("Move: " + (PhaseBot.getBot().pos.x + rx) + " " + (PhaseBot.getBot().pos.y + ry) + " "
-                + (PhaseBot.getBot().pos.z + rz));
+        // PhaseBot.getConsole().println("Move: " + (PhaseBot.getBot().pos.x +
+        // rx) + " " + (PhaseBot.getBot().pos.y + ry) + " "
+        // + (PhaseBot.getBot().pos.z + rz));
         PhaseBot.getBot().move(rx, ry, rz);
     }
 

@@ -1,5 +1,6 @@
 package xyz.jadonfowler.phasebot;
 
+import java.awt.*;
 import java.util.*;
 import org.spacehq.mc.protocol.data.game.*;
 import org.spacehq.mc.protocol.data.game.values.*;
@@ -31,7 +32,7 @@ public class PacketHandler extends SessionAdapter {
             PhaseBot.getBot().pos.z = event.<ServerPlayerPositionRotationPacket> getPacket().getZ();
             PhaseBot.getBot().pitch = event.<ServerPlayerPositionRotationPacket> getPacket().getPitch();
             PhaseBot.getBot().yaw = event.<ServerPlayerPositionRotationPacket> getPacket().getYaw();
-            System.out.println("Err, My Position: " + PhaseBot.getBot().pos.x + "," + PhaseBot.getBot().pos.y + ","
+            PhaseBot.getConsole().println("My Position: " + PhaseBot.getBot().pos.x + "," + PhaseBot.getBot().pos.y + ","
                     + PhaseBot.getBot().pos.z);
             event.getSession().send(new ClientPlayerPositionRotationPacket(false, PhaseBot.getBot().pos.x,
                     PhaseBot.getBot().pos.y, PhaseBot.getBot().pos.z, PhaseBot.getBot().pitch, PhaseBot.getBot().yaw));
@@ -126,7 +127,7 @@ public class PacketHandler extends SessionAdapter {
             ServerWindowItemsPacket p = event.<ServerWindowItemsPacket> getPacket();
             if (p.getWindowId() == 0) {// Player's inventory
                 PhaseBot.getBot().setInventory(new Inventory(p.getItems()));
-                System.out.println("Inventory recieved!");
+                PhaseBot.getConsole().println("Inventory recieved!");
             }
         }
         else if (event.getPacket() instanceof ServerSetSlotPacket) {
@@ -134,7 +135,7 @@ public class PacketHandler extends SessionAdapter {
             if (p.getWindowId() == 0) {// Player's Inventory
                 PhaseBot.getBot().getInventory().setItem(p.getSlot(), p.getItem());
                 if(p.getItem() != null)
-                System.out.println("Slot " + p.getSlot() + " change to " + p.getItem().getId());
+                PhaseBot.getConsole().println("Inventory Slot #" + p.getSlot() + " change to " + p.getItem().getId());
             }
         }
         else if (event.getPacket() instanceof ServerChatPacket) {
@@ -149,8 +150,7 @@ public class PacketHandler extends SessionAdapter {
                     event.getSession().send(new ClientChatPacket("/msg " + m.getSender() + " You are not my master!"));
                     return;
                 }
-                PhaseBot.getCommandManager().performCommand(m.getCommand(),
-                        m.getMessage().split(PhaseBot.getPrefix())[1].split(" "), event.getSession());
+                PhaseBot.getBot().runCommand(m.getCommand(), true);
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -159,6 +159,6 @@ public class PacketHandler extends SessionAdapter {
     }
 
     @Override public void disconnected(DisconnectedEvent event) {
-        System.out.println("Disconnected: " + Message.fromString(event.getReason()).getFullText());
+        PhaseBot.getConsole().println("Disconnected: " + Message.fromString(event.getReason()).getFullText(), false, Color.RED);
     }
 }

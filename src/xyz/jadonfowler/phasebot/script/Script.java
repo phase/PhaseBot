@@ -19,7 +19,7 @@ public class Script {
     public void run(String[] inputArguments) {
         PC = 0;
         while(PC != lines.length) {
-            //System.out.println(PC + "/" + lines.length);
+            //PhaseBot.getConsole().println(PC + "/" + lines.length);
             parseLine(lines[PC], inputArguments);
         }
     }
@@ -32,14 +32,14 @@ public class Script {
                 if (args[0].equalsIgnoreCase(".for")) {
                     int lines = Integer.parseInt(args[1]);
                     int amount = Integer.parseInt(args[2]);
-                    // System.out.println("FOR LOOP: " + lines + " " + amount);
+                    // PhaseBot.getConsole().println("FOR LOOP: " + lines + " " + amount);
                     loop:
                     for (int a = 0; a < amount; a++) {
                         for (int j = 0; j < lines; j++) {
                             String command = this.lines[j + PC + 1];
                             if (command.equalsIgnoreCase(".break")) break loop;
                             command = replaceArguments(command, inputArguments).replace("@i", a + "").trim();
-                            //System.out.println(command + " : " + PC);
+                            //PhaseBot.getConsole().println(command + " : " + PC);
                             command = replaceVariables(command);
                             PhaseBot.getBot().runCommand(command);
                             Thread.sleep(5);
@@ -144,9 +144,9 @@ public class Script {
     private String replaceVariables(String command) {
         for (String h : command.split(" ")) {
             if (h.startsWith("@")) {
-               // System.out.println(h + " : " + command + " : " + PC);
+               // PhaseBot.getConsole().println(h + " : " + command + " : " + PC);
                 h = h.replace("@", "");
-                // System.out.println(command);
+                // PhaseBot.getConsole().println(command);
                 try {
                     command = command.replace("@" + h, PhaseBot.getBot().getVariables().get(h));
                 }

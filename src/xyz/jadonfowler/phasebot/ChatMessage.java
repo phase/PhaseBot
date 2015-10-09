@@ -10,7 +10,7 @@ public class ChatMessage {
 
     public ChatMessage(String full) {
         try {
-            //System.out.println(full);
+            //PhaseBot.getConsole().println(full);
             if (full.matches("\\[(.*)\\](.*): (.*)")) {
                 sender = full.split("]")[1].split(": ")[0];
                 message = full.split(": ")[1];
@@ -23,7 +23,7 @@ public class ChatMessage {
             else if (full.matches("<(.+)> (.+)")) {
                 sender = full.split("<")[1].split(">")[0];
                 message = full.split("> ")[1];
-                System.out.println(sender + ": " + message);
+                PhaseBot.getConsole().println(sender + ": " + message);
             }
             
             if (PhaseBot.getPrefix().equals(".")) message = "." + message;

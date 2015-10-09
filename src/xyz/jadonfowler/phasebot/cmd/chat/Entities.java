@@ -1,14 +1,15 @@
 package xyz.jadonfowler.phasebot.cmd.chat;
 
-import org.spacehq.packetlib.Session;
-import xyz.jadonfowler.phasebot.cmd.Command;
-import xyz.jadonfowler.phasebot.entity.Entity;
+import org.spacehq.packetlib.*;
+import xyz.jadonfowler.phasebot.*;
+import xyz.jadonfowler.phasebot.cmd.*;
+import xyz.jadonfowler.phasebot.entity.*;
 
 public class Entities extends Command {
 
     @Override public void exec(String in, String[] args, Session s) {
         for (Entity e : Entity.getEntities().values())
-            System.out.println(e);
+            PhaseBot.getConsole().println(e);
     }
 
     @Override public String getCommand() {

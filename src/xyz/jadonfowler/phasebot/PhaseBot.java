@@ -1,9 +1,11 @@
 package xyz.jadonfowler.phasebot;
 
+import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
 import org.reflections.*;
+import org.spacehq.mc.auth.*;
 import org.spacehq.mc.auth.exception.*;
 import org.spacehq.mc.protocol.*;
 import org.spacehq.mc.protocol.data.status.*;
@@ -12,22 +14,24 @@ import org.spacehq.packetlib.*;
 import org.spacehq.packetlib.tcp.*;
 import lombok.*;
 import xyz.jadonfowler.phasebot.cmd.*;
+import xyz.jadonfowler.phasebot.gui.*;
 import xyz.jadonfowler.phasebot.script.*;
 
 public class PhaseBot {
 
+    @Getter @Setter private static String prefix = "owk, ";
     private static String USERNAME = "username";
     private static String PASSWORD = "password";
     // Build Server
-    private static String HOST = "mort.openredstone.org";
+    public static String HOST = "mort.openredstone.org";
     private static int PORT = 25569;
     // Voltz Server
     // private static String HOST = "173.58.127.167";
     // private static int PORT = 25565;
     // Survival Server
-    // private static String HOST = "nick.openredstone.org";
+    // public static String HOST = "nick.openredstone.org";
     // private static int PORT = 25569;
-    // private static String HOST = "localhost";
+    // public static String HOST = "localhost";
     // private static int PORT = 25565;
     private static Proxy PROXY = Proxy.NO_PROXY;
     private static boolean VERIFY_USERS = true;
@@ -36,6 +40,7 @@ public class PhaseBot {
     private static CommandManager manager = null;
     public static ArrayList<Script> scripts = new ArrayList<Script>();
     private static Bot bot;
+    @Getter private static ConsoleGui console;
 
     public static void main(String... args) {
         manager = new CommandManager();
@@ -64,11 +69,16 @@ public class PhaseBot {
         catch (Exception e) {
             e.printStackTrace();
         }
+        createConsole();
         registerCommands();
         loadScripts();
         bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
         status();
         login();
+    }
+
+    private static void createConsole() {
+        console = new ConsoleGui();
     }
 
     public static void registerCommands() {
@@ -97,7 +107,8 @@ public class PhaseBot {
         for (File file : fList) {
             if (file.isFile()) {
                 files.add(file);
-            } else if (file.isDirectory()) {
+            }
+            else if (file.isDirectory()) {
                 files.addAll(getFiles(file.getAbsolutePath()));
             }
         }
@@ -122,8 +133,8 @@ public class PhaseBot {
                     scripts.add(new Script(name, cmds.toArray(new String[cmds.size()])));
                     new Command() {
 
-                        public void exec(String in, String[] args, Session s) {
-                            for (Script t : PhaseBot.scripts) {
+                        public void exec(String in, final String[] args, Session s) {
+                            for (final Script t : PhaseBot.scripts) {
                                 if (t.getName().equalsIgnoreCase(args[0])) {
                                     t.run(args);
                                     return;
@@ -156,19 +167,22 @@ public class PhaseBot {
         client.getSession().setFlag(ProtocolConstants.SERVER_INFO_HANDLER_KEY, new ServerInfoHandler() {
 
             @Override public void handle(Session session, ServerStatusInfo info) {
-                System.out.println("Version: " + info.getVersionInfo().getVersionName() + ", "
+                console.println("Version: " + info.getVersionInfo().getVersionName() + ", "
                         + info.getVersionInfo().getProtocolVersion());
-                System.out.println("Player Count: " + info.getPlayerInfo().getOnlinePlayers() + " / "
+                console.println("Player Count: " + info.getPlayerInfo().getOnlinePlayers() + " / "
                         + info.getPlayerInfo().getMaxPlayers());
-                System.out.println("Players: " + Arrays.toString(info.getPlayerInfo().getPlayers()));
-                System.out.println("Description: " + info.getDescription().getFullText());
-                System.out.println("Icon: " + info.getIcon());
+                String players = "";
+                for (GameProfile s : info.getPlayerInfo().getPlayers())
+                    players += s.getName() + " ";
+                console.println("Players: " + players.trim());
+                console.println("Description: " + info.getDescription().getFullText());
+                // console.println("Icon: " + info.getIcon());
             }
         });
         client.getSession().setFlag(ProtocolConstants.SERVER_PING_TIME_HANDLER_KEY, new ServerPingTimeHandler() {
 
             @Override public void handle(Session session, long pingTime) {
-                System.out.println("Server ping took " + pingTime + "ms");
+                console.println("Server ping took " + pingTime + "ms");
             }
         });
         client.getSession().connect();
@@ -183,12 +197,12 @@ public class PhaseBot {
     }
 
     private static void login() {
-        System.out.println("PhaseBot starting...");
+        console.println("PhaseBot starting...", false, Color.RED);
         MinecraftProtocol protocol = null;
         if (VERIFY_USERS) {
             try {
                 protocol = new MinecraftProtocol(USERNAME, PASSWORD, false);
-                System.out.println("Successfully authenticated user.");
+                console.println("Successfully authenticated user.");
             }
             catch (AuthenticationException e) {
                 e.printStackTrace();
@@ -211,9 +225,5 @@ public class PhaseBot {
 
     public static Bot getBot() {
         return bot;
-    }
-
-    public static String getPrefix() {
-        return "owk, ";
     }
 }

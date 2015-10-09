@@ -2,6 +2,7 @@ package xyz.jadonfowler.phasebot.world;
 
 import java.util.*;
 import org.spacehq.mc.protocol.data.game.*;
+import xyz.jadonfowler.phasebot.*;
 import xyz.jadonfowler.phasebot.util.*;
 
 public class ChunkColumn {
@@ -67,7 +68,7 @@ public class ChunkColumn {
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
-                    System.out.println(c.getBlocks().getBlock(x, y, z) + ": " + x + " " + y + " " + z);
+                    PhaseBot.getConsole().println(c.getBlocks().getBlock(x, y, z) + ": " + x + " " + y + " " + z);
                 }
             }
         }

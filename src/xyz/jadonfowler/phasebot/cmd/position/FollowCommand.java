@@ -31,7 +31,7 @@ public class FollowCommand extends Command {
                             try {
                                 Vector3d start = PhaseBot.getBot().getPos().clone().addY(-1);
                                 Vector3d end = followed.getPos().clone().addY(-1);
-                                System.out.println("start= " + start + " \nend= " + end);
+                                PhaseBot.getConsole().println("start= " + start + " \nend= " + end);
                                 // create our pathfinder
                                 AStar path = null;
                                 path = new AStar(start, end, 100);
@@ -44,11 +44,11 @@ public class FollowCommand extends Command {
                                 case SUCCESS:
                                     // Path was successful. Do something here.
                                     PhaseBot.getBot().moveAlong(route);
-                                    System.out.println("Path was found! :D");
+                                    PhaseBot.getConsole().println("Path was found! :D");
                                     break;
                                 case NO_PATH:
                                     // No path found, throw error.
-                                    System.out.println("No path found!");
+                                    PhaseBot.getConsole().println("No path found!");
                                     break;
                                 default:
                                     break;
@@ -60,10 +60,10 @@ public class FollowCommand extends Command {
                                 // end block is
                                 // air
                                 if (e.isEndNotSolid()) {
-                                    System.out.println("End block is not walkable");
+                                    PhaseBot.getConsole().println("End block is not walkable");
                                 }
                                 if (e.isStartNotSolid()) {
-                                    System.out.println("Start block is not walkable");
+                                    PhaseBot.getConsole().println("Start block is not walkable");
                                 }
                             }
                         }
