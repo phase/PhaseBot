@@ -76,7 +76,7 @@ public class AStar {
 
     public ArrayList<Tile> iterate() {
         if (!checkOnce) {
-            checkOnce = true;
+            checkOnce ^= true;
             if ((abs(sx - ex) > range) || (abs(sy - ey) > range) || (abs(sz - ez) > range)) {
                 this.result = PathingResult.NO_PATH;
                 return null;// jump out

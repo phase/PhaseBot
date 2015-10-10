@@ -105,7 +105,7 @@ public class Bot {
 
     public void jump(double x, double y, double z) {
         if (y > 0) move(0, Math.abs(y), 0);
-        if (x != 0 && z != 0) move(x, 0, z);
+        move(x, 0, z);
         fall();
         centerPosition();
     }
