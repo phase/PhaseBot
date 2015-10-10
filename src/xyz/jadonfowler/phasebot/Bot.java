@@ -91,7 +91,7 @@ public class Bot {
     }
 
     public void centerPosition() {
-        //return;
+        // return;
         double dx = pos.x > 0 ? Math.floor(pos.x) + 0.5d : Math.round(pos.x) - 0.5d;
         double dy = Math.floor(pos.y);
         double dz = pos.z > 0 ? Math.floor(pos.z) + 0.5d : Math.round(pos.z) - 0.5d;
@@ -248,7 +248,12 @@ public class Bot {
         return false;
     }
 
-    public void breakBlock(int rx, int ry, int rz) {
+    public void breakBlockAbsolute(Vector3d a) {
+        Vector3d r = absoluteToRelative(a);
+        breakBlock(r.x, r.y, r.z);
+    }
+
+    public void breakBlock(double rx, double ry, double rz) {
         final Position p = new Position((int) Math.floor(pos.x + rx), (int) Math.floor(pos.y + ry),
                 (int) Math.floor(pos.z + rz));
         // PhaseBot.getConsole().println("Digging at: " + p.getX() + " " +
@@ -264,6 +269,10 @@ public class Bot {
 
     public Vector3d relativeToAbsolute(Vector3d d) {
         return new Vector3d(pos.x + d.x, pos.y + d.y, pos.z + d.z);
+    }
+
+    public Vector3d absoluteToRelative(Vector3d a) {
+        return new Vector3d(pos.x - a.x, pos.y - a.y, pos.z - a.z);
     }
 
     public Face getPlaceFace(Vector3d d) {
@@ -283,6 +292,10 @@ public class Bot {
             }
         }
         return Face.INVALID;
+    }
+
+    public void placeBlockAbsolute(Vector3d location) {
+        placeBlock(absoluteToRelative(location));
     }
 
     public void placeBlock(Vector3d location) {
@@ -398,7 +411,82 @@ public class Bot {
         look(yaw, pitch);
     }
 
+    public void getCloseToAbsolute(Vector3d a) {
+        getCloseTo(absoluteToRelative(a));
+    }
+
+    public void getCloseTo(Vector3d r) {
+        double tx = pos.x + r.x;
+        double ty = pos.y + r.y;
+        double tz = pos.z + r.z;
+        double distance = Math.sqrt(Math.pow(pos.x - tx, 2) + Math.pow(pos.y - ty, 2) + Math.pow(pos.z - tz, 2));
+        if (distance > 4) {
+            move(r.x, r.y, r.z);
+            /*
+             * @formatter:off
+             * try {
+                System.out.println(tx + " " + ty + " " + tz);
+                AStar path = new AStar(new Vector3d(pos.x, pos.y, pos.z), new Vector3d(tx, ty, tz), 100);
+                ArrayList<Tile> route = path.iterate();
+                PathingResult result = path.getPathingResult();
+                switch (result) {
+                case SUCCESS:
+                    // Path was successful. Do something here.
+                    PhaseBot.getBot().moveAlong(route);
+                    break;
+                case NO_PATH:
+                default:
+                    break;
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            @formatter:on
+            */
+        }
+    }
+
     public void openChest() {
         // client.getSession().send(new Client);
+    }
+
+    public double getRelativeDistanceAway(Vector3d r) {
+        return getDistanceAway(relativeToAbsolute(r));
+    }
+
+    public double getDistanceAway(Vector3d l) {
+        return Math.sqrt(Math.pow(pos.x - l.x, 2) + Math.pow(pos.y - l.y, 2) + Math.pow(pos.z - l.z, 2));
+    }
+
+    public Block getClosestBlock(Material material, int range) {
+        ArrayList<Block> matches = new ArrayList<Block>();
+        for (int x = 0; x < range; x++) {
+            for (int y = 0; y < range; y++) {
+                for (int z = 0; z < range; z++) {
+                    Block b; // cache
+                    if ((b = Block.getBlock(pos.x + x, pos.y + x, pos.z + z)).getMaterial() == material) {
+                        matches.add(b);
+                    }
+                }
+            }
+        }
+        double shortestDistance = range;
+        Block best = null;
+        for (Block g : matches) {
+            if (shortestDistance == range) {
+                best = g;
+                shortestDistance = getDistanceAway(g.getPos());
+            }
+            else {
+                double d; // cache
+                if ((d = getDistanceAway(g.getPos())) < shortestDistance) {
+                    best = g;
+                    shortestDistance = d;
+                }
+            }
+        }
+        System.out.println(best.getPos());
+        return best;
     }
 }

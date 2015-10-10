@@ -4,8 +4,6 @@ import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import javax.swing.*;
-import javax.swing.text.*;
 import org.reflections.*;
 import org.spacehq.mc.auth.*;
 import org.spacehq.mc.auth.exception.*;
@@ -22,6 +20,7 @@ import xyz.jadonfowler.phasebot.script.*;
 public class PhaseBot {
 
     @Getter @Setter private static String prefix = "owk, ";
+    @Getter private static String[] owners = { "Phase", "Voltz" };
     private static String USERNAME = "username";
     private static String PASSWORD = "password";
     // Build Server
@@ -108,6 +107,10 @@ public class PhaseBot {
                     else if (line.startsWith("Proxy")) { // Proxy:123.456.789:860
                         PROXY = new Proxy(Proxy.Type.HTTP,
                                 new InetSocketAddress(line.split(":")[1], Integer.parseInt(line.split(":")[2])));
+                    }
+                    else if (line.startsWith("Owners")) {
+                        String o = line.split(": ")[1];
+                        owners = o.contains(",") ? o.split(",") : new String[] { o };
                     }
                     line = br.readLine();
                 }

@@ -143,10 +143,7 @@ public class PacketHandler extends SessionAdapter {
             try {
                 ChatMessage m = new ChatMessage(message.getFullText());
                 if (!m.isCommand()) return;
-                ArrayList<String> owners = new ArrayList<String>();
-                owners.add("Phase");
-                owners.add("VoltzLive");
-                if (!owners.contains(m.getSender())) {
+                if (!Arrays.asList(PhaseBot.getOwners()).contains(m.getSender())) {
                     event.getSession().send(new ClientChatPacket("/msg " + m.getSender() + " You are not my master!"));
                     return;
                 }
