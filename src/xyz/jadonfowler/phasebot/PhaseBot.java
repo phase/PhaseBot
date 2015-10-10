@@ -47,8 +47,8 @@ public class PhaseBot {
 
     public static void main(String... args) {
         manager = new CommandManager();
+        console = new ConsoleGui();
         loadConfig();
-        createConsole();
         registerCommands();
         loadScripts();
         bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
@@ -119,10 +119,6 @@ public class PhaseBot {
         }
     }
 
-    private static void createConsole() {
-        console = new ConsoleGui();
-    }
-
     public static void registerCommands() {
         Reflections reflections = new Reflections("xyz.jadonfowler.phasebot.cmd");
         Set<Class<? extends Command>> subTypes = reflections.getSubTypesOf(Command.class);
@@ -143,9 +139,8 @@ public class PhaseBot {
 
     public static ArrayList<File> getFiles(String directoryName) {
         File directory = new File(directoryName);
-        
         ArrayList<File> files = new ArrayList<File>();
-        if(!directory.isDirectory()){
+        if (!directory.isDirectory()) {
             console.println("No files found in " + directoryName);
             return files;
         }

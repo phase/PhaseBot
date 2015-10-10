@@ -109,15 +109,15 @@ public class ConsoleGui {
     }
 
     public void print(String s, boolean trace, Color c) {
-        Style style = console.addStyle("Style", null);
-        StyleConstants.setForeground(style, c);
-        if (trace) {
-            Throwable t = new Throwable();
-            StackTraceElement[] elements = t.getStackTrace();
-            String caller = elements[0].getClassName();
-            s = caller + " > " + s;
-        }
         try {
+            Style style = console.addStyle("Style", null);
+            StyleConstants.setForeground(style, c);
+            if (trace) {
+                Throwable t = new Throwable();
+                StackTraceElement[] elements = t.getStackTrace();
+                String caller = elements[0].getClassName();
+                s = caller + " > " + s;
+            }
             document.insertString(document.getLength(), s, style);
         }
         catch (Exception e) {}

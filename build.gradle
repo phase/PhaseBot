@@ -21,6 +21,17 @@ sourceSets {
     }
 }
 
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'PhaseBot',  
+            'Implementation-Version': '1.0',
+            'Main-Class': 'xyz.jadonfowler.phasebot.PhaseBot'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 repositories {
     mavenCentral()
 }
