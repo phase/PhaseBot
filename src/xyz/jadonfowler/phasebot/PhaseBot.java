@@ -19,7 +19,7 @@ import xyz.jadonfowler.phasebot.script.*;
 
 public class PhaseBot {
 
-    @Getter @Setter private static String prefix = "owk, ";
+    @Getter @Setter private static String prefix = ".";
     @Getter private static String[] owners = { "Phase", "Voltz" };
     private static String USERNAME = "username";
     private static String PASSWORD = "password";
@@ -84,9 +84,14 @@ public class PhaseBot {
                 }
                 if (config.createNewFile()) {
                     BufferedWriter w = new BufferedWriter(new FileWriter(config));
-                    w.write("PhaseBot Configuration File\r\n");
-                    w.write("Username: Notch\r\n");
-                    w.write("Password: Derp");
+                    //@formatter:off
+                    w.write("PhaseBot Configuration File :O\r\n"
+                            + "https://github.com/phase/phasebot\r\n"
+                            + "Username: Notch\r\n"
+                            + "Password: Derp\r\n"
+                            + "Server: github.orgs:25565\r\n"
+                            + "Owners: Phase,Voltz\r\n");
+                    //@formatter:on
                     w.close();
                 }
             }
@@ -94,24 +99,33 @@ public class PhaseBot {
                 BufferedReader br = new BufferedReader(new FileReader(config));
                 String line = br.readLine();
                 while (line != null) {
-                    if (line.startsWith("Username: ")) { // Username:Notch
-                        USERNAME = line.split(": ")[1];
+                    try {
+                        if (line.startsWith("Username: ")) { // Username:Notch
+                            USERNAME = line.split(": ")[1];
+                        }
+                        else if (line.startsWith("Password: ")) { // Password:Derp
+                            PASSWORD = line.split(": ")[1];
+                        }
+                        else if (line.startsWith("Server: ")) { // Server:minecraft.net:25565
+                            HOST = line.split(": ")[1].split(":")[0];
+                            PORT = Integer.parseInt(line.split(": ")[1].split(":")[1]);
+                        }
+                        else if (line.startsWith("Proxy: ")) { // Proxy:123.456.789:860
+                            PROXY = new Proxy(Proxy.Type.HTTP,
+                                    new InetSocketAddress(line.split(":")[1], Integer.parseInt(line.split(":")[2])));
+                        }
+                        else if (line.startsWith("Owners: ")) {
+                            String o = line.split(": ")[1];
+                            owners = o.contains(",") ? o.split(",") : new String[] { o };
+                        }
+                        else if (line.startsWith("Prefix: ")) {
+                            prefix = line.split(": ")[1];
+                        }
+                        else if (line.startsWith("Online: ")) {
+                            VERIFY_USERS = Boolean.parseBoolean(line.split(": ")[1].toLowerCase());
+                        }
                     }
-                    else if (line.startsWith("Password: ")) { // Password:Derp
-                        PASSWORD = line.split(": ")[1];
-                    }
-                    else if (line.startsWith("Server: ")) { // Server:minecraft.net:25565
-                        HOST = line.split(": ")[1].split(":")[0];
-                        PORT = Integer.parseInt(line.split(": ")[1].split(":")[1]);
-                    }
-                    else if (line.startsWith("Proxy")) { // Proxy:123.456.789:860
-                        PROXY = new Proxy(Proxy.Type.HTTP,
-                                new InetSocketAddress(line.split(":")[1], Integer.parseInt(line.split(":")[2])));
-                    }
-                    else if (line.startsWith("Owners")) {
-                        String o = line.split(": ")[1];
-                        owners = o.contains(",") ? o.split(",") : new String[] { o };
-                    }
+                    catch (Exception e) {}
                     line = br.readLine();
                 }
                 br.close();

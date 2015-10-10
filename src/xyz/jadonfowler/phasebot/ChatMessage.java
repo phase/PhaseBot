@@ -23,12 +23,11 @@ public class ChatMessage {
             else if (full.matches("<(.+)> (.+)")) {
                 sender = full.split("<")[1].split(">")[0];
                 message = full.split("> ")[1];
-                PhaseBot.getConsole().println(sender + ": " + message);
+                //PhaseBot.getConsole().println(sender + ": " + message);
             }
             
-            if (PhaseBot.getPrefix().equals(".")) message = "." + message;
             if (message != null && message.startsWith(PhaseBot.getPrefix()))
-                command = message.split(PhaseBot.getPrefix())[1].split(" ")[0];
+                command = message.replaceFirst(PhaseBot.getPrefix(), "").split(" ")[0];
         }
         catch (Exception e) {}
     }

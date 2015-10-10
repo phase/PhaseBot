@@ -23,7 +23,7 @@ public class CommandManager {
     public void performCommand(String in, String[] args, Session s) {
         for (Command c : commands) {
             if (c.getCommand().equalsIgnoreCase(args[0].replace(".", ""))) {
-                //PhaseBot.getConsole().println(in + " : " + Arrays.toString(args));
+                //System.out.println(in + " : " + Arrays.toString(args));
                 latestIn = in;
                 latestArgs = args;
                 latestSession = s;
