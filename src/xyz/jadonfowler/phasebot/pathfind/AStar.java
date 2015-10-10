@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import xyz.jadonfowler.phasebot.*;
 import xyz.jadonfowler.phasebot.util.*;
 import xyz.jadonfowler.phasebot.world.*;
 
@@ -18,7 +19,17 @@ public class AStar {
 
     private HashMap<String, Tile> closed = new HashMap<String, Tile>();
 
+    private int tileCounter = 0;
+    
     private void addToOpenList(Tile t, boolean modify) {
+        
+        if(tileCounter == 0){
+            tileCounter = 5;
+            PhaseBot.getConsole().println("  Found tile: " + t.toString());
+        }else{
+            tileCounter--;
+        }
+        
         if (open.containsKey(t.getUID())) {
             if (modify) {
                 open.put(t.getUID(), t);

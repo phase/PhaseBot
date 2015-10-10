@@ -1,1 +1,2 @@
-say @a0 @a1
+.val @derp = savage
+say @derp
