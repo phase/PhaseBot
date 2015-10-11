@@ -11,9 +11,12 @@ public class ConsoleGui {
 
     JFrame frame;
     JTextPane console;
+    JTextPane chat;
     JTextField input;
-    JScrollPane scrollPane;
-    StyledDocument document;
+    JScrollPane consoleScrollPane;
+    JScrollPane chatScrollPane;
+    StyledDocument consoleDocument;
+    StyledDocument chatDocument;
     public boolean trace = true;
     ArrayList<String> recentInputs = new ArrayList<String>();
     int recentInputId = 0;
@@ -34,7 +37,14 @@ public class ConsoleGui {
                 console.setEditable(false);
                 console.setFont(new Font("Open Sans", Font.PLAIN, 12));
                 console.setOpaque(false);
-                document = console.getStyledDocument();
+                console.setBackground(new Color(50, 50, 50));
+                consoleDocument = console.getStyledDocument();
+                chat = new JTextPane();
+                chat.setEditable(false);
+                chat.setFont(new Font("Open Sans", Font.PLAIN, 12));
+                chat.setOpaque(false);
+                chat.setBackground(new Color(50, 50, 50));
+                chatDocument = chat.getStyledDocument();
                 input = new JTextField();
                 // input.setEditable(true); //Probably don't need
                 // input.setBorder(null);
@@ -81,12 +91,22 @@ public class ConsoleGui {
 
                     public void keyTyped(KeyEvent e) {}
                 });
-                scrollPane = new JScrollPane(console);
-                scrollPane.setBorder(null);
-                scrollPane.setOpaque(false);
-                scrollPane.getViewport().setOpaque(false);
+                consoleScrollPane = new JScrollPane(console);
+                consoleScrollPane.setBorder(null);
+                consoleScrollPane.setOpaque(false);
+                consoleScrollPane.getViewport().setOpaque(false);
+                chatScrollPane = new JScrollPane(chat);
+                chatScrollPane.setBorder(null);
+                chatScrollPane.setOpaque(false);
+                chatScrollPane.getViewport().setOpaque(false);
+                JTabbedPane tabs = new JTabbedPane();
+                tabs.addTab("Console", null, consoleScrollPane, "Console for PhaseBot");
+                tabs.addTab("Chat", null, chatScrollPane, "Incoming chat messages");
+                tabs.setBackground(new Color(50, 50, 50));
                 frame.add(input, BorderLayout.SOUTH);
-                frame.add(scrollPane, BorderLayout.CENTER);
+                frame.add(tabs, BorderLayout.CENTER);
+                //frame.add(consoleScrollPane, BorderLayout.WEST);
+                //frame.add(chatScrollPane, BorderLayout.EAST);
                 frame.getContentPane().setBackground(new Color(50, 50, 50));
                 frame.setSize(660, 350);// TODO Change
                 frame.setLocationRelativeTo(null);
@@ -108,6 +128,14 @@ public class ConsoleGui {
         print(s, trace, new Color(255, 255, 255));
     }
 
+    public void addChatMessage(String s) {
+        try {
+            Style style = console.addStyle("Style", null);
+            chatDocument.insertString(chatDocument.getLength(), s + "\n", style);
+        }
+        catch (Exception e) {}
+    }
+
     public void print(String s, boolean trace, Color c) {
         try {
             Style style = console.addStyle("Style", null);
@@ -118,13 +146,13 @@ public class ConsoleGui {
                 String caller = elements[0].getClassName();
                 s = caller + " > " + s;
             }
-            document.insertString(document.getLength(), s, style);
+            consoleDocument.insertString(consoleDocument.getLength(), s, style);
         }
         catch (Exception e) {}
     }
 
     public void println(String s, boolean trace) {
-        println(s, trace, new Color(255, 255, 255));
+        print(s +"\n", trace);
     }
 
     public void println(String s, boolean trace, Color c) {
@@ -149,7 +177,7 @@ public class ConsoleGui {
 
     public void clear() {
         try {
-            document.remove(0, document.getLength());
+            consoleDocument.remove(0, consoleDocument.getLength());
         }
         catch (Exception e) {}
     }

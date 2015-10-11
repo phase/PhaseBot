@@ -17,6 +17,7 @@ import org.spacehq.mc.protocol.packet.ingame.server.world.*;
 import org.spacehq.packetlib.event.session.*;
 import xyz.jadonfowler.phasebot.entity.*;
 import xyz.jadonfowler.phasebot.inventory.*;
+import xyz.jadonfowler.phasebot.script.*;
 import xyz.jadonfowler.phasebot.world.*;
 
 public class PacketHandler extends SessionAdapter {
@@ -142,6 +143,7 @@ public class PacketHandler extends SessionAdapter {
         else if (event.getPacket() instanceof ServerChatPacket) {
             Message message = event.<ServerChatPacket> getPacket().getMessage();
             try {
+                PhaseBot.getConsole().addChatMessage(message.getFullText());
                 ChatMessage m = new ChatMessage(message.getFullText());
                 if (!m.isCommand()) return;
                 if (!Arrays.asList(PhaseBot.getOwners()).contains(m.getSender())) {
@@ -150,6 +152,7 @@ public class PacketHandler extends SessionAdapter {
                 }
                 if (m.getMessage().startsWith(PhaseBot.getPrefix())) {
                     String command = m.getMessage().replaceFirst(PhaseBot.getPrefix(), "");
+                    command = Script.replaceVariables(command);
                     PhaseBot.getBot().runCommand(command, true);
                 }
             }

@@ -148,7 +148,7 @@ public class Script {
         return s;
     }
 
-    private String replaceVariables(String command) {
+    public static String replaceVariables(String command) {
         for (String h : command.split(" ")) {
             if (h.startsWith("@")) {
                 // PhaseBot.getConsole().println(h + " : " + command + " : " +

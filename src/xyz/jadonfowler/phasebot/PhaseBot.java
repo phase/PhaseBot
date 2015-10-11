@@ -270,6 +270,7 @@ public class PhaseBot {
             }
         }
         else {
+            
             protocol = new MinecraftProtocol(USERNAME);
         }
         Client client = new Client(HOST, PORT, protocol, new TcpSessionFactory(PROXY));
