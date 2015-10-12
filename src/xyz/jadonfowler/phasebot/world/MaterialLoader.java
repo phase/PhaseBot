@@ -10,12 +10,41 @@ import xyz.jadonfowler.phasebot.world.material.*;
 public class MaterialLoader {
 
     public static final String BLOCKS_URL = "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/1.8/enums/blocks.json";
+    public static final String ITEMS_URL = "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/1.8/enums/items.json";
+    private static final JSONParser parser = new JSONParser();
 
     public static void loadMaterials() {
+        loadBlocks();
+        loadItems();
+    }
+
+    public static void loadItems() {
         try {
-            final String blocksJSON = fetchBlocks();
-            JSONParser parser = new JSONParser();
-            JSONArray blocks = (JSONArray) parser.parse(blocksJSON);
+            JSONArray items = getItemsJSON();
+            for (int i = 0; i < items.size(); i++) {
+                JSONObject item = (JSONObject) items.get(i);
+                ItemType.ItemTypeBuilder itemBuilder = ItemType.builder();
+                itemBuilder.id((long) item.get("id"));
+                itemBuilder.displayName(item.get("displayName").toString());
+                itemBuilder.name(item.get("name").toString());
+                itemBuilder.stackSize((long) item.get("stackSize"));
+                /* @formatter:off
+                 * TODO Item Attributes not stored:
+                 * - variations
+                 * @formatter:on
+                 */
+                itemBuilder.build();
+                System.out.println(Material.getItem(item.get("name").toString()).toString());
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadBlocks() {
+        try {
+            JSONArray blocks = getBlocksJSON();
             for (int i = 0; i < blocks.size(); i++) {
                 JSONObject block = (JSONObject) blocks.get(i);
                 BlockType.BlockTypeBuilder blockBuilder = BlockType.builder();
@@ -43,8 +72,15 @@ public class MaterialLoader {
                 catch (Exception e) {
                     // Silent catch as some blocks don't have
                 }
+                /* @formatter:off
+                 * TODO Block Attributes not stored:
+                 * - harvestTools 
+                 * - variations
+                 * - drops
+                 * @formatter:on
+                 */
                 blockBuilder.build();
-                System.out.println(Material.getBlock(block.get("name").toString()).toString());
+                //System.out.println(Material.getBlock(block.get("name").toString()).toString());
             }
         }
         catch (Exception e) {
@@ -52,10 +88,26 @@ public class MaterialLoader {
         }
     }
 
+    private static JSONArray getBlocksJSON() throws ParseException {
+        return (JSONArray) parser.parse(fetchBlocks());
+    }
+
+    private static JSONArray getItemsJSON() throws ParseException {
+        return (JSONArray) parser.parse(fetchItems());
+    }
+
+    private static String fetchItems() {
+        return fetchFromURL(ITEMS_URL);
+    }
+
     private static String fetchBlocks() {
+        return fetchFromURL(BLOCKS_URL);
+    }
+
+    private static String fetchFromURL(String url) {
         String all;
         try {
-            InputStream is = new URL(BLOCKS_URL).openStream();
+            InputStream is = new URL(url).openStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             all = readAll(rd);
             rd.close();
