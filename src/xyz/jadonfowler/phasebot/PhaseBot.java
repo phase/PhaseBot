@@ -16,6 +16,7 @@ import lombok.*;
 import xyz.jadonfowler.phasebot.cmd.*;
 import xyz.jadonfowler.phasebot.gui.*;
 import xyz.jadonfowler.phasebot.script.*;
+import xyz.jadonfowler.phasebot.world.*;
 
 public class PhaseBot {
 
@@ -45,6 +46,7 @@ public class PhaseBot {
     @Getter private static File configFile;
 
     public static void main(String... args) {
+        MaterialLoader.loadMaterials();
         manager = new CommandManager();
         console = new ConsoleGui();
         loadConfig();

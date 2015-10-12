@@ -10,7 +10,7 @@ public class ClosestBlockCommand extends Command {
 
     @Override public void exec(String in, String[] args, Session s) {
         try{
-            Material m = Material.getMaterial(args[1]);
+            Materials m = Materials.getMaterial(args[1]);
             PhaseBot.getBot().getClosestBlock(m, 20);
         }catch(Exception e){
             e.printStackTrace();

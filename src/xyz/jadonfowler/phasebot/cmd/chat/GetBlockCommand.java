@@ -11,7 +11,7 @@ public class GetBlockCommand extends Command {
         int rx = Integer.parseInt(args[1]);
         int ry = Integer.parseInt(args[2]);
         int rz = Integer.parseInt(args[3]);
-        Material m = Block
+        Materials m = Block
                 .getBlock(PhaseBot.getBot().pos.x + rx, PhaseBot.getBot().pos.y + ry, PhaseBot.getBot().pos.z + rz)
                 .getMaterial();
         // PhaseBot.getBot().say("I am standing on: " + m.toString());

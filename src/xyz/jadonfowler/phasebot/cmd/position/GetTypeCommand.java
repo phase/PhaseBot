@@ -9,7 +9,7 @@ public class GetTypeCommand extends Command {
 
     @Override public void exec(String in, String[] args, Session s) {
         PhaseBot.getBot().getVariables().put("type",
-                Material.getMaterial(Integer.parseInt(args[1])).toString().toLowerCase());
+                Materials.getMaterial(Integer.parseInt(args[1])).toString().toLowerCase());
     }
 
     @Override public String getCommand() {

@@ -8,7 +8,7 @@ import xyz.jadonfowler.phasebot.world.*;
 public class Fall extends Command {
 
     @Override public void exec(String in, String[] args, Session ses) {
-        while (Block.getBlock(PhaseBot.getBot().pos.x, PhaseBot.getBot().pos.y - 1, PhaseBot.getBot().pos.z).getMaterial() == Material.AIR) {
+        while (Block.getBlock(PhaseBot.getBot().pos.x, PhaseBot.getBot().pos.y - 1, PhaseBot.getBot().pos.z).getMaterial() == Materials.AIR) {
             PhaseBot.getBot().move(0, -1, 0);
         }
     }

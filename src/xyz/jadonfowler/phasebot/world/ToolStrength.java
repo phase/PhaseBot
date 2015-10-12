@@ -1,10 +1,10 @@
 package xyz.jadonfowler.phasebot.world;
 
-import static xyz.jadonfowler.phasebot.world.Material.*;
+import static xyz.jadonfowler.phasebot.world.Materials.*;
 import java.util.*;
 import lombok.*;
 
-public enum ToolStrength {
+public enum ToolStrength {/*
     //@formatter:off
     WOOD(2f, WOOD_SWORD, WOOD_PICKAXE, WOOD_AXE, WOOD_SPADE, WOOD_HOE),
     STONE(4f, STONE_SWORD, STONE_PICKAXE, STONE_AXE, STONE_SPADE, STONE_HOE),
@@ -14,14 +14,14 @@ public enum ToolStrength {
     //@formatter:on
 
     @Getter float strength;
-    @Getter List<Material> materials;
+    @Getter List<Materials> materials;
 
-    ToolStrength(float strength, Material... materials) {
+    ToolStrength(float strength, Materials... materials) {
         this.strength = strength;
         this.materials = Arrays.asList(materials);
     }
 
-    public static float getEffectiveness(Material tool) {
+    public static float getEffectiveness(Materials tool) {
         if (WOOD.materials.contains(tool)) return WOOD.strength;
         else if (STONE.materials.contains(tool)) return STONE.strength;
         else if (IRON.materials.contains(tool)) return IRON.strength;
@@ -30,14 +30,14 @@ public enum ToolStrength {
         return 0f;
     }
 
-    public static double getWaitTime(Material tool, Material block, boolean underwater, boolean onGround) {
+    public static double getWaitTime(Materials tool, Materials block, boolean underwater, boolean onGround) {
         double time = 0;
         while (time < 1)
             time += strengthAgainstBlock(tool, block, underwater, onGround);
         return time;
     }
 
-    public static double strengthAgainstBlock(Material tool, Material block, boolean underwater, boolean onGround) {
+    public static double strengthAgainstBlock(Materials tool, Materials block, boolean underwater, boolean onGround) {
         if (block.getHardness() < 0) return 0;
         if (!canHarvest(tool, block)) return 1 / block.getHardness() / 100;
         double d = 1;
@@ -47,13 +47,12 @@ public enum ToolStrength {
         return d / block.getHardness() / 30;
     }
 
-    public static boolean canHarvest(Material tool, Material block) {
-        if (!block.isSolid()) return true;
+    public static boolean canHarvest(Materials tool, Materials block) {
+        if (!block.isSolid() && block.isBlock()) return true;
         else return isEffectiveAgainst(tool, block);
     }
 
-    public static boolean isEffectiveAgainst(Material tool, Material block) {
-        if (!block.isSolid()) return true;
+    public static boolean isEffectiveAgainst(Materials tool, Materials block) {
         switch (tool) {
         case WOOD_SPADE:
         case STONE_SPADE:
@@ -148,5 +147,5 @@ public enum ToolStrength {
         default:
             return false;
         }
-    }
+    }*/
 }

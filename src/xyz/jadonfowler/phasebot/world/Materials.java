@@ -6,53 +6,53 @@ import java.util.Map;
 /**
  * An enum of all material IDs accepted by the official server and client
  */
-public enum Material {
-    AIR(0, 0),
-    STONE(1),
-    GRASS(2),
-    DIRT(3),
-    COBBLESTONE(4),
-    WOOD(5),
-    SAPLING(6),
-    BEDROCK(7),
-    WATER(8),
-    STATIONARY_WATER(9),
-    LAVA(10),
-    STATIONARY_LAVA(11),
-    SAND(12),
-    GRAVEL(13),
-    GOLD_ORE(14),
-    IRON_ORE(15),
-    COAL_ORE(16),
-    LOG(17),
-    LEAVES(18),
-    SPONGE(19),
-    GLASS(20),
-    LAPIS_ORE(21),
-    LAPIS_BLOCK(22),
-    DISPENSER(23),
-    SANDSTONE(24),
-    NOTE_BLOCK(25),
-    BED_BLOCK(26),
-    POWERED_RAIL(27),
-    DETECTOR_RAIL(28),
-    PISTON_STICKY_BASE(29),
-    WEB(30),
-    LONG_GRASS(31),
-    DEAD_BUSH(32),
-    PISTON_BASE(33),
-    PISTON_EXTENSION(34),
-    WOOL(35),
-    PISTON_MOVING_PIECE(36),
-    YELLOW_FLOWER(37),
-    RED_ROSE(38),
-    BROWN_MUSHROOM(39),
-    RED_MUSHROOM(40),
-    GOLD_BLOCK(41),
-    IRON_BLOCK(42),
-    DOUBLE_STEP(43),
-    STEP(44),
-    BRICK(45),
+public enum Materials {
+    AIR(0, 0, 0f),
+    STONE(1, 1.5f),
+    GRASS(2, 0.6f),
+    DIRT(3, 0.5f),
+    COBBLESTONE(4, 2f),
+    WOOD(5, 2f),
+    SAPLING(6, 0f),
+    BEDROCK(7, 999f), //Hardness should be null
+    WATER(8, 100f),
+    STATIONARY_WATER(9, 100f),
+    LAVA(10, 100f),
+    STATIONARY_LAVA(11, 100f),
+    SAND(12, 0.5f),
+    GRAVEL(13, 0.6f),
+    GOLD_ORE(14, 3f),
+    IRON_ORE(15, 3f),
+    COAL_ORE(16, 3f),
+    LOG(17, 2f),
+    LEAVES(18, 0.2f),
+    SPONGE(19, 0.6f),
+    GLASS(20, 0.3f),
+    LAPIS_ORE(21, 3f),
+    LAPIS_BLOCK(22, 3f),
+    DISPENSER(23, 3.5f),
+    SANDSTONE(24, 0.8f),
+    NOTE_BLOCK(25, 0.8f),
+    BED_BLOCK(26, 0.2f),
+    POWERED_RAIL(27, 0.7f),
+    DETECTOR_RAIL(28, 0.7f),
+    PISTON_STICKY_BASE(29, 0.5f),
+    WEB(30, 4f),
+    LONG_GRASS(31, 0f),
+    DEAD_BUSH(32, 0f),
+    PISTON_BASE(33, 0.5f),
+    PISTON_EXTENSION(34, 0.5f),
+    WOOL(35, 0.8f),
+    PISTON_MOVING_PIECE(36, 999f), //Hardness should be null
+    YELLOW_FLOWER(37, 0f),
+    RED_ROSE(38, 0f),
+    BROWN_MUSHROOM(39, 0f),
+    RED_MUSHROOM(40, 0f),
+    GOLD_BLOCK(41, 3f),
+    IRON_BLOCK(42, 5f),
+    DOUBLE_STEP(43, 2f),
+    STEP(44, 2f),
+    BRICK(45, 2f),/*
     TNT(46),
     BOOKSHELF(47),
     MOSSY_COBBLESTONE(48),
@@ -353,26 +353,28 @@ public enum Material {
     RECORD_9(2264, 1),
     RECORD_10(2265, 1),
     RECORD_11(2266, 1),
-    RECORD_12(2267, 1),;
+    RECORD_12(2267, 1),;*/;
 
     private final int id;
-    private static Material[] byId = new Material[2270];
-    private final static Map<String, Material> BY_NAME = new HashMap<String, Material>();
+    private static Materials[] byId = new Materials[2270];
+    private final static Map<String, Materials> BY_NAME = new HashMap<String, Materials>();
     private final int maxStack;
     private final short durability;
+    private final float hardness;
 
-    private Material(final int id) {
-        this(id, 64);
+    private Materials(final int id, float hardness) {
+        this(id, 64, hardness);
     }
 
-    private Material(final int id, final int stack) {
-        this(id, stack, 0);
+    private Materials(final int id, final int stack, float hardness) {
+        this(id, stack, 0, hardness);
     }
 
-    private Material(final int id, final int stack, final int durability) {
+    private Materials(final int id, final int stack, final int durability, float hardness) {
         this.id = id;
         this.durability = (short) durability;
         this.maxStack = stack;
+        this.hardness = hardness;
     }
 
     /**
@@ -418,29 +420,29 @@ public enum Material {
      */
     public boolean isEdible() {
         switch (this) {
-        case BREAD:
-        case CARROT_ITEM:
-        case BAKED_POTATO:
-        case POTATO_ITEM:
-        case POISONOUS_POTATO:
-        case GOLDEN_CARROT:
-        case PUMPKIN_PIE:
-        case COOKIE:
-        case MELON:
-        case MUSHROOM_SOUP:
-        case RAW_CHICKEN:
-        case COOKED_CHICKEN:
-        case RAW_BEEF:
-        case COOKED_BEEF:
-        case RAW_FISH:
-        case COOKED_FISH:
-        case PORK:
-        case GRILLED_PORK:
-        case APPLE:
-        case GOLDEN_APPLE:
-        case ROTTEN_FLESH:
-        case SPIDER_EYE:
-            return true;
+//        case BREAD:
+//        case CARROT_ITEM:
+//        case BAKED_POTATO:
+//        case POTATO_ITEM:
+//        case POISONOUS_POTATO:
+//        case GOLDEN_CARROT:
+//        case PUMPKIN_PIE:
+//        case COOKIE:
+//        case MELON:
+//        case MUSHROOM_SOUP:
+//        case RAW_CHICKEN:
+//        case COOKED_CHICKEN:
+//        case RAW_BEEF:
+//        case COOKED_BEEF:
+//        case RAW_FISH:
+//        case COOKED_FISH:
+//        case PORK:
+//        case GRILLED_PORK:
+//        case APPLE:
+//        case GOLDEN_APPLE:
+//        case ROTTEN_FLESH:
+//        case SPIDER_EYE:
+//            return true;
         default:
             return false;
         }
@@ -453,7 +455,7 @@ public enum Material {
      *            ID of the material to get
      * @return Material if found, or null
      */
-    public static Material getMaterial(final int id) {
+    public static Materials getMaterial(final int id) {
         if (byId.length > id && id >= 0) {
             return byId[id];
         }
@@ -472,7 +474,7 @@ public enum Material {
      *            Name of the material to get
      * @return Material if found, or null
      */
-    public static Material getMaterial(final String name) {
+    public static Materials getMaterial(final String name) {
         return BY_NAME.get(name);
     }
 
@@ -488,9 +490,9 @@ public enum Material {
      *            Name of the material to get
      * @return Material if found, or null
      */
-    public static Material matchMaterial(final String name) {
+    public static Materials matchMaterial(final String name) {
         if (name == null) throw new IllegalArgumentException("Name cannot be null!");
-        Material result = null;
+        Materials result = null;
         try {
             result = getMaterial(Integer.parseInt(name));
         }
@@ -504,7 +506,7 @@ public enum Material {
     }
 
     static {
-        for (Material material : values()) {
+        for (Materials material : values()) {
             byId[material.id] = material;
             BY_NAME.put(material.name(), material);
         }
@@ -514,7 +516,8 @@ public enum Material {
      * @return True if this material represents a playable music disk.
      */
     public boolean isRecord() {
-        return id >= GOLD_RECORD.id && id <= RECORD_12.id;
+//        return id >= GOLD_RECORD.id && id <= RECORD_12.id;
+        return false;
     }
 
     /**
@@ -557,98 +560,98 @@ public enum Material {
         case DOUBLE_STEP:
         case STEP:
         case BRICK:
-        case TNT:
-        case BOOKSHELF:
-        case MOSSY_COBBLESTONE:
-        case OBSIDIAN:
-        case MOB_SPAWNER:
-        case WOOD_STAIRS:
-        case CHEST:
-        case DIAMOND_ORE:
-        case DIAMOND_BLOCK:
-        case WORKBENCH:
-        case SOIL:
-        case FURNACE:
-        case BURNING_FURNACE:
-        case SIGN_POST:
-        case WOODEN_DOOR:
-        case COBBLESTONE_STAIRS:
-        case WALL_SIGN:
-        case STONE_PLATE:
-        case IRON_DOOR_BLOCK:
-        case WOOD_PLATE:
-        case REDSTONE_ORE:
-        case GLOWING_REDSTONE_ORE:
-        case ICE:
-        case SNOW_BLOCK:
-        case CACTUS:
-        case CLAY:
-        case JUKEBOX:
-        case FENCE:
-        case PUMPKIN:
-        case NETHERRACK:
-        case SOUL_SAND:
-        case GLOWSTONE:
-        case JACK_O_LANTERN:
-        case CAKE_BLOCK:
-        case LOCKED_CHEST:
-        case STAINED_GLASS:
-        case TRAP_DOOR:
-        case MONSTER_EGGS:
-        case SMOOTH_BRICK:
-        case HUGE_MUSHROOM_1:
-        case HUGE_MUSHROOM_2:
-        case IRON_FENCE:
-        case THIN_GLASS:
-        case MELON_BLOCK:
-        case FENCE_GATE:
-        case BRICK_STAIRS:
-        case SMOOTH_STAIRS:
-        case MYCEL:
-        case NETHER_BRICK:
-        case NETHER_FENCE:
-        case NETHER_BRICK_STAIRS:
-        case ENCHANTMENT_TABLE:
-        case BREWING_STAND:
-        case CAULDRON:
-        case ENDER_PORTAL_FRAME:
-        case ENDER_STONE:
-        case DRAGON_EGG:
-        case REDSTONE_LAMP_OFF:
-        case REDSTONE_LAMP_ON:
-        case WOOD_DOUBLE_STEP:
-        case WOOD_STEP:
-        case SANDSTONE_STAIRS:
-        case EMERALD_ORE:
-        case ENDER_CHEST:
-        case EMERALD_BLOCK:
-        case SPRUCE_WOOD_STAIRS:
-        case BIRCH_WOOD_STAIRS:
-        case JUNGLE_WOOD_STAIRS:
-        case COMMAND:
-        case BEACON:
-        case COBBLE_WALL:
-        case ANVIL:
-        case TRAPPED_CHEST:
-        case GOLD_PLATE:
-        case IRON_PLATE:
-        case DAYLIGHT_DETECTOR:
-        case REDSTONE_BLOCK:
-        case QUARTZ_ORE:
-        case HOPPER:
-        case QUARTZ_BLOCK:
-        case QUARTZ_STAIRS:
-        case DROPPER:
-        case STAINED_CLAY:
-        case HAY_BLOCK:
-        case HARD_CLAY:
-        case COAL_BLOCK:
-        case STAINED_GLASS_PANE:
-        case LEAVES_2:
-        case LOG_2:
-        case ACACIA_STAIRS:
-        case DARK_OAK_STAIRS:
-        case PACKED_ICE:
+//        case TNT:
+//        case BOOKSHELF:
+//        case MOSSY_COBBLESTONE:
+//        case OBSIDIAN:
+//        case MOB_SPAWNER:
+//        case WOOD_STAIRS:
+//        case CHEST:
+//        case DIAMOND_ORE:
+//        case DIAMOND_BLOCK:
+//        case WORKBENCH:
+//        case SOIL:
+//        case FURNACE:
+//        case BURNING_FURNACE:
+//        case SIGN_POST:
+//        case WOODEN_DOOR:
+//        case COBBLESTONE_STAIRS:
+//        case WALL_SIGN:
+//        case STONE_PLATE:
+//        case IRON_DOOR_BLOCK:
+//        case WOOD_PLATE:
+//        case REDSTONE_ORE:
+//        case GLOWING_REDSTONE_ORE:
+//        case ICE:
+//        case SNOW_BLOCK:
+//        case CACTUS:
+//        case CLAY:
+//        case JUKEBOX:
+//        case FENCE:
+//        case PUMPKIN:
+//        case NETHERRACK:
+//        case SOUL_SAND:
+//        case GLOWSTONE:
+//        case JACK_O_LANTERN:
+//        case CAKE_BLOCK:
+//        case LOCKED_CHEST:
+//        case STAINED_GLASS:
+//        case TRAP_DOOR:
+//        case MONSTER_EGGS:
+//        case SMOOTH_BRICK:
+//        case HUGE_MUSHROOM_1:
+//        case HUGE_MUSHROOM_2:
+//        case IRON_FENCE:
+//        case THIN_GLASS:
+//        case MELON_BLOCK:
+//        case FENCE_GATE:
+//        case BRICK_STAIRS:
+//        case SMOOTH_STAIRS:
+//        case MYCEL:
+//        case NETHER_BRICK:
+//        case NETHER_FENCE:
+//        case NETHER_BRICK_STAIRS:
+//        case ENCHANTMENT_TABLE:
+//        case BREWING_STAND:
+//        case CAULDRON:
+//        case ENDER_PORTAL_FRAME:
+//        case ENDER_STONE:
+//        case DRAGON_EGG:
+//        case REDSTONE_LAMP_OFF:
+//        case REDSTONE_LAMP_ON:
+//        case WOOD_DOUBLE_STEP:
+//        case WOOD_STEP:
+//        case SANDSTONE_STAIRS:
+//        case EMERALD_ORE:
+//        case ENDER_CHEST:
+//        case EMERALD_BLOCK:
+//        case SPRUCE_WOOD_STAIRS:
+//        case BIRCH_WOOD_STAIRS:
+//        case JUNGLE_WOOD_STAIRS:
+//        case COMMAND:
+//        case BEACON:
+//        case COBBLE_WALL:
+//        case ANVIL:
+//        case TRAPPED_CHEST:
+//        case GOLD_PLATE:
+//        case IRON_PLATE:
+//        case DAYLIGHT_DETECTOR:
+//        case REDSTONE_BLOCK:
+//        case QUARTZ_ORE:
+//        case HOPPER:
+//        case QUARTZ_BLOCK:
+//        case QUARTZ_STAIRS:
+//        case DROPPER:
+//        case STAINED_CLAY:
+//        case HAY_BLOCK:
+//        case HARD_CLAY:
+//        case COAL_BLOCK:
+//        case STAINED_GLASS_PANE:
+//        case LEAVES_2:
+//        case LOG_2:
+//        case ACACIA_STAIRS:
+//        case DARK_OAK_STAIRS:
+//        case PACKED_ICE:
             return true;
         default:
             return false;
@@ -673,40 +676,40 @@ public enum Material {
         case RED_ROSE:
         case BROWN_MUSHROOM:
         case RED_MUSHROOM:
-        case TORCH:
-        case FIRE:
-        case REDSTONE_WIRE:
-        case CROPS:
-        case LADDER:
-        case RAILS:
-        case LEVER:
-        case REDSTONE_TORCH_OFF:
-        case REDSTONE_TORCH_ON:
-        case STONE_BUTTON:
-        case SNOW:
-        case SUGAR_CANE_BLOCK:
-        case PORTAL:
-        case DIODE_BLOCK_OFF:
-        case DIODE_BLOCK_ON:
-        case PUMPKIN_STEM:
-        case MELON_STEM:
-        case VINE:
-        case WATER_LILY:
-        case NETHER_WARTS:
-        case ENDER_PORTAL:
-        case COCOA:
-        case TRIPWIRE_HOOK:
-        case TRIPWIRE:
-        case FLOWER_POT:
-        case CARROT:
-        case POTATO:
-        case WOOD_BUTTON:
-        case SKULL:
-        case REDSTONE_COMPARATOR_OFF:
-        case REDSTONE_COMPARATOR_ON:
-        case ACTIVATOR_RAIL:
-        case CARPET:
-        case DOUBLE_PLANT:
+//        case TORCH:
+//        case FIRE:
+//        case REDSTONE_WIRE:
+//        case CROPS:
+//        case LADDER:
+//        case RAILS:
+//        case LEVER:
+//        case REDSTONE_TORCH_OFF:
+//        case REDSTONE_TORCH_ON:
+//        case STONE_BUTTON:
+//        case SNOW:
+//        case SUGAR_CANE_BLOCK:
+//        case PORTAL:
+//        case DIODE_BLOCK_OFF:
+//        case DIODE_BLOCK_ON:
+//        case PUMPKIN_STEM:
+//        case MELON_STEM:
+//        case VINE:
+//        case WATER_LILY:
+//        case NETHER_WARTS:
+//        case ENDER_PORTAL:
+//        case COCOA:
+//        case TRIPWIRE_HOOK:
+//        case TRIPWIRE:
+//        case FLOWER_POT:
+//        case CARROT:
+//        case POTATO:
+//        case WOOD_BUTTON:
+//        case SKULL:
+//        case REDSTONE_COMPARATOR_OFF:
+//        case REDSTONE_COMPARATOR_ON:
+//        case ACTIVATOR_RAIL:
+//        case CARPET:
+//        case DOUBLE_PLANT:
             return true;
         default:
             return false;
@@ -729,34 +732,34 @@ public enum Material {
         case LONG_GRASS:
         case DEAD_BUSH:
         case WOOL:
-        case TNT:
-        case BOOKSHELF:
-        case WOOD_STAIRS:
-        case CHEST:
-        case WORKBENCH:
-        case SIGN_POST:
-        case WOODEN_DOOR:
-        case WALL_SIGN:
-        case WOOD_PLATE:
-        case JUKEBOX:
-        case FENCE:
-        case TRAP_DOOR:
-        case HUGE_MUSHROOM_1:
-        case HUGE_MUSHROOM_2:
-        case VINE:
-        case FENCE_GATE:
-        case WOOD_DOUBLE_STEP:
-        case WOOD_STEP:
-        case SPRUCE_WOOD_STAIRS:
-        case BIRCH_WOOD_STAIRS:
-        case JUNGLE_WOOD_STAIRS:
-        case TRAPPED_CHEST:
-        case DAYLIGHT_DETECTOR:
-        case CARPET:
-        case LEAVES_2:
-        case LOG_2:
-        case ACACIA_STAIRS:
-        case DARK_OAK_STAIRS:
+//        case TNT:
+//        case BOOKSHELF:
+//        case WOOD_STAIRS:
+//        case CHEST:
+//        case WORKBENCH:
+//        case SIGN_POST:
+//        case WOODEN_DOOR:
+//        case WALL_SIGN:
+//        case WOOD_PLATE:
+//        case JUKEBOX:
+//        case FENCE:
+//        case TRAP_DOOR:
+//        case HUGE_MUSHROOM_1:
+//        case HUGE_MUSHROOM_2:
+//        case VINE:
+//        case FENCE_GATE:
+//        case WOOD_DOUBLE_STEP:
+//        case WOOD_STEP:
+//        case SPRUCE_WOOD_STAIRS:
+//        case BIRCH_WOOD_STAIRS:
+//        case JUNGLE_WOOD_STAIRS:
+//        case TRAPPED_CHEST:
+//        case DAYLIGHT_DETECTOR:
+//        case CARPET:
+//        case LEAVES_2:
+//        case LOG_2:
+//        case ACACIA_STAIRS:
+//        case DARK_OAK_STAIRS:
             return true;
         default:
             return false;
@@ -778,22 +781,22 @@ public enum Material {
         case WOOL:
         case YELLOW_FLOWER:
         case RED_ROSE:
-        case TNT:
-        case BOOKSHELF:
-        case WOOD_STAIRS:
-        case FENCE:
-        case VINE:
-        case WOOD_DOUBLE_STEP:
-        case WOOD_STEP:
-        case SPRUCE_WOOD_STAIRS:
-        case BIRCH_WOOD_STAIRS:
-        case JUNGLE_WOOD_STAIRS:
-        case HAY_BLOCK:
-        case COAL_BLOCK:
-        case LEAVES_2:
-        case LOG_2:
-        case CARPET:
-        case DOUBLE_PLANT:
+//        case TNT:
+//        case BOOKSHELF:
+//        case WOOD_STAIRS:
+//        case FENCE:
+//        case VINE:
+//        case WOOD_DOUBLE_STEP:
+//        case WOOD_STEP:
+//        case SPRUCE_WOOD_STAIRS:
+//        case BIRCH_WOOD_STAIRS:
+//        case JUNGLE_WOOD_STAIRS:
+//        case HAY_BLOCK:
+//        case COAL_BLOCK:
+//        case LEAVES_2:
+//        case LOG_2:
+//        case CARPET:
+//        case DOUBLE_PLANT:
             return true;
         default:
             return false;
@@ -831,48 +834,48 @@ public enum Material {
         case IRON_BLOCK:
         case DOUBLE_STEP:
         case BRICK:
-        case BOOKSHELF:
-        case MOSSY_COBBLESTONE:
-        case OBSIDIAN:
-        case MOB_SPAWNER:
-        case DIAMOND_ORE:
-        case DIAMOND_BLOCK:
-        case WORKBENCH:
-        case FURNACE:
-        case BURNING_FURNACE:
-        case REDSTONE_ORE:
-        case GLOWING_REDSTONE_ORE:
-        case SNOW_BLOCK:
-        case CLAY:
-        case JUKEBOX:
-        case PUMPKIN:
-        case NETHERRACK:
-        case SOUL_SAND:
-        case JACK_O_LANTERN:
-        case MONSTER_EGGS:
-        case SMOOTH_BRICK:
-        case HUGE_MUSHROOM_1:
-        case HUGE_MUSHROOM_2:
-        case MELON_BLOCK:
-        case MYCEL:
-        case NETHER_BRICK:
-        case ENDER_PORTAL_FRAME:
-        case ENDER_STONE:
-        case REDSTONE_LAMP_OFF:
-        case REDSTONE_LAMP_ON:
-        case WOOD_DOUBLE_STEP:
-        case EMERALD_ORE:
-        case EMERALD_BLOCK:
-        case COMMAND:
-        case QUARTZ_ORE:
-        case QUARTZ_BLOCK:
-        case DROPPER:
-        case STAINED_CLAY:
-        case HAY_BLOCK:
-        case HARD_CLAY:
-        case COAL_BLOCK:
-        case LOG_2:
-        case PACKED_ICE:
+//        case BOOKSHELF:
+//        case MOSSY_COBBLESTONE:
+//        case OBSIDIAN:
+//        case MOB_SPAWNER:
+//        case DIAMOND_ORE:
+//        case DIAMOND_BLOCK:
+//        case WORKBENCH:
+//        case FURNACE:
+//        case BURNING_FURNACE:
+//        case REDSTONE_ORE:
+//        case GLOWING_REDSTONE_ORE:
+//        case SNOW_BLOCK:
+//        case CLAY:
+//        case JUKEBOX:
+//        case PUMPKIN:
+//        case NETHERRACK:
+//        case SOUL_SAND:
+//        case JACK_O_LANTERN:
+//        case MONSTER_EGGS:
+//        case SMOOTH_BRICK:
+//        case HUGE_MUSHROOM_1:
+//        case HUGE_MUSHROOM_2:
+//        case MELON_BLOCK:
+//        case MYCEL:
+//        case NETHER_BRICK:
+//        case ENDER_PORTAL_FRAME:
+//        case ENDER_STONE:
+//        case REDSTONE_LAMP_OFF:
+//        case REDSTONE_LAMP_ON:
+//        case WOOD_DOUBLE_STEP:
+//        case EMERALD_ORE:
+//        case EMERALD_BLOCK:
+//        case COMMAND:
+//        case QUARTZ_ORE:
+//        case QUARTZ_BLOCK:
+//        case DROPPER:
+//        case STAINED_CLAY:
+//        case HAY_BLOCK:
+//        case HARD_CLAY:
+//        case COAL_BLOCK:
+//        case LOG_2:
+//        case PACKED_ICE:
             return true;
         default:
             return false;
@@ -887,7 +890,7 @@ public enum Material {
         switch (this) {
         case SAND:
         case GRAVEL:
-        case ANVIL:
+//        case ANVIL:
             return true;
         default:
             return false;

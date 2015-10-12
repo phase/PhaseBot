@@ -11,7 +11,7 @@ public class Block {
 
     @Getter public Vector3d pos;
 
-    @Getter public Material material;
+    @Getter public Materials material;
     
     int id;
 
@@ -41,7 +41,7 @@ public class Block {
             id = 0;
         }
         this.id = id;
-        material = Material.getMaterial(id);
+        material = Materials.getMaterial(id);
         cache.add(this);
     }
 
