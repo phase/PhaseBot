@@ -4,11 +4,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.plaf.*;
 import javax.swing.text.*;
 import xyz.jadonfowler.phasebot.*;
 
 public class ConsoleGui {
 
+    static final Color DARK_GREY = new Color(50, 50, 50);
     JFrame frame;
     JTextPane console;
     JTextPane chat;
@@ -21,6 +23,7 @@ public class ConsoleGui {
     ArrayList<String> recentInputs = new ArrayList<String>();
     int recentInputId = 0;
     int recentInputMax = 10;
+    SimpleAttributeSet background = new SimpleAttributeSet();
 
     public ConsoleGui() {
         new Thread(new Runnable() {
@@ -30,6 +33,11 @@ public class ConsoleGui {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 }
                 catch (Exception e) {}
+                //StyleConstants.setBackground(background, new Color(230, 255, 230));
+                UIDefaults defaults = UIManager.getDefaults();
+                defaults.put("TextPane[Enabled].backgroundPainter", DARK_GREY);
+                defaults.put("TextPane.background", new ColorUIResource(DARK_GREY));
+                defaults.put("TextPane.inactiveBackground", new ColorUIResource(DARK_GREY));
                 frame = new JFrame();
                 frame.setTitle("PhaseBot: " + PhaseBot.HOST);
                 frame.setDefaultCloseOperation(3);
@@ -37,13 +45,12 @@ public class ConsoleGui {
                 console.setEditable(false);
                 console.setFont(new Font("Open Sans", Font.PLAIN, 12));
                 console.setOpaque(false);
-                console.setBackground(new Color(50, 50, 50));
+                // console.setBackground(new Color(50, 50, 50));
                 consoleDocument = console.getStyledDocument();
                 chat = new JTextPane();
                 chat.setEditable(false);
                 chat.setFont(new Font("Open Sans", Font.PLAIN, 12));
                 chat.setOpaque(false);
-                chat.setBackground(new Color(50, 50, 50));
                 chatDocument = chat.getStyledDocument();
                 input = new JTextField();
                 // input.setEditable(true); //Probably don't need
@@ -100,14 +107,18 @@ public class ConsoleGui {
                 chatScrollPane.setOpaque(false);
                 chatScrollPane.getViewport().setOpaque(false);
                 JTabbedPane tabs = new JTabbedPane();
+                tabs.setBackground(DARK_GREY);
                 tabs.addTab("Console", null, consoleScrollPane, "Console for PhaseBot");
+                console.putClientProperty("Nimbus.Overrides", defaults);
+                console.putClientProperty("Nimbus.Overrides.InferitDefaults", true);
+                console.setBackground(DARK_GREY);
                 tabs.addTab("Chat", null, chatScrollPane, "Incoming chat messages");
-                tabs.setBackground(new Color(50, 50, 50));
+                chat.putClientProperty("Nimbus.Overrides", defaults);
+                chat.putClientProperty("Nimbus.Overrides.InferitDefaults", true);
+                chat.setBackground(DARK_GREY);
                 frame.add(input, BorderLayout.SOUTH);
                 frame.add(tabs, BorderLayout.CENTER);
-                //frame.add(consoleScrollPane, BorderLayout.WEST);
-                //frame.add(chatScrollPane, BorderLayout.EAST);
-                frame.getContentPane().setBackground(new Color(50, 50, 50));
+                frame.getContentPane().setBackground(DARK_GREY);
                 frame.setSize(660, 350);// TODO Change
                 frame.setLocationRelativeTo(null);
                 frame.setResizable(false); // TODO Change
@@ -125,34 +136,33 @@ public class ConsoleGui {
     }
 
     public void print(String s, boolean trace) {
-        print(s, trace, new Color(255, 255, 255));
+        print(s, trace, Color.BLACK);
     }
 
     public void addChatMessage(String s) {
         try {
-            Style style = console.addStyle("Style", null);
-            chatDocument.insertString(chatDocument.getLength(), s + "\n", style);
+            StyleConstants.setForeground(background, Color.BLACK);
+            chatDocument.insertString(chatDocument.getLength(), s + "\n", background);
         }
         catch (Exception e) {}
     }
 
     public void print(String s, boolean trace, Color c) {
         try {
-            Style style = console.addStyle("Style", null);
-            StyleConstants.setForeground(style, c);
+            StyleConstants.setForeground(background, c);
             if (trace) {
                 Throwable t = new Throwable();
                 StackTraceElement[] elements = t.getStackTrace();
                 String caller = elements[0].getClassName();
                 s = caller + " > " + s;
             }
-            consoleDocument.insertString(consoleDocument.getLength(), s, style);
+            consoleDocument.insertString(consoleDocument.getLength(), s, background);
         }
         catch (Exception e) {}
     }
 
     public void println(String s, boolean trace) {
-        print(s +"\n", trace);
+        print(s + "\n", trace);
     }
 
     public void println(String s, boolean trace, Color c) {
@@ -184,7 +194,7 @@ public class ConsoleGui {
 
     public void performCommand(String s) {
         try {
-            println("$ " + s, false, Color.GREEN);
+            println("$ " + s, false, new Color(92, 196, 88));
             PhaseBot.getBot().runCommand(s, true);
         }
         catch (Exception e) {
