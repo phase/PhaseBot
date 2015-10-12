@@ -302,8 +302,7 @@ public class Bot {
         Face face = Face.INVALID;
         Vector3d blockLocation = null;
         float cursorX = 0, cursorY = 0, cursorZ = 0;
-        getBlock:
-        for (int x = -1; x < 2; x++) {
+        getBlock: for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
                 for (int z = -1; z < 2; z++) {
                     Block b = Block.getBlock(new Vector3d(x + location.x, y + location.y, z + location.z));

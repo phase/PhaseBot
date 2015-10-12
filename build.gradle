@@ -24,10 +24,10 @@ sourceSets {
 task fatJar(type: Jar) {
     manifest {
         attributes 'Implementation-Title': 'PhaseBot',  
-            'Implementation-Version': '1.0',
+            'Implementation-Version': '1.0.2',
             'Main-Class': 'xyz.jadonfowler.phasebot.PhaseBot'
     }
-    baseName = project.name + '-all'
+    baseName = project.name + '-' + manifest.attributes['Implementation-Version']
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
