@@ -51,17 +51,18 @@ public enum ToolStrength {
         double time = 0;
         while (time < 1)
             time += strengthAgainstBlock(tool, block, underwater, onGround);
-        return time;
+        return time * 1000;
     }
 
     public static double strengthAgainstBlock(ItemType tool, BlockType block, boolean underwater, boolean onGround) {
-        if (block.getHardness() < 0) return 0;
-        if (!canHarvest(tool, block)) return 1 / block.getHardness() / 100;
+        return block.getHardness() * 5;
+        /*if (block.getHardness() < 0) return 0;
+        if (!canHarvest(tool, block)) return (1 / block.getHardness()) / 100;
         double d = 1;
         if (isEffectiveAgainst(tool, block)) d *= getEffectiveness(tool);
         if (underwater) d /= 5;
         if (!onGround) d /= 5;
-        return d / block.getHardness() / 30;
+        return (d / block.getHardness()) / 30;*/
     }
 
     public static boolean canHarvest(ItemType tool, BlockType block) {

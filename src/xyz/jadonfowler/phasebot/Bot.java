@@ -261,7 +261,19 @@ public class Bot {
         // p.getY() + " " + p.getZ());
         client.getSession().send(new ClientPlayerActionPacket(PlayerAction.START_DIGGING, p, Face.TOP));
         swing();
-        client.getSession().send(new ClientPlayerActionPacket(PlayerAction.FINISH_DIGGING, p, Face.TOP));
+        // if(!(gamemode == GameMode.CREATIVE))
+        BlockType block = Block.getBlock(relativeToAbsolute(new Vector3d(rx, ry, rz))).getMaterial().toBlock();
+        try {
+            double waitTime = ToolStrength.getWaitTime(Material.getMaterial(inventory.getHeldItem().getId()).toItem(),
+                    block, false, true);
+            PhaseBot.getConsole().println("Block wait time: " + waitTime);
+            Thread.sleep((int) waitTime);
+            PhaseBot.getConsole().println(" done");
+            client.getSession().send(new ClientPlayerActionPacket(PlayerAction.FINISH_DIGGING, p, Face.TOP));
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void say(String s) {
