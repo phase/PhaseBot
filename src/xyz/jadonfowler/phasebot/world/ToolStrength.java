@@ -1,27 +1,44 @@
 package xyz.jadonfowler.phasebot.world;
 
-import static xyz.jadonfowler.phasebot.world.Materials.*;
 import java.util.*;
 import lombok.*;
+import xyz.jadonfowler.phasebot.world.material.*;
 
-public enum ToolStrength {/*
+public enum ToolStrength {
     //@formatter:off
-    WOOD(2f, WOOD_SWORD, WOOD_PICKAXE, WOOD_AXE, WOOD_SPADE, WOOD_HOE),
-    STONE(4f, STONE_SWORD, STONE_PICKAXE, STONE_AXE, STONE_SPADE, STONE_HOE),
-    IRON(6f, IRON_SWORD, IRON_PICKAXE, IRON_AXE, IRON_SPADE, IRON_HOE),
-    DIAMOND(8f, DIAMOND_SWORD, DIAMOND_PICKAXE, DIAMOND_AXE, DIAMOND_SPADE, DIAMOND_HOE),
-    GOLD(12f, GOLD_SWORD, GOLD_PICKAXE, GOLD_AXE, GOLD_SPADE, GOLD_HOE);
+    WOOD(2f, Material.fromString("wood_sword", "wood_pickaxe", "wood_axe", "wood_spade", "wood_hoe")),
+    STONE(4f, Material.fromString("stone_sword", "stone_pickaxe", "stone_axe", "stone_spade", "stone_hoe")),
+    IRON(6f, Material.fromString("iron_sword", "iron_pickaxe", "iron_axe", "iron_spade", "iron_hoe")),
+    DIAMOND(8f, Material.fromString("diamond_sword", "diamond_pickaxe", "diamond_axe", "diamond_spade", "diamond_hoe")),
+    GOLD(12f, Material.fromString("gold_sword", "gold_pickaxe", "gold_axe", "gold_spade", "gold_hoe"));
     //@formatter:on
 
+    @Getter private static final List<String> level0Stones = Arrays
+            .asList(new String[] { "stone", "cobblestone", "double_stone_slab", "stone_slab", "mossy_cobblestone",
+                    "stone_stairs", "monster_egg", "cobblestone_wall", "sandstone", "stone_pressure_plate", "glowstone",
+                    "stonebrick", "stone_brick_stairs", "sandstone_stairs", "cobblestone_wall", "redstone_block",
+                    "quartz_block", "red_sandstone", "red_sandstone_stairs", "double_stone_slab2", "stone_slab2" });
+    @Getter private static final List<String> level1Stones = Arrays
+            .asList(new String[] { "iron_ore", "iron_block", "lapis_ore", "lapis_block" });
+    @Getter private static final List<String> level2Stones = Arrays.asList(new String[] { "diamond_ore",
+            "diamond_block", "gold_ore", "gold_block", "redstone_ore", "lit_redstone_ore" });
+    @Getter private static final List<String> level3Stones = Arrays.asList(new String[] { "obsidian" });
+    @Getter private static final List<String> level0Picks = Arrays.asList(
+            new String[] { "wood_pickaxe", "gold_pickaxe", "stone_pickaxe", "iron_pickaxe", "diamond_pickaxe" });
+    @Getter private static final List<String> level1Picks = Arrays
+            .asList(new String[] { "stone_pickaxe", "iron_pickaxe", "diamond_pickaxe" });
+    @Getter private static final List<String> level2Picks = Arrays
+            .asList(new String[] { "iron_pickaxe", "diamond_pickaxe" });
+    @Getter private static final List<String> level3Picks = Arrays.asList(new String[] { "diamond_pickaxe" });
     @Getter float strength;
-    @Getter List<Materials> materials;
+    @Getter List<Material> materials;
 
-    ToolStrength(float strength, Materials... materials) {
+    ToolStrength(float strength, Material... materials) {
         this.strength = strength;
         this.materials = Arrays.asList(materials);
     }
 
-    public static float getEffectiveness(Materials tool) {
+    public static float getEffectiveness(Material tool) {
         if (WOOD.materials.contains(tool)) return WOOD.strength;
         else if (STONE.materials.contains(tool)) return STONE.strength;
         else if (IRON.materials.contains(tool)) return IRON.strength;
@@ -30,14 +47,14 @@ public enum ToolStrength {/*
         return 0f;
     }
 
-    public static double getWaitTime(Materials tool, Materials block, boolean underwater, boolean onGround) {
+    public static double getWaitTime(ItemType tool, BlockType block, boolean underwater, boolean onGround) {
         double time = 0;
         while (time < 1)
             time += strengthAgainstBlock(tool, block, underwater, onGround);
         return time;
     }
 
-    public static double strengthAgainstBlock(Materials tool, Materials block, boolean underwater, boolean onGround) {
+    public static double strengthAgainstBlock(ItemType tool, BlockType block, boolean underwater, boolean onGround) {
         if (block.getHardness() < 0) return 0;
         if (!canHarvest(tool, block)) return 1 / block.getHardness() / 100;
         double d = 1;
@@ -47,105 +64,29 @@ public enum ToolStrength {/*
         return d / block.getHardness() / 30;
     }
 
-    public static boolean canHarvest(Materials tool, Materials block) {
-        if (!block.isSolid() && block.isBlock()) return true;
+    public static boolean canHarvest(ItemType tool, BlockType block) {
+        if (!block.isSolid()) return true;
         else return isEffectiveAgainst(tool, block);
     }
 
-    public static boolean isEffectiveAgainst(Materials tool, Materials block) {
-        switch (tool) {
-        case WOOD_SPADE:
-        case STONE_SPADE:
-        case IRON_SPADE:
-        case DIAMOND_SPADE:
-        case GOLD_SPADE:
-            switch (block) {
-            case GRASS:
-            case DIRT:
-            case SAND:
-            case GRAVEL:
-            case SNOW:
-            case SNOW_BLOCK:
-            case CLAY:
-                return true;
-            default:
-                return false;
-            }
-        case WOOD_AXE:
-        case STONE_AXE:
-        case IRON_AXE:
-        case DIAMOND_AXE:
-        case GOLD_AXE:
-            switch (block) {
-            case WOOD:
-            case BOOKSHELF:
-            case LOG:
-            case LOG_2:
-                return true;
-            default:
-                return false;
-            }
-            // Everything below this line can be made better
-            // Level 0
-        case WOOD_PICKAXE:
-        case GOLD_PICKAXE:
-            // Level 1
-        case STONE_PICKAXE:
-            // Level 2
-        case IRON_PICKAXE:
-            // Level 3
-        case DIAMOND_PICKAXE:
-            switch (block) {
-            // Level 0
-            case STONE:
-            case COBBLESTONE:
-            case COBBLESTONE_STAIRS:
-            case COBBLE_WALL:
-            case SANDSTONE:
-            case SANDSTONE_STAIRS:
-            case MOSSY_COBBLESTONE:
-            case COAL_BLOCK:
-            case REDSTONE_BLOCK:
-            case QUARTZ_BLOCK:
-                return true;
-            // Level 1
-            case IRON_ORE:
-            case IRON_BLOCK:
-            case LAPIS_BLOCK:
-            case LAPIS_ORE:
-                switch (tool) {
-                case STONE_PICKAXE:
-                case IRON_PICKAXE:
-                case DIAMOND_PICKAXE:
-                    return true;
-                default:
-                    return false;
-                }
-                // Level 2
-            case DIAMOND_ORE:
-            case DIAMOND_BLOCK:
-            case GOLD_ORE:
-            case GOLD_BLOCK:
-            case REDSTONE_ORE:
-                switch (tool) {
-                case IRON_PICKAXE:
-                case DIAMOND_PICKAXE:
-                    return true;
-                default:
-                    return false;
-                }
-                // Level 3
-            case OBSIDIAN:
-                switch (tool) {
-                case DIAMOND_PICKAXE:
-                    return true;
-                default:
-                    return false;
-                }
-            default:
-            }
-        default:
-            return false;
+    public static boolean isEffectiveAgainst(ItemType tool, BlockType block) {
+        if (!tool.getName().contains("_")) return false;
+        if (tool.getName().endsWith("_spade")) {
+            if (block.getMaterial().equals("dirt")) return true;
+            else return false;
         }
-    }*/
+        else if (tool.getName().endsWith("_axe")) {
+            if (block.getMaterial().equals("wood")) return true;
+            else return false;
+        }
+        else if (tool.getName().endsWith("_pickaxe")) {
+            if (!block.getMaterial().equals("rock")) return false;
+            if (tool.getName().equals("diamond_pick")) return true;
+            if (level0Stones.contains(block.getName())) return true;
+            if (level1Stones.contains(block.getName()) && level1Picks.contains(tool.getName())) return true;
+            if (level2Stones.contains(block.getName()) && level2Picks.contains(tool.getName())) return true;
+            if (level3Stones.contains(block.getName()) && level3Picks.contains(tool.getName())) return true;
+        }
+        return false;
+    }
 }

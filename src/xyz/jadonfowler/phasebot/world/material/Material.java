@@ -51,7 +51,7 @@ public class Material {
         return null;
     }
 
-    public static Material[] fromString(String[] s) {
+    public static Material[] fromString(String... s) {
         Material[] materials = new Material[s.length];
         for (int i = 0; i < s.length; i++)
             materials[i] = fromString(s[i]);

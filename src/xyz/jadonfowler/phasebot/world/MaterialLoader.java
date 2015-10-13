@@ -80,7 +80,7 @@ public class MaterialLoader {
                  * @formatter:on
                  */
                 blockBuilder.build();
-                //System.out.println(Material.getBlock(block.get("name").toString()).toString());
+                // System.out.println(Material.getBlock(block.get("name").toString()).toString());
             }
         }
         catch (Exception e) {
