@@ -6,11 +6,11 @@ import xyz.jadonfowler.phasebot.world.material.*;
 
 public enum ToolStrength {
     //@formatter:off
-    WOOD(2f, Material.fromString("wood_sword", "wood_pickaxe", "wood_axe", "wood_spade", "wood_hoe")),
-    STONE(4f, Material.fromString("stone_sword", "stone_pickaxe", "stone_axe", "stone_spade", "stone_hoe")),
-    IRON(6f, Material.fromString("iron_sword", "iron_pickaxe", "iron_axe", "iron_spade", "iron_hoe")),
-    DIAMOND(8f, Material.fromString("diamond_sword", "diamond_pickaxe", "diamond_axe", "diamond_spade", "diamond_hoe")),
-    GOLD(12f, Material.fromString("gold_sword", "gold_pickaxe", "gold_axe", "gold_spade", "gold_hoe"));
+    WOOD(2f, Material.getMaterials("wood_sword", "wood_pickaxe", "wood_axe", "wood_spade", "wood_hoe")),
+    STONE(4f, Material.getMaterials("stone_sword", "stone_pickaxe", "stone_axe", "stone_spade", "stone_hoe")),
+    IRON(6f, Material.getMaterials("iron_sword", "iron_pickaxe", "iron_axe", "iron_spade", "iron_hoe")),
+    DIAMOND(8f, Material.getMaterials("diamond_sword", "diamond_pickaxe", "diamond_axe", "diamond_spade", "diamond_hoe")),
+    GOLD(12f, Material.getMaterials("gold_sword", "gold_pickaxe", "gold_axe", "gold_spade", "gold_hoe"));
     //@formatter:on
 
     @Getter private static final List<String> level0Stones = Arrays

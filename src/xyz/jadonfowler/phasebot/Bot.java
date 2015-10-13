@@ -14,6 +14,7 @@ import xyz.jadonfowler.phasebot.inventory.*;
 import xyz.jadonfowler.phasebot.pathfind.*;
 import xyz.jadonfowler.phasebot.util.*;
 import xyz.jadonfowler.phasebot.world.*;
+import xyz.jadonfowler.phasebot.world.material.*;
 
 public class Bot {
 
@@ -99,7 +100,7 @@ public class Bot {
     }
 
     public void fall() {
-        while (Block.getBlock(pos.x, pos.y - 1, pos.z).getMaterial() == Materials.AIR)
+        while (Block.getBlock(pos.x, pos.y - 1, pos.z).getMaterial() == Material.getMaterial(0))
             move(0, -1, 0);
     }
 
@@ -280,7 +281,7 @@ public class Bot {
             for (int y = -1; y < 2; y++) {
                 for (int z = -1; z < 2; z++) {
                     Block b = Block.getBlock(new Vector3d(x + d.x, y + d.y, z + d.z));
-                    if (b.getMaterial() != Materials.AIR) {
+                    if (b.getMaterial() != Material.getMaterial(0)) {
                         if ((x == -1 && z == 0 && y == 0)) return Face.WEST;
                         else if ((x == 1 && z == 0 && y == 0)) return Face.EAST;
                         else if ((x == 0 && z == 0 && y == 1)) return Face.BOTTOM;
@@ -306,7 +307,7 @@ public class Bot {
             for (int y = -1; y < 2; y++) {
                 for (int z = -1; z < 2; z++) {
                     Block b = Block.getBlock(new Vector3d(x + location.x, y + location.y, z + location.z));
-                    if (b.getMaterial() != Materials.AIR) {
+                    if (b.getMaterial() != Material.getMaterial(0)) {
                         if ((x == 0 && z == 0 && y == -1)) {
                             face = Face.TOP;
                             blockLocation = b.getPos();
@@ -393,7 +394,7 @@ public class Bot {
         client.getSession().send(new ClientPlayerPlaceBlockPacket(Vector3d.toPosition(blockLocation), face,
                 inventory.getHeldItem(), cursorX, cursorY, cursorZ));
         try {
-            if (Materials.getMaterial(inventory.getHeldItem().getId()).isBlock())
+            if (Material.getMaterial(inventory.getHeldItem().getId()) instanceof BlockType)
                 ChunkColumn.setBlock(Vector3d.toPosition(location), inventory.getHeldItem().getId());
         }
         catch (Exception e) {
@@ -458,7 +459,7 @@ public class Bot {
         return Math.sqrt(Math.pow(pos.x - l.x, 2) + Math.pow(pos.y - l.y, 2) + Math.pow(pos.z - l.z, 2));
     }
 
-    public Block getClosestBlock(Materials material, int range) {
+    public Block getClosestBlock(Material material, int range) {
         ArrayList<Block> matches = new ArrayList<Block>();
         for (int x = 0; x < range; x++) {
             for (int y = 0; y < range; y++) {

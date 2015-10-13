@@ -34,7 +34,7 @@ public class MaterialLoader {
                  * @formatter:on
                  */
                 itemBuilder.build();
-                System.out.println(Material.getItem(item.get("name").toString()).toString());
+                // System.out.println(Material.getItem(item.get("name").toString()).toString());
             }
         }
         catch (Exception e) {

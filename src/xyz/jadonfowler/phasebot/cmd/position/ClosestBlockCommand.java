@@ -3,14 +3,14 @@ package xyz.jadonfowler.phasebot.cmd.position;
 import org.spacehq.packetlib.*;
 import xyz.jadonfowler.phasebot.*;
 import xyz.jadonfowler.phasebot.cmd.*;
-import xyz.jadonfowler.phasebot.world.*;
+import xyz.jadonfowler.phasebot.world.material.*;
 
 
 public class ClosestBlockCommand extends Command {
 
     @Override public void exec(String in, String[] args, Session s) {
         try{
-            Materials m = Materials.getMaterial(args[1]);
+            Material m = Material.getMaterial(args[1]);
             PhaseBot.getBot().getClosestBlock(m, 20);
         }catch(Exception e){
             e.printStackTrace();

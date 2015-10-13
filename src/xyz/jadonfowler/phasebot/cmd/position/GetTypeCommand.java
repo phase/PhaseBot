@@ -3,13 +3,13 @@ package xyz.jadonfowler.phasebot.cmd.position;
 import org.spacehq.packetlib.*;
 import xyz.jadonfowler.phasebot.*;
 import xyz.jadonfowler.phasebot.cmd.*;
-import xyz.jadonfowler.phasebot.world.*;
+import xyz.jadonfowler.phasebot.world.material.*;
 
 public class GetTypeCommand extends Command {
 
     @Override public void exec(String in, String[] args, Session s) {
         PhaseBot.getBot().getVariables().put("type",
-                Materials.getMaterial(Integer.parseInt(args[1])).toString().toLowerCase());
+                Material.getMaterial(Integer.parseInt(args[1])).getDisplayName().toLowerCase());
     }
 
     @Override public String getCommand() {

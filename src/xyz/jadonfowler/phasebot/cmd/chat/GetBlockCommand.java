@@ -1,9 +1,10 @@
 package xyz.jadonfowler.phasebot.cmd.chat;
 
-import org.spacehq.packetlib.Session;
-import xyz.jadonfowler.phasebot.PhaseBot;
-import xyz.jadonfowler.phasebot.cmd.Command;
+import org.spacehq.packetlib.*;
+import xyz.jadonfowler.phasebot.*;
+import xyz.jadonfowler.phasebot.cmd.*;
 import xyz.jadonfowler.phasebot.world.*;
+import xyz.jadonfowler.phasebot.world.material.*;
 
 public class GetBlockCommand extends Command {
 
@@ -11,10 +12,10 @@ public class GetBlockCommand extends Command {
         int rx = Integer.parseInt(args[1]);
         int ry = Integer.parseInt(args[2]);
         int rz = Integer.parseInt(args[3]);
-        Materials m = Block
+        BlockType m = Block
                 .getBlock(PhaseBot.getBot().pos.x + rx, PhaseBot.getBot().pos.y + ry, PhaseBot.getBot().pos.z + rz)
                 .getMaterial();
-        // PhaseBot.getBot().say("I am standing on: " + m.toString());
+        // PhaseBot.getBot().say("I am standing on: " + m.getDisplayName());
         PhaseBot.getBot().getVariables().put("block", m.getId() + "");
     }
 

@@ -2,16 +2,17 @@ package xyz.jadonfowler.phasebot.world.material;
 
 import java.util.*;
 import lombok.*;
+import xyz.jadonfowler.phasebot.*;
 
 public class Material {
 
-    @Getter private static final ArrayList<Material> materials = new ArrayList<Material>();
+    @Getter private static final ArrayList<Material> materialsCache = new ArrayList<Material>();
     @Getter long id;
     @Getter String displayName;
     @Getter String name;
 
     public Material() {
-        materials.add(this);
+        materialsCache.add(this);
     }
 
     public BlockType toBlock() {
@@ -25,7 +26,7 @@ public class Material {
     }
 
     public static BlockType getBlock(String name) {
-        for (Material m : materials) {
+        for (Material m : materialsCache) {
             if (m instanceof BlockType) {
                 BlockType b = (BlockType) m;
                 if (b.getName().equalsIgnoreCase(name)) return b;
@@ -35,7 +36,7 @@ public class Material {
     }
 
     public static ItemType getItem(String name) {
-        for (Material m : materials) {
+        for (Material m : materialsCache) {
             if (m instanceof ItemType) {
                 ItemType i = (ItemType) m;
                 if (i.getName().equalsIgnoreCase(name)) return i;
@@ -44,17 +45,26 @@ public class Material {
         return null;
     }
 
-    public static Material fromString(String s) {
-        for (Material m : materials) {
+    public static Material getMaterial(int id) {
+        for (Material m : materialsCache) {
+            if (m.getId() == id) {
+                return m;
+            }
+        }
+        return null;
+    }
+
+    public static Material getMaterial(String s) {
+        for (Material m : materialsCache) {
             if (m.getName().equalsIgnoreCase(s)) return m;
         }
         return null;
     }
 
-    public static Material[] fromString(String... s) {
+    public static Material[] getMaterials(String... s) {
         Material[] materials = new Material[s.length];
         for (int i = 0; i < s.length; i++)
-            materials[i] = fromString(s[i]);
+            materials[i] = getMaterial(s[i]);
         return materials;
     }
 }

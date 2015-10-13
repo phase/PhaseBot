@@ -4,6 +4,7 @@ import java.util.*;
 import lombok.*;
 import org.spacehq.mc.protocol.data.game.*;
 import xyz.jadonfowler.phasebot.util.*;
+import xyz.jadonfowler.phasebot.world.material.*;
 
 public class Block {
 
@@ -11,7 +12,7 @@ public class Block {
 
     @Getter public Vector3d pos;
 
-    @Getter public Materials material;
+    @Getter public BlockType material;
     
     int id;
 
@@ -41,7 +42,7 @@ public class Block {
             id = 0;
         }
         this.id = id;
-        material = Materials.getMaterial(id);
+        material = Material.getMaterial(id).toBlock();
         cache.add(this);
     }
 
