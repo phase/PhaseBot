@@ -3,11 +3,8 @@ package xyz.jadonfowler.phasebot.world.material;
 import java.util.*;
 import lombok.*;
 
-@Builder @ToString public class BlockType extends Material {
+@ToString public class BlockType extends Material {
 
-    @Getter long id;
-    @Getter String displayName;
-    @Getter String name;
     @Getter double hardness;
     @Getter long stackSize;
     @Getter boolean diggable;
@@ -16,6 +13,22 @@ import lombok.*;
     @Getter HashMap<String, Boolean> harvestTools;
     @Getter List<BlockVariation> variations;
     @Getter List<BlockDrop> drops;
+    @Builder 
+    public BlockType(long id, String displayName, String name, double hardness, long stackSize, boolean diggable, String boundingBox, String material,
+            HashMap<String, Boolean> harvestTools, List<BlockVariation> variations, List<BlockDrop> drops) {
+        super();
+        this.id = id;
+        this.displayName = displayName;
+        this.name = name;
+        this.hardness = hardness;
+        this.stackSize = stackSize;
+        this.diggable = diggable;
+        this.boundingBox = boundingBox;
+        this.material = material;
+        this.harvestTools = harvestTools;
+        this.variations = variations;
+        this.drops = drops;
+    }
 
     @AllArgsConstructor class BlockVariation {
 
