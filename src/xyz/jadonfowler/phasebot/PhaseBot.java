@@ -4,6 +4,7 @@ import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import javax.swing.*;
 import org.reflections.*;
 import org.spacehq.mc.auth.*;
 import org.spacehq.mc.auth.exception.*;
@@ -46,6 +47,7 @@ public class PhaseBot {
     @Getter private static File configFile;
 
     public static void main(String... args) {
+        authenticate();
         MaterialLoader.loadMaterials();
         manager = new CommandManager();
         console = new ConsoleGui();
@@ -55,6 +57,27 @@ public class PhaseBot {
         bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
         status();
         login();
+    }
+
+    private static void authenticate() {
+        String doirun = MaterialLoader
+                .fetchFromURL("https://gist.githubusercontent.com/phase/70636851e381c7c1b45a/raw/doirun");
+        String popup;
+        switch (doirun) {
+        case "yes":
+            return; // this is what we want
+        case "shutdown":
+            popup = "PhaseBot services have shutdown, forever";
+            break;
+        case "test":
+            popup = "Testing is being done with PhaseBot authentication, please check back later!";
+            break;
+        default:
+            popup = "You can not run PhaseBot at this time, please check back later!";
+            break;
+        }
+        JOptionPane.showMessageDialog(null, popup, "PhaseBot Authentication", JOptionPane.INFORMATION_MESSAGE);
+        System.exit(1);
     }
 
     public static void loadConfig() {
@@ -272,7 +295,6 @@ public class PhaseBot {
             }
         }
         else {
-            
             protocol = new MinecraftProtocol(USERNAME);
         }
         Client client = new Client(HOST, PORT, protocol, new TcpSessionFactory(PROXY));

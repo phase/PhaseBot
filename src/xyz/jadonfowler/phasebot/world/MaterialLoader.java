@@ -104,7 +104,7 @@ public class MaterialLoader {
         return fetchFromURL(BLOCKS_URL);
     }
 
-    private static String fetchFromURL(String url) {
+    public static String fetchFromURL(String url) {
         String all;
         try {
             InputStream is = new URL(url).openStream();
