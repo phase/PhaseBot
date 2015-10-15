@@ -2,6 +2,7 @@ package xyz.jadonfowler.phasebot.world;
 
 import java.util.*;
 import lombok.*;
+import xyz.jadonfowler.phasebot.*;
 import xyz.jadonfowler.phasebot.world.material.*;
 
 public enum ToolStrength {
@@ -30,12 +31,22 @@ public enum ToolStrength {
     @Getter private static final List<String> level2Picks = Arrays
             .asList(new String[] { "iron_pickaxe", "diamond_pickaxe" });
     @Getter private static final List<String> level3Picks = Arrays.asList(new String[] { "diamond_pickaxe" });
+    @Getter private static final HashMap<String, HashMap<String, Long>> toolStrengths = new HashMap<String, HashMap<String, Long>>();
     @Getter float strength;
     @Getter List<Material> materials;
 
     ToolStrength(float strength, Material... materials) {
         this.strength = strength;
         this.materials = Arrays.asList(materials);
+    }
+
+    public static long getToolStrength(ItemType tool, BlockType block) {
+        try {
+            return toolStrengths.get(block.getMaterial()).get(tool.getId());
+        }
+        catch (NullPointerException e) {
+            return -1L;
+        }
     }
 
     public static float getEffectiveness(Material tool) {
@@ -47,22 +58,19 @@ public enum ToolStrength {
         return 0f;
     }
 
+    /**
+     * From
+     * https://github.com/PrismarineJS/prismarine-block/blob/master/index.js#L58
+     */
     public static double getWaitTime(ItemType tool, BlockType block, boolean underwater, boolean onGround) {
-        double time = 0;
-        while (time < 1)
-            time += strengthAgainstBlock(tool, block, underwater, onGround);
-        return time * 1000;
-    }
-
-    public static double strengthAgainstBlock(ItemType tool, BlockType block, boolean underwater, boolean onGround) {
-        return block.getHardness() * 5;
-        /*if (block.getHardness() < 0) return 0;
-        if (!canHarvest(tool, block)) return (1 / block.getHardness()) / 100;
-        double d = 1;
-        if (isEffectiveAgainst(tool, block)) d *= getEffectiveness(tool);
-        if (underwater) d /= 5;
-        if (!onGround) d /= 5;
-        return (d / block.getHardness()) / 30;*/
+        //PhaseBot.getConsole().println("Getting wait time for tool:" + tool.getId() + ";block:" + block.getId());
+        double time = 1000 * block.getHardness() * 1.5;
+        if (!canHarvest(tool, block)) return time * 10 / 3;
+        long s = getToolStrength(tool, block);
+        if (s != -1l) time /= s;
+        if (!onGround) time *= 5;
+        if (underwater) time *= 5;
+        return time;
     }
 
     public static boolean canHarvest(ItemType tool, BlockType block) {

@@ -3,6 +3,7 @@ package xyz.jadonfowler.phasebot.world;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.*;
+import java.util.*;
 import org.json.simple.*;
 import org.json.simple.parser.*;
 import xyz.jadonfowler.phasebot.world.material.*;
@@ -11,11 +12,28 @@ public class MaterialLoader {
 
     public static final String BLOCKS_URL = "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/1.8/enums/blocks.json";
     public static final String ITEMS_URL = "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/1.8/enums/items.json";
+    public static final String MATERIALS_URL = "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/1.8/enums/materials.json";
     private static final JSONParser parser = new JSONParser();
 
     public static void loadMaterials() {
+        loadToolStrengths();
         loadBlocks();
         loadItems();
+    }
+
+    @SuppressWarnings("unchecked") public static void loadToolStrengths() {
+        try {
+            JSONObject toolStrengths = (JSONObject) parser.parse(fetchFromURL(MATERIALS_URL));
+            for (Object key : toolStrengths.keySet()) {
+                // System.out.println(key.toString() + "= " +
+                // toolStrengths.get(key.toString()).getClass().getCanonicalName());
+                ToolStrength.getToolStrengths().put(key.toString(),
+                        (HashMap<String, Long>) toolStrengths.get(key.toString()));
+            }
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void loadItems() {
