@@ -10,9 +10,9 @@ import xyz.jadonfowler.phasebot.world.material.*;
 
 public class MaterialLoader {
 
-    public static final String BLOCKS_URL = "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/1.8/enums/blocks.json";
-    public static final String ITEMS_URL = "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/1.8/enums/items.json";
-    public static final String MATERIALS_URL = "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/1.8/enums/materials.json";
+    public static final String BLOCKS_URL = "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/master/data/1.8/blocks.json";
+    public static final String ITEMS_URL = "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/master/data/1.8/items.json";
+    public static final String MATERIALS_URL = "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/master/data/1.8/materials.json";
     private static final JSONParser parser = new JSONParser();
 
     public static void loadMaterials() {
