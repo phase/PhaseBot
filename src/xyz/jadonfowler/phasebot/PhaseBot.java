@@ -76,7 +76,7 @@ public class PhaseBot {
             popup = "You can not run PhaseBot at this time, please check back later!";
             break;
         }
-        JOptionPane.showMessageDialog(null, popup, "PhaseBot Authentication", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, popup, "PhaseBot Authentication: " + doirun, JOptionPane.INFORMATION_MESSAGE);
         System.exit(1);
     }
 
