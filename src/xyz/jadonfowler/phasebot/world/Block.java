@@ -7,15 +7,10 @@ import xyz.jadonfowler.phasebot.util.*;
 import xyz.jadonfowler.phasebot.world.material.*;
 
 public class Block {
-
     @Getter @NonNull public Chunk chunk;
-
     @Getter public Vector3d pos;
-
     @Getter public BlockType material;
-    
     int id;
-
     @Getter private static ArrayList<Block> cache = new ArrayList<Block>();
 
     private Block(Position p) {
@@ -29,11 +24,10 @@ public class Block {
     private Block(Vector3d p) {
         this.pos = p;
         this.chunk = ChunkColumn.getChunk(this);
-        Vector3d b = new Vector3d(
-                pos.x > 0 ? pos.x % 16 : 16 - (Math.abs(pos.x) % 16), 
-                pos.y > 0 ? pos.y % 16 : 16 - (Math.abs(pos.y) % 16), 
-                        pos.z > 0 ? pos.z % 16 : 16 - (Math.abs(pos.z) % 16));
-        //PhaseBot.getConsole().println(b);
+        Vector3d b = new Vector3d(pos.x > 0 ? pos.x % 16 : 16 - (Math.abs(pos.x) % 16),
+                pos.y > 0 ? pos.y % 16 : 16 - (Math.abs(pos.y) % 16),
+                pos.z > 0 ? pos.z % 16 : 16 - (Math.abs(pos.z) % 16));
+        // PhaseBot.getConsole().println(b);
         int id = 0;
         try {
             id = chunk.getBlocks().getBlock((int) b.x, (int) b.y, (int) b.z);
@@ -66,5 +60,11 @@ public class Block {
 
     public static Block getBlock(double x, double y, double z) {
         return getBlock(new Vector3d(x, y, z));
+    }
+
+    public static Block getBlock(double x, double z) {
+        int y = 256; // World Height
+        while (getBlock(x, y--, z).getMaterial().getId() == 0);
+        return getBlock(x, y, z);
     }
 }

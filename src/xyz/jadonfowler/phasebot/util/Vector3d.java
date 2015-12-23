@@ -5,11 +5,8 @@ import org.spacehq.mc.protocol.data.game.*;
 import xyz.jadonfowler.phasebot.world.*;
 
 public class Vector3d {
-
     @Getter public double x;
-
     @Getter public double y;
-
     @Getter public double z;
 
     public Vector3d(double x, double y, double z) {
@@ -126,5 +123,9 @@ public class Vector3d {
 
     public Block getBlock() {
         return Block.getBlock(floor().round());
+    }
+
+    public Position toPosition() {
+        return toPosition(this);
     }
 }

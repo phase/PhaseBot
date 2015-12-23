@@ -18,6 +18,7 @@ import org.spacehq.packetlib.tcp.*;
 import lombok.*;
 import xyz.jadonfowler.phasebot.cmd.*;
 import xyz.jadonfowler.phasebot.gui.*;
+import xyz.jadonfowler.phasebot.gui.map.*;
 import xyz.jadonfowler.phasebot.script.*;
 import xyz.jadonfowler.phasebot.world.*;
 
@@ -26,9 +27,10 @@ public class PhaseBot {
     @Getter @Setter private static String prefix = ".";
     @Getter private static String[] owners = { "Phase", "Voltz" };
     private static String USERNAME = "username";
-    // Build Server
+    // Build Server //
     public static String HOST = "mort.openredstone.org";
     private static int PORT = 25569;
+    // ------------ //
     private static Proxy PROXY = Proxy.NO_PROXY;
     private static boolean VERIFY_USERS = true;
     public static Random random = new Random();
@@ -38,6 +40,7 @@ public class PhaseBot {
     private static Bot bot;
     @Getter private static ConsoleGui console;
     @Getter private static File configFile;
+    @Getter private static MapGui map;
 
     public static void main(String... args) {
         authenticate();
@@ -287,6 +290,8 @@ public class PhaseBot {
                 bot.setClient(client);
                 client.getSession().addListener(new PacketHandler());
                 client.getSession().connect();
+                // Create Map once we login
+                map = new MapGui();
             }
         });
       /*JTextArea info = new JTextArea();
@@ -296,6 +301,7 @@ public class PhaseBot {
         passFrame.add(passwordField);
         passFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         passFrame.setSize(200, 100);
+        passFrame.setResizable(false);
         passFrame.setVisible(true);
         console.println("Please input your password in the new window.");
     }

@@ -35,10 +35,11 @@ public class ChunkColumn {
     }
 
     public static Chunk getChunk(Block b) {
-        return getChunk(b.toChunkCoords());
+        return getChunk(b.toChunkCoords().toPosition());
     }
 
     public static Chunk getChunk(int x, int y, int z) {
+        y--;
         for (ChunkColumn cl : chunks)
             if (cl.x == x && cl.z == z) {
                 if (cl.y[y] == null || cl.y[y].getBlocks() == null) continue;
