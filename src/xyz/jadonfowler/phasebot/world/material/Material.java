@@ -2,7 +2,6 @@ package xyz.jadonfowler.phasebot.world.material;
 
 import java.util.*;
 import lombok.*;
-import xyz.jadonfowler.phasebot.*;
 
 public class Material {
 

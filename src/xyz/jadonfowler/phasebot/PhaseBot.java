@@ -1,14 +1,16 @@
 package xyz.jadonfowler.phasebot;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
 import javax.swing.*;
 import org.reflections.*;
-import org.spacehq.mc.auth.*;
-import org.spacehq.mc.auth.exception.*;
+import org.spacehq.mc.auth.data.*;
+import org.spacehq.mc.auth.exception.request.*;
 import org.spacehq.mc.protocol.*;
+import org.spacehq.mc.protocol.data.*;
 import org.spacehq.mc.protocol.data.status.*;
 import org.spacehq.mc.protocol.data.status.handler.*;
 import org.spacehq.packetlib.*;
@@ -24,18 +26,9 @@ public class PhaseBot {
     @Getter @Setter private static String prefix = ".";
     @Getter private static String[] owners = { "Phase", "Voltz" };
     private static String USERNAME = "username";
-    private static String PASSWORD = "password";
     // Build Server
     public static String HOST = "mort.openredstone.org";
     private static int PORT = 25569;
-    // Voltz Server
-    // private static String HOST = "173.58.127.167";
-    // private static int PORT = 25565;
-    // Survival Server
-    // public static String HOST = "nick.openredstone.org";
-    // private static int PORT = 25569;
-    // public static String HOST = "localhost";
-    // private static int PORT = 25565;
     private static Proxy PROXY = Proxy.NO_PROXY;
     private static boolean VERIFY_USERS = true;
     public static Random random = new Random();
@@ -54,7 +47,7 @@ public class PhaseBot {
         loadConfig();
         registerCommands();
         loadScripts();
-        bot = new Bot(USERNAME, PASSWORD, HOST, PORT, PROXY);
+        bot = new Bot(USERNAME, HOST, PORT, PROXY);
         status();
         login();
     }
@@ -113,7 +106,6 @@ public class PhaseBot {
                     w.write("PhaseBot Configuration File :O\r\n"
                             + "https://github.com/phase/phasebot\r\n"
                             + "Username: Notch\r\n"
-                            + "Password: Derp\r\n"
                             + "Server: github.orgs:25565\r\n"
                             + "Owners: Phase,Voltz\r\n");
                     //@formatter:on
@@ -127,9 +119,6 @@ public class PhaseBot {
                     try {
                         if (line.startsWith("Username: ")) { // Username:Notch
                             USERNAME = line.split(": ")[1];
-                        }
-                        else if (line.startsWith("Password: ")) { // Password:Derp
-                            PASSWORD = line.split(": ")[1];
                         }
                         else if (line.startsWith("Server: ")) { // Server:minecraft.net:25565
                             HOST = line.split(": ")[1].split(":")[0];
@@ -247,9 +236,9 @@ public class PhaseBot {
     }
 
     public static void status() {
-        MinecraftProtocol protocol = new MinecraftProtocol(ProtocolMode.STATUS);
+        MinecraftProtocol protocol = new MinecraftProtocol(SubProtocol.STATUS);
         Client client = new Client(HOST, PORT, protocol, new TcpSessionFactory(PROXY));
-        client.getSession().setFlag(ProtocolConstants.SERVER_INFO_HANDLER_KEY, new ServerInfoHandler() {
+        client.getSession().setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, new ServerInfoHandler() {
 
             @Override public void handle(Session session, ServerStatusInfo info) {
                 console.println("Version: " + info.getVersionInfo().getVersionName() + ", "
@@ -264,43 +253,51 @@ public class PhaseBot {
                 // console.println("Icon: " + info.getIcon());
             }
         });
-        client.getSession().setFlag(ProtocolConstants.SERVER_PING_TIME_HANDLER_KEY, new ServerPingTimeHandler() {
+        client.getSession().setFlag(MinecraftConstants.SERVER_PING_TIME_HANDLER_KEY, new ServerPingTimeHandler() {
 
             @Override public void handle(Session session, long pingTime) {
                 console.println("Server ping took " + pingTime + "ms");
             }
         });
         client.getSession().connect();
-        while (client.getSession().isConnected()) {
-            try {
-                Thread.sleep(5);
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private static void login() {
         console.println("PhaseBot starting...", false, Color.RED);
-        MinecraftProtocol protocol = null;
-        if (VERIFY_USERS) {
-            try {
-                protocol = new MinecraftProtocol(USERNAME, PASSWORD, false);
-                console.println("Successfully authenticated user.");
+        JFrame passFrame = new JFrame("PhaseBot Login");
+        JPasswordField passwordField = new JPasswordField(16);
+        passwordField.setActionCommand("Login");
+        passwordField.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent ae) {
+                MinecraftProtocol protocol = null;
+                passFrame.setVisible(false);
+                if (VERIFY_USERS) {
+                    try {
+                        protocol = new MinecraftProtocol(USERNAME, String.valueOf(passwordField.getPassword()), false);
+                        console.println("Successfully authenticated user.");
+                    }
+                    catch (RequestException e) {
+                        console.print("Error > Invalid Credentials at " + configFile.getAbsolutePath(), false,
+                                Color.RED);
+                        return;
+                    }
+                }
+                else protocol = new MinecraftProtocol(USERNAME);
+                Client client = new Client(HOST, PORT, protocol, new TcpSessionFactory(PROXY));
+                bot.setClient(client);
+                client.getSession().addListener(new PacketHandler());
+                client.getSession().connect();
             }
-            catch (AuthenticationException e) {
-                console.print("Error > Invalid Credentials at " + configFile.getAbsolutePath(), false, Color.RED);
-                return;
-            }
-        }
-        else {
-            protocol = new MinecraftProtocol(USERNAME);
-        }
-        Client client = new Client(HOST, PORT, protocol, new TcpSessionFactory(PROXY));
-        bot.setClient(client);
-        client.getSession().addListener(new PacketHandler());
-        client.getSession().connect();
+        });
+      /*JTextArea info = new JTextArea();
+        info.setText("PhaseBot Login\n Input your password, it will (probably) not be stored.");
+        info.setEditable(false);
+        passFrame.add(info);*/
+        passFrame.add(passwordField);
+        passFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        passFrame.setSize(200, 100);
+        passFrame.setVisible(true);
+        console.println("Please input your password in the new window.");
     }
 
     public static CommandManager getCommandManager() {

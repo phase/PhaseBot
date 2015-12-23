@@ -111,7 +111,7 @@ public class PacketHandler extends SessionAdapter {
             ServerMultiBlockChangePacket packet = event.<ServerMultiBlockChangePacket> getPacket();
             for (BlockChangeRecord r : packet.getRecords()) {
                 Position p = r.getPosition();
-                int id = r.getBlock();
+                int id = r.getId();
                 ChunkColumn.setBlock(p, id / 16); // Why is this 16? I don't
                                                   // think I should have to do
                                                   // anything with it.
@@ -120,7 +120,7 @@ public class PacketHandler extends SessionAdapter {
         }
         else if (event.getPacket() instanceof ServerBlockChangePacket) {
             Position p = event.<ServerBlockChangePacket> getPacket().getRecord().getPosition();
-            int id = event.<ServerBlockChangePacket> getPacket().getRecord().getBlock();
+            int id = event.<ServerBlockChangePacket> getPacket().getRecord().getId();
             ChunkColumn.setBlock(p, id / 16);
             PhaseBot.getBot().setInteruptMoveAlong(true);
         }

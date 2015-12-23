@@ -4,7 +4,7 @@ import java.util.*;
 import lombok.*;
 
 @ToString public class ItemType extends Material {
-
+    
     @Getter long stackSize;
     @Getter List<ItemVariation> variations;
 
@@ -18,7 +18,7 @@ import lombok.*;
     }
 
     @AllArgsConstructor class ItemVariation {
-
+        
         int metadata;
         String displayName;
     }

@@ -2,7 +2,6 @@ package xyz.jadonfowler.phasebot.world;
 
 import java.util.*;
 import lombok.*;
-import xyz.jadonfowler.phasebot.*;
 import xyz.jadonfowler.phasebot.world.material.*;
 
 public enum ToolStrength {

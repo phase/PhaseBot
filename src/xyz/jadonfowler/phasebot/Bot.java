@@ -19,7 +19,6 @@ import xyz.jadonfowler.phasebot.world.material.*;
 public class Bot {
 
     @Getter @Setter private String username;
-    @Getter @Setter private String password;
     @Getter @Setter private String host;
     @Getter @Setter private int port;
     @Getter @Setter private Proxy proxy = Proxy.NO_PROXY;
@@ -35,9 +34,8 @@ public class Bot {
     // Variables
     @Getter private HashMap<String, String> variables = new HashMap<String, String>();
 
-    public Bot(String username, String password, String host, int port, Proxy proxy) {
+    public Bot(String username, String host, int port, Proxy proxy) {
         this.username = username;
-        this.password = password;
         this.host = host;
         this.port = port;
         this.proxy = proxy;
