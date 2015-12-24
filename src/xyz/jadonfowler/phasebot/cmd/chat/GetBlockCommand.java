@@ -16,6 +16,7 @@ public class GetBlockCommand extends Command {
                 .getBlock(PhaseBot.getBot().pos.x + rx, PhaseBot.getBot().pos.y + ry, PhaseBot.getBot().pos.z + rz)
                 .getMaterial();
         // PhaseBot.getBot().say("I am standing on: " + m.getDisplayName());
+        PhaseBot.getConsole().log(" getblock: " + m.getDisplayName() + " - " + m.getId());
         PhaseBot.getBot().getVariables().put("block", m.getId() + "");
     }
 

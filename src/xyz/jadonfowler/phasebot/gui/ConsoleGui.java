@@ -14,11 +14,14 @@ public class ConsoleGui {
     JFrame frame;
     JTextPane console;
     JTextPane chat;
+    JTextPane logger;
     JTextField input;
     JScrollPane consoleScrollPane;
     JScrollPane chatScrollPane;
+    JScrollPane loggerScrollPane;
     StyledDocument consoleDocument;
     StyledDocument chatDocument;
+    StyledDocument loggerDocument;
     public boolean trace = true;
     ArrayList<String> recentInputs = new ArrayList<String>();
     int recentInputId = 0;
@@ -52,6 +55,11 @@ public class ConsoleGui {
                 chat.setFont(new Font("Open Sans", Font.PLAIN, 12));
                 chat.setOpaque(false);
                 chatDocument = chat.getStyledDocument();
+                logger = new JTextPane();
+                logger.setEditable(false);
+                logger.setFont(new Font("Open Sans", Font.PLAIN, 12));
+                logger.setOpaque(false);
+                loggerDocument = logger.getStyledDocument();
                 input = new JTextField();
                 // input.setEditable(true); //Probably don't need
                 // input.setBorder(null);
@@ -106,6 +114,10 @@ public class ConsoleGui {
                 chatScrollPane.setBorder(null);
                 chatScrollPane.setOpaque(false);
                 chatScrollPane.getViewport().setOpaque(false);
+                loggerScrollPane = new JScrollPane(logger);
+                loggerScrollPane.setBorder(null);
+                loggerScrollPane.setOpaque(false);
+                loggerScrollPane.getViewport().setOpaque(false);
                 JTabbedPane tabs = new JTabbedPane();
                 tabs.setBackground(DARK_GREY);
                 tabs.addTab("Console", null, consoleScrollPane, "Console for PhaseBot");
@@ -116,6 +128,10 @@ public class ConsoleGui {
                 chat.putClientProperty("Nimbus.Overrides", defaults);
                 chat.putClientProperty("Nimbus.Overrides.InferitDefaults", true);
                 chat.setBackground(DARK_GREY);
+                tabs.addTab("Log", null, loggerScrollPane, "Internal Logger");
+                logger.putClientProperty("Nimbus.Overrides", defaults);
+                logger.putClientProperty("Nimbus.Overrides.InferitDefaults", true);
+                logger.setBackground(DARK_GREY);
                 frame.add(input, BorderLayout.SOUTH);
                 frame.add(tabs, BorderLayout.CENTER);
                 frame.getContentPane().setBackground(DARK_GREY);
@@ -138,11 +154,21 @@ public class ConsoleGui {
     public void print(String s, boolean trace) {
         print(s, trace, Color.BLACK);
     }
+    
+    public void log(String s) {
+        try {
+            StyleConstants.setForeground(background, Color.BLACK);
+            loggerDocument.insertString(loggerDocument.getLength(), s + "\n", background);
+            logger.setCaretPosition(logger.getDocument().getLength());
+        }
+        catch (Exception e) {}
+    }
 
     public void addChatMessage(String s) {
         try {
             StyleConstants.setForeground(background, Color.BLACK);
             chatDocument.insertString(chatDocument.getLength(), s + "\n", background);
+            chat.setCaretPosition(chat.getDocument().getLength());
         }
         catch (Exception e) {}
     }
@@ -159,6 +185,7 @@ public class ConsoleGui {
             consoleDocument.insertString(consoleDocument.getLength(), s, background);
         }
         catch (Exception e) {}
+        scrollBottom();
     }
 
     public void println(String s, boolean trace) {

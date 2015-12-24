@@ -291,7 +291,7 @@ public class PhaseBot {
                 client.getSession().addListener(new PacketHandler());
                 client.getSession().connect();
                 // Create Map once we login
-                map = new MapGui();
+                //map = new MapGui();
             }
         });
       /*JTextArea info = new JTextArea();

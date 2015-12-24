@@ -10,7 +10,7 @@ public class Script {
     @Getter private final String[] lines;
     @Getter private String name;
     public int PC = 0;
-    @Getter @Setter private static boolean stop = false;
+    @Getter @Setter private static boolean pause = false;
 
     public Script(String name, String... lines) {
         this.lines = lines;
@@ -20,14 +20,15 @@ public class Script {
     public void run(String[] inputArguments) {
         PC = 0;
         while (PC != lines.length) {
-            if (stop) { return; }
+            if (pause) { return; }
             // PhaseBot.getConsole().println(PC + "/" + lines.length);
             parseLine(lines[PC], inputArguments);
         }
     }
 
     public void parseLine(String s, String[] inputArguments) {
-        if (stop) { return; }
+        if (pause) { return; }
+        PhaseBot.getConsole().log(" script: " + s);
         try {
             String[] args = s.split(" ");
             if (s.trim().startsWith(";")) {/* Comment */}

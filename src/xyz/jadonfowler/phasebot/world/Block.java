@@ -30,7 +30,7 @@ public class Block {
         // PhaseBot.getConsole().println(b);
         int id = 0;
         try {
-            id = chunk.getBlocks().getBlock((int) b.x, (int) b.y, (int) b.z);
+            id = chunk.getBlocks().getBlock((int) b.x, (int) b.y, (int) b.z) >> 4;
         }
         catch (Exception e) {
             id = 0;
