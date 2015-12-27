@@ -9,7 +9,6 @@ import javax.swing.text.*;
 import xyz.jadonfowler.phasebot.*;
 
 public class ConsoleGui {
-
     static final Color DARK_GREY = new Color(50, 50, 50);
     JFrame frame;
     JTextPane console;
@@ -30,20 +29,20 @@ public class ConsoleGui {
 
     public ConsoleGui() {
         new Thread(new Runnable() {
-
             public void run() {
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 }
                 catch (Exception e) {}
-                //StyleConstants.setBackground(background, new Color(230, 255, 230));
+                // StyleConstants.setBackground(background, new Color(230, 255,
+                // 230));
                 UIDefaults defaults = UIManager.getDefaults();
                 defaults.put("TextPane[Enabled].backgroundPainter", DARK_GREY);
                 defaults.put("TextPane.background", new ColorUIResource(DARK_GREY));
                 defaults.put("TextPane.inactiveBackground", new ColorUIResource(DARK_GREY));
                 frame = new JFrame();
                 frame.setTitle("PhaseBot: " + PhaseBot.HOST);
-                frame.setDefaultCloseOperation(3);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 console = new JTextPane();
                 console.setEditable(false);
                 console.setFont(new Font("Open Sans", Font.PLAIN, 12));
@@ -69,7 +68,6 @@ public class ConsoleGui {
                 input.setOpaque(false);
                 // Input
                 input.addActionListener(new ActionListener() {
-
                     public void actionPerformed(ActionEvent e) {
                         String in = input.getText();
                         if (in.length() > 0) {
@@ -86,7 +84,6 @@ public class ConsoleGui {
                 });
                 // Previous inputs
                 input.addKeyListener(new KeyListener() {
-
                     public void keyPressed(KeyEvent e) {
                         try {
                             if (e.getKeyCode() == KeyEvent.VK_UP) {
@@ -148,17 +145,20 @@ public class ConsoleGui {
     }
 
     public void scrollBottom() {
-        console.setCaretPosition(console.getDocument().getLength());
+        try {
+            console.setCaretPosition(console.getDocument().getLength());
+        }
+        catch (Exception e) {}
     }
 
     public void print(String s, boolean trace) {
         print(s, trace, Color.BLACK);
     }
-    
-    public void log(String s) {
+
+    public void log(Object s) {
         try {
             StyleConstants.setForeground(background, Color.BLACK);
-            loggerDocument.insertString(loggerDocument.getLength(), s + "\n", background);
+            loggerDocument.insertString(loggerDocument.getLength(), s.toString() + "\n", background);
             logger.setCaretPosition(logger.getDocument().getLength());
         }
         catch (Exception e) {}

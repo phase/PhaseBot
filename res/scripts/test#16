@@ -1,5 +1,0 @@
-getblock 0 -1 0
-say @block
-dig 0 -1 0
-getblock 0 -1 0
-say @block

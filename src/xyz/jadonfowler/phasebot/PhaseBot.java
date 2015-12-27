@@ -28,7 +28,7 @@ public class PhaseBot {
     @Getter private static String[] owners = { "Phase", "Voltz" };
     private static String USERNAME = "username";
     // Build Server //
-    public static String HOST = "mort.openredstone.org";
+    public static String HOST = "mc.openredstone.org";
     private static int PORT = 25569;
     // ------------ //
     private static Proxy PROXY = Proxy.NO_PROXY;
@@ -302,6 +302,7 @@ public class PhaseBot {
         passFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         passFrame.setSize(200, 100);
         passFrame.setResizable(false);
+        passFrame.setLocationRelativeTo(null);
         passFrame.setVisible(true);
         console.println("Please input your password in the new window.");
     }

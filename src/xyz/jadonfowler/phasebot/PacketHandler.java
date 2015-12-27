@@ -21,7 +21,6 @@ import xyz.jadonfowler.phasebot.script.*;
 import xyz.jadonfowler.phasebot.world.*;
 
 public class PacketHandler extends SessionAdapter {
-
     @Override public void packetReceived(PacketReceivedEvent event) {
         if (event.getPacket() instanceof ServerJoinGamePacket) {
             event.getSession().send(new ClientChatPacket("PhaseBot has joined the game."));
@@ -112,16 +111,14 @@ public class PacketHandler extends SessionAdapter {
             for (BlockChangeRecord r : packet.getRecords()) {
                 Position p = r.getPosition();
                 int id = r.getId();
-                ChunkColumn.setBlock(p, id / 16); // Why is this 16? I don't
-                                                  // think I should have to do
-                                                  // anything with it.
+                ChunkColumn.setBlock(p, id >> 4);
                 PhaseBot.getBot().setInteruptMoveAlong(true);
             }
         }
         else if (event.getPacket() instanceof ServerBlockChangePacket) {
             Position p = event.<ServerBlockChangePacket> getPacket().getRecord().getPosition();
             int id = event.<ServerBlockChangePacket> getPacket().getRecord().getId();
-            ChunkColumn.setBlock(p, id / 16);
+            ChunkColumn.setBlock(p, id >> 4);
             PhaseBot.getBot().setInteruptMoveAlong(true);
         }
         else if (event.getPacket() instanceof ServerWindowItemsPacket) {

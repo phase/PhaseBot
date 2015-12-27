@@ -3,6 +3,7 @@ package xyz.jadonfowler.phasebot.world;
 import java.util.*;
 import lombok.*;
 import org.spacehq.mc.protocol.data.game.*;
+import xyz.jadonfowler.phasebot.PhaseBot;
 import xyz.jadonfowler.phasebot.util.*;
 import xyz.jadonfowler.phasebot.world.material.*;
 
@@ -16,7 +17,7 @@ public class Block {
     private Block(Position p) {
         this(Vector3d.fromPosition(p));
     }
-
+    
     private Block(double ax, double ay, double az) {
         this(new Vector3d(ax, ay, az).floor().round());
     }
@@ -24,15 +25,20 @@ public class Block {
     private Block(Vector3d p) {
         this.pos = p;
         this.chunk = ChunkColumn.getChunk(this);
-        Vector3d b = new Vector3d(pos.x > 0 ? pos.x % 16 : 16 - (Math.abs(pos.x) % 16),
+        Vector3d b = new Vector3d(
+                pos.x > 0 ? pos.x % 16 : 16 - (Math.abs(pos.x) % 16),
                 pos.y > 0 ? pos.y % 16 : 16 - (Math.abs(pos.y) % 16),
-                pos.z > 0 ? pos.z % 16 : 16 - (Math.abs(pos.z) % 16));
-        // PhaseBot.getConsole().println(b);
+                pos.z > 0 ? pos.z % 16 : 16 - (Math.abs(pos.z) % 16))
+                .floor();
+        PhaseBot.getConsole().log("chunk is null: " + chunk == null);
         int id = 0;
         try {
-            id = chunk.getBlocks().getBlock((int) b.x, (int) b.y, (int) b.z) >> 4;
+            id = chunk
+                    .getBlocks()
+                    .getBlock((int) b.x, (int) b.y, (int) b.z);
         }
         catch (Exception e) {
+            e.printStackTrace();
             id = 0;
         }
         this.id = id;
@@ -59,6 +65,7 @@ public class Block {
     }
 
     public static Block getBlock(double x, double y, double z) {
+        PhaseBot.getConsole().log("getBlock(" + x + "," + y + "," + z + ")");
         return getBlock(new Vector3d(x, y, z));
     }
 
