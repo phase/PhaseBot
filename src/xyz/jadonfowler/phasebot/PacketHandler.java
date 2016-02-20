@@ -15,6 +15,7 @@ import org.spacehq.mc.protocol.packet.ingame.server.entity.spawn.*;
 import org.spacehq.mc.protocol.packet.ingame.server.window.*;
 import org.spacehq.mc.protocol.packet.ingame.server.world.*;
 import org.spacehq.packetlib.event.session.*;
+import com.google.gson.*;
 import xyz.jadonfowler.phasebot.entity.*;
 import xyz.jadonfowler.phasebot.inventory.*;
 import xyz.jadonfowler.phasebot.script.*;
@@ -140,8 +141,9 @@ public class PacketHandler extends SessionAdapter {
         else if (event.getPacket() instanceof ServerChatPacket) {
             Message message = event.<ServerChatPacket> getPacket().getMessage();
             try {
-                PhaseBot.getConsole().addChatMessage(message.getFullText());
-                ChatMessage m = new ChatMessage(message.getFullText());
+                String t = message.getFullText();
+                PhaseBot.getConsole().addChatMessage(t);
+                ChatMessage m = new ChatMessage(t);
                 if (!m.isCommand()) return;
                 if (!Arrays.asList(PhaseBot.getOwners()).contains(m.getSender())) {
                     event.getSession().send(new ClientChatPacket("/msg " + m.getSender() + " You are not my master!"));

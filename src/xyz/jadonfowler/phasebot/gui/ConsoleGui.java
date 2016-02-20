@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.plaf.*;
 import javax.swing.text.*;
 import xyz.jadonfowler.phasebot.*;
+import xyz.jadonfowler.phasebot.script.*;
 
 public class ConsoleGui {
     static final Color DARK_GREY = new Color(50, 50, 50);
@@ -222,6 +223,7 @@ public class ConsoleGui {
     public void performCommand(String s) {
         try {
             println("$ " + s, false, new Color(92, 196, 88));
+            s = Script.replaceVariables(s);
             PhaseBot.getBot().runCommand(s, true);
         }
         catch (Exception e) {

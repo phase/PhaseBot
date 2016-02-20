@@ -6,7 +6,6 @@ import xyz.jadonfowler.phasebot.cmd.*;
 import org.spacehq.packetlib.*;
 
 public class Script {
-
     @Getter private final String[] lines;
     @Getter private String name;
     public int PC = 0;
@@ -35,20 +34,38 @@ public class Script {
             else if (args[0].equalsIgnoreCase(".for")) {
                 int lines = Integer.parseInt(args[1]);
                 int amount = Integer.parseInt(args[2]);
-                // PhaseBot.getConsole().println("FOR LOOP: " + lines + " "
-                // + amount);
-                loop:
+                loopf:
                 for (int a = 0; a < amount; a++) {
                     for (int j = 0; j < lines; j++) {
                         String command = this.lines[j + PC + 1];
-                        if (command.equalsIgnoreCase(".break")) break loop;
+                        PhaseBot.getConsole().log("for: " + PC + ": " + command);
+                        if (command.equalsIgnoreCase(".break") || pause) break loopf;
                         command = replaceArguments(command, inputArguments).replace("@i", a + "").trim();
                         // PhaseBot.getConsole().println(command + " : " +
                         // PC);
                         command = replaceVariables(command);
-                        PhaseBot.getBot().runCommand(command);
+                        parseLine(command, inputArguments);
                         Thread.sleep(5);
                     }
+                }
+                PC += lines;
+            }
+            else if (args[0].equalsIgnoreCase(".loop")) {
+                int lines = Integer.parseInt(args[1]);
+                int a = 0;
+                loopw:
+                while (true) {
+                    for (int j = 0; j < lines; j++) {
+                        PhaseBot.getConsole().log("loop j " + j + " PC " + PC);
+                        String command = this.lines[j + PC + 1];
+                        if (command.equalsIgnoreCase(".break") || pause) break loopw;
+                        command = replaceArguments(command, inputArguments).replace("@i", a + "").trim();
+                        command = replaceVariables(command);
+                        parseLine(command, inputArguments);
+                        Thread.sleep(5);
+                    }
+                    a++;
+                    PC -= lines - 1;
                 }
                 PC += lines;
             }
@@ -88,7 +105,6 @@ public class Script {
                 Script macro = new Script(name, script);
                 PhaseBot.scripts.add(macro);
                 new Command() {
-
                     public void exec(String in, String[] args, Session s) {
                         for (Script t : PhaseBot.scripts) {
                             if (t.getName().equalsIgnoreCase(args[0])) {
@@ -120,6 +136,11 @@ public class Script {
                 }
                 // System.out.println(id + ": " + value);
                 PhaseBot.getBot().getVariables().put(id.replace("@", ""), value.trim());
+            }
+            else if (args[0].equalsIgnoreCase(".sleep")) {
+                int amount = Integer.parseInt(args[1]);
+                PhaseBot.getConsole().log(".sleep " + amount);
+                Thread.sleep(amount);
             }
             else {
                 String command = replaceArguments(s, inputArguments);

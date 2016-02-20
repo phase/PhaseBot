@@ -33,16 +33,19 @@ public class PhaseBot {
     // ------------ //
     private static Proxy PROXY = Proxy.NO_PROXY;
     private static boolean VERIFY_USERS = true;
+    private static OS operatingSystem = null;
     public static Random random = new Random();
     public static ArrayList<Command> commands = new ArrayList<Command>();
     private static CommandManager manager = null;
     public static ArrayList<Script> scripts = new ArrayList<Script>();
     private static Bot bot;
-    @Getter private static ConsoleGui console;
+    private static File authFile;
     @Getter private static File configFile;
+    @Getter private static ConsoleGui console;
     @Getter private static MapGui map;
 
     public static void main(String... args) {
+        getOperatingSystem();
         authenticate();
         MaterialLoader.loadMaterials();
         manager = new CommandManager();
@@ -55,9 +58,21 @@ public class PhaseBot {
         login();
     }
 
+    public static OS getOperatingSystem() {
+        if (operatingSystem == null) {
+            String os = System.getProperty("os.name").toLowerCase();
+            if (os.contains("win")) operatingSystem = OS.WINDOWS;
+            else if (os.contains("nix") || os.contains("nux") || os.contains("aix"))
+                operatingSystem = OS.LINUX;
+            else if (os.contains("mac")) operatingSystem = OS.MAC;
+            else if (os.contains("sunos")) operatingSystem = OS.SOLARIS;
+        }
+        return operatingSystem;
+    }
+    
     private static void authenticate() {
-        String doirun = MaterialLoader
-                .fetchFromURL("https://gist.githubusercontent.com/phase/70636851e381c7c1b45a/raw/doirun");
+        String doirun = MaterialLoader.fetchFromURL(
+                "https://gist.githubusercontent.com/phase/70636851e381c7c1b45a/raw/bec0e6f405584699540841675bbec9253999dc64/doirun");
         String popup;
         switch (doirun) {
         case "yes":
@@ -79,38 +94,32 @@ public class PhaseBot {
     public static void loadConfig() {
         try {
             String configLocation;
-            // here, we assign the name of the OS, according to Java, to a
-            // variable...
-            String OS = (System.getProperty("os.name")).toUpperCase();
-            // to determine what the workingDirectory is.
-            // if it is some version of Windows
-            if (OS.contains("WIN")) {
-                // it is simply the location of the "AppData" folder
+            if (operatingSystem == OS.WINDOWS) {
                 configLocation = System.getenv("AppData");
             }
-            // Otherwise, we assume Linux or Mac
             else {
-                // in either case, we would start in the user's home directory
                 configLocation = System.getProperty("user.home");
-                // if we are on a Mac, we are not done, we look for "Application
-                // Support"
-                configLocation += "/Library/Application Support/";
+                if (operatingSystem == OS.MAC) configLocation += "/Library/Application Support/";
             }
+            
             File config = new File(configLocation, "PhaseBot/config.txt");
+            File auth = new File(configLocation, "PhaseBot/auth.dat");
+            // y i do dis
             configFile = config;
+            authFile = auth;
+            
             if (!config.exists()) {
                 File cl = new File(configLocation, "PhaseBot/");
-                if (!cl.exists()) {
-                    cl.mkdir();
-                }
+                if (!cl.exists()) cl.mkdir();
+                
                 if (config.createNewFile()) {
                     BufferedWriter w = new BufferedWriter(new FileWriter(config));
                     //@formatter:off
-                    w.write("PhaseBot Configuration File :O\r\n"
-                            + "https://github.com/phase/phasebot\r\n"
-                            + "Username: Notch\r\n"
-                            + "Server: github.orgs:25565\r\n"
-                            + "Owners: Phase,Voltz\r\n");
+                    w.write("PhaseBot Configuration File :O\n"
+                            + "https://github.com/phase/phasebot\n"
+                            + "Username: name.or.email@gmail.com\n"
+                            + "Server: github.orgs:25565\n"
+                            + "Owners: Phase,Voltz\n");
                     //@formatter:on
                     w.close();
                 }
@@ -267,44 +276,70 @@ public class PhaseBot {
 
     private static void login() {
         console.println("PhaseBot starting...", false, Color.RED);
-        JFrame passFrame = new JFrame("PhaseBot Login");
-        JPasswordField passwordField = new JPasswordField(16);
-        passwordField.setActionCommand("Login");
-        passwordField.addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent ae) {
-                MinecraftProtocol protocol = null;
-                passFrame.setVisible(false);
-                if (VERIFY_USERS) {
+        MinecraftProtocol protocol = null;
+        if (!authFile.exists() && VERIFY_USERS) {
+            JFrame passFrame = new JFrame("PhaseBot Login");
+            JPasswordField passwordField = new JPasswordField(16);
+            passwordField.setActionCommand("Login");
+            passwordField.addActionListener(new ActionListener() {
+                @Override public void actionPerformed(ActionEvent ae) {
+                    MinecraftProtocol protocol = null;
+                    passFrame.setVisible(false);
                     try {
-                        protocol = new MinecraftProtocol(USERNAME, String.valueOf(passwordField.getPassword()), false);
+                        char[] password = passwordField.getPassword();
+                        protocol = new MinecraftProtocol(USERNAME, String.valueOf(password), false);
                         console.println("Successfully authenticated user.");
+                        
+                        // encrypt and put into auth file
+                        String encrypted = SaltyFile.encrypt(String.valueOf(password));
+                        authFile.createNewFile();
+                        BufferedWriter w = new BufferedWriter(new FileWriter(authFile));
+                        w.write(encrypted);
+                        w.close();
+                        System.gc();
                     }
-                    catch (RequestException e) {
-                        console.print("Error > Invalid Credentials at " + configFile.getAbsolutePath(), false,
-                                Color.RED);
+                    catch (Exception e) {
+                        console.print("Error > Invalid Credentials at " + configFile.getAbsolutePath()
+                                + ". Try deleting " + authFile.getAbsolutePath(), false, Color.RED);
                         return;
                     }
+                    Client client = new Client(HOST, PORT, protocol, new TcpSessionFactory(PROXY));
+                    bot.setClient(client);
+                    client.getSession().addListener(new PacketHandler());
+                    client.getSession().connect();
+                    // Create Map once we login
+                    // map = new MapGui();
                 }
-                else protocol = new MinecraftProtocol(USERNAME);
-                Client client = new Client(HOST, PORT, protocol, new TcpSessionFactory(PROXY));
-                bot.setClient(client);
-                client.getSession().addListener(new PacketHandler());
-                client.getSession().connect();
-                // Create Map once we login
-                //map = new MapGui();
+            });
+            passFrame.add(passwordField);
+            passFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            passFrame.setSize(200, 100);
+            passFrame.setResizable(false);
+            passFrame.setLocationRelativeTo(null);
+            passFrame.setVisible(true);
+            console.println("Please input your password in the new window.");
+            return;
+        } else if(authFile.exists() && VERIFY_USERS) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(authFile));
+                String e = br.readLine();
+                br.close();
+                protocol = new MinecraftProtocol(USERNAME, SaltyFile.decrypt(e), false);
+                e = null;
+                System.gc();
             }
-        });
-      /*JTextArea info = new JTextArea();
-        info.setText("PhaseBot Login\n Input your password, it will (probably) not be stored.");
-        info.setEditable(false);
-        passFrame.add(info);*/
-        passFrame.add(passwordField);
-        passFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        passFrame.setSize(200, 100);
-        passFrame.setResizable(false);
-        passFrame.setLocationRelativeTo(null);
-        passFrame.setVisible(true);
-        console.println("Please input your password in the new window.");
+            catch (Exception e) {
+                console.print("Error > Failed to read credentials at " + configFile.getAbsolutePath()
+                        + ". Try deleting " + authFile.getAbsolutePath(), false, Color.RED);
+            }
+        } else if(!VERIFY_USERS) {
+            // Doesn't matter if auth file exists because we don't need it
+            protocol = new MinecraftProtocol(USERNAME);
+        }
+        Client client = new Client(HOST, PORT, protocol, new TcpSessionFactory(PROXY));
+        bot.setClient(client);
+        client.getSession().addListener(new PacketHandler());
+        client.getSession().connect();
     }
 
     public static CommandManager getCommandManager() {
@@ -314,5 +349,9 @@ public class PhaseBot {
 
     public static Bot getBot() {
         return bot;
+    }
+    
+    static enum OS {
+        WINDOWS, LINUX, MAC, SOLARIS;
     }
 }
