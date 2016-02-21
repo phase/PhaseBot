@@ -4,6 +4,7 @@ import java.util.*;
 import org.spacehq.mc.protocol.data.game.*;
 import xyz.jadonfowler.phasebot.*;
 import xyz.jadonfowler.phasebot.util.*;
+import xyz.jadonfowler.phasebot.world.material.*;
 
 public class ChunkColumn {
     static ArrayList<ChunkColumn> chunks = new ArrayList<ChunkColumn>();
@@ -69,6 +70,26 @@ public class ChunkColumn {
             c.getBlocks().fill(0);
         }
         c.getBlocks().setBlock((int) b.x, (int) b.y, (int) b.z, id);
+    }
+    
+    public static int getId(double x, double y, double z) {
+        double cx = x / 16, cy = y / 16, cz = z / 16;
+        Chunk c = getChunk((int) cx, (int) cy, (int) cz);
+        return c.getBlocks().getBlock((int) x % 16, (int) y % 16, (int) z % 16);
+    }
+
+    public static Material getMaterial(double x, double y, double z) {
+        return Material.getMaterial(getId(x, y, z));
+    }
+    
+    public static int[][][] getChunkByIds(int x, int y, int z) {
+        int[][][] f = new int[16][16][16];
+        Chunk c = getChunk(x, y, z);
+        for (int cx = 0; cx < 16; cx++)
+            for (int cy = 0; cy < 16; cy++)
+                for (int cz = 0; cz < 16; cz++)
+                    f[cx][cy][cz] = c.getBlocks().getBlock(cx, cy, cz);
+        return f;
     }
 
     public static void printChunk(Chunk c) {

@@ -8,7 +8,6 @@ import java.util.*;
 import javax.swing.*;
 import org.reflections.*;
 import org.spacehq.mc.auth.data.*;
-import org.spacehq.mc.auth.exception.request.*;
 import org.spacehq.mc.protocol.*;
 import org.spacehq.mc.protocol.data.*;
 import org.spacehq.mc.protocol.data.status.*;

@@ -15,7 +15,6 @@ import org.spacehq.mc.protocol.packet.ingame.server.entity.spawn.*;
 import org.spacehq.mc.protocol.packet.ingame.server.window.*;
 import org.spacehq.mc.protocol.packet.ingame.server.world.*;
 import org.spacehq.packetlib.event.session.*;
-import com.google.gson.*;
 import xyz.jadonfowler.phasebot.entity.*;
 import xyz.jadonfowler.phasebot.inventory.*;
 import xyz.jadonfowler.phasebot.script.*;
