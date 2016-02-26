@@ -24,6 +24,7 @@ public class ChunkColumn {
                 for (int cy = 0; cy < 16; cy++) {
                     for (int cz = 0; cz < 16; cz++) {
                         for (int cx = 0; cx < 16; cx++) {
+                            //PhaseBot.getConsole().log(" chunk " + 61 + 38 + "> " + c.getBlocks().getBlock(cx, cy, cz) + " " + cx + " " + cy + " " + cz);
                             blocks += c.getBlocks().getBlock(cx, cy, cz) + " ";
                         }
                     }
@@ -48,7 +49,6 @@ public class ChunkColumn {
     }
 
     public static Chunk getChunk(int x, int y, int z) {
-        y--;
         for (ChunkColumn cl : chunks)
             if (cl.x == x && cl.z == z) {
                 if (cl.y[y] == null || cl.y[y].getBlocks() == null) continue;
@@ -74,8 +74,14 @@ public class ChunkColumn {
     
     public static int getId(double x, double y, double z) {
         double cx = x / 16, cy = y / 16, cz = z / 16;
-        Chunk c = getChunk((int) cx, (int) cy, (int) cz);
-        return c.getBlocks().getBlock((int) x % 16, (int) y % 16, (int) z % 16);
+        Chunk c = getChunk((int) Math.floor(cx), (int) Math.floor(cy), (int) Math.floor(cz));
+        PhaseBot.getConsole().log("ChunkColumn.getId(" + cx + "," + cy + "," + cz + ") (" + (int) x / 16 + ","
+                + (int) y / 16 + "," + (int) z / 16 + ")");
+        int b = 
+                c
+                .getBlocks().
+                getBlock((int) x % 16, (int) y % 16, (int) z % 16);
+        return b;
     }
 
     public static Material getMaterial(double x, double y, double z) {

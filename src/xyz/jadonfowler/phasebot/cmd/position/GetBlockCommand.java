@@ -12,11 +12,9 @@ public class GetBlockCommand extends Command {
         int rx = Integer.parseInt(args[1]);
         int ry = Integer.parseInt(args[2]);
         int rz = Integer.parseInt(args[3]);
-        BlockType m = Block
-                .getBlock(PhaseBot.getBot().pos.x + rx, PhaseBot.getBot().pos.y + ry, PhaseBot.getBot().pos.z + rz)
-                .getMaterial();
+        Material m = ChunkColumn.getMaterial(PhaseBot.getBot().pos.x + rx, PhaseBot.getBot().pos.y + ry, PhaseBot.getBot().pos.z + rz);
         // PhaseBot.getBot().say("I am standing on: " + m.getDisplayName());
-        PhaseBot.getConsole().log(" getblock: " + m.getDisplayName() + " - " + m.getId());
+        PhaseBot.getConsole().log(" getblock: " + m.getDisplayName() + " - " + m.getId() + " (" + rx + "," + ry + "," + rz + ")");
         PhaseBot.getBot().getVariables().put("block", m.getId() + "");
     }
 
