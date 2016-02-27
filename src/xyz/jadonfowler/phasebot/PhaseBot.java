@@ -44,6 +44,12 @@ public class PhaseBot {
     @Getter private static MapGui map;
 
     public static void main(String... args) {
+        try {
+            loadDlls();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         getOperatingSystem();
         authenticate();
         MaterialLoader.loadMaterials();
@@ -57,6 +63,30 @@ public class PhaseBot {
         login();
     }
 
+    static boolean dllsLoaded = false;
+
+    private static void loadDlls() throws Exception {
+        // TODO: Print time when loaded?
+        if (dllsLoaded) throw new Exception("Libraries were already loaded");
+        dllsLoaded = true;
+        
+        //load res/lib/phasebot.dll
+        loadJarDll("res/lib/phasebot" + getOperatingSystem().getLibraryExtension());
+    }
+    
+    public static void loadJarDll(String name) throws IOException {
+        InputStream in = PhaseBot.class.getResourceAsStream(name);
+        byte[] buffer = new byte[1024];
+        int read = -1;
+        File temp = File.createTempFile(name, "");
+        FileOutputStream fos = new FileOutputStream(temp);
+        while ((read = in.read(buffer)) != -1)
+            fos.write(buffer, 0, read);
+        fos.close();
+        in.close();
+        System.load(temp.getAbsolutePath());
+    }
+    
     public static OS getOperatingSystem() {
         if (operatingSystem == null) {
             String os = System.getProperty("os.name").toLowerCase();
@@ -349,8 +379,17 @@ public class PhaseBot {
     public static Bot getBot() {
         return bot;
     }
-    
+
     static enum OS {
-        WINDOWS, LINUX, MAC, SOLARIS;
+        WINDOWS(".dll"), LINUX(".dylib"), MAC(".dylib"), SOLARIS(".dylib");
+        String extension;
+
+        OS(String e) {
+            this.extension = e;
+        }
+
+        public String getLibraryExtension() {
+            return extension;
+        }
     }
 }

@@ -12,3 +12,7 @@
 #Gradle
 /.gradle
 /build
+
+#Rust
+Cargo.lock
+target

@@ -1,0 +1,7 @@
+[package]
+name = "phasebot"
+version = "1.0.2"
+authors = ["phase <ph4sesaber@gmail.com>"]
+[lib]
+name = "phasebot"
+crate-type = ["dylib"]
