@@ -1,10 +1,12 @@
 package xyz.jadonfowler.phasebot.util;
 
 import lombok.*;
+import java.util.*;
 import org.spacehq.mc.protocol.data.game.*;
+import com.sun.jna.*;
 import xyz.jadonfowler.phasebot.world.*;
 
-public class Vector3d {
+public class Vector3d extends Structure {
     @Getter public double x;
     @Getter public double y;
     @Getter public double z;
@@ -127,5 +129,20 @@ public class Vector3d {
 
     public Position toPosition() {
         return toPosition(this);
+    }
+
+    /**
+     * Specify the order of the struct's fields.
+     * 
+     * The order here needs to match the order of the fields in the Rust code.
+     * The astute will notice that the field names only match the field names in
+     * the Java class, but not the equivalent Rust struct (the Rust one's are in
+     * snake_case, but could equally have had completely different names). This
+     * is because the fields are mapped from the Rust representation to the Java
+     * one by their order (i.e. their relative location in memory), not by their
+     * names.
+     */
+    @Override protected List<String> getFieldOrder() {
+        return Arrays.asList("x", "y", "z");
     }
 }

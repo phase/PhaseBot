@@ -80,7 +80,6 @@ public class PathfindCommand extends Command {
     }
 
     @Override public String getDescription() {
-        // TODO Auto-generated method stub
-        return null;
+        return "Pathfind to a player or entity";
     }
 }
