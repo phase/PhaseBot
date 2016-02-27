@@ -7,7 +7,7 @@ import org.spacehq.packetlib.Session;
 import xyz.jadonfowler.phasebot.*;
 import xyz.jadonfowler.phasebot.cmd.Command;
 
-public class Ruby extends Command {
+public class RubyCommand extends Command {
 
     @Override public void exec(String in, String[] args, Session s) {
         ScriptEngineManager mgr = new ScriptEngineManager();

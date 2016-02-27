@@ -5,7 +5,7 @@ import org.spacehq.packetlib.*;
 import xyz.jadonfowler.phasebot.*;
 import xyz.jadonfowler.phasebot.cmd.*;
 
-public class JavaScript extends Command {
+public class JavaScriptCommand extends Command {
 
     @Override public void exec(String in, String[] args, Session s) {
         ScriptEngineManager mgr = new ScriptEngineManager();

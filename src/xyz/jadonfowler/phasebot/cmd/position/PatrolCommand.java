@@ -5,7 +5,7 @@ import org.spacehq.packetlib.Session;
 import xyz.jadonfowler.phasebot.PhaseBot;
 import xyz.jadonfowler.phasebot.cmd.Command;
 
-public class Patrol extends Command {
+public class PatrolCommand extends Command {
 
     @Override public void exec(String in, String[] args, Session s) {
         double times = Double.parseDouble(args[1]);

@@ -4,7 +4,7 @@ import org.spacehq.packetlib.Session;
 import xyz.jadonfowler.phasebot.PhaseBot;
 import xyz.jadonfowler.phasebot.cmd.Command;
 
-public class Derp extends Command {
+public class DerpCommand extends Command {
 
     @Override public void exec(String in, String[] args, Session s) {
         if (PhaseBot.getBot().isDerp) {

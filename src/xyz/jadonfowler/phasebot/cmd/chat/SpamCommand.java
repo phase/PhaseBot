@@ -4,21 +4,29 @@ import org.spacehq.mc.protocol.packet.ingame.client.ClientChatPacket;
 import org.spacehq.packetlib.Session;
 import xyz.jadonfowler.phasebot.cmd.Command;
 
-public class Say extends Command {
+public class SpamCommand extends Command {
 
     @Override public void exec(String in, String[] args, Session s) {
         StringBuilder text = new StringBuilder();
-        for (int i = 1; i < args.length; i++) {
+        for (int i = 2; i < args.length; i++) {
             text.append(args[i] + " ");
         }
-        s.send(new ClientChatPacket(text.toString()));
+        int j = Integer.parseInt(args[1]);
+        for (int k = 0; k < j; k++) {
+            s.send(new ClientChatPacket(text.toString()));
+            try {
+                Thread.sleep(850);
+            }
+            catch (InterruptedException e) {}
+        }
     }
 
     @Override public String getCommand() {
-        return "say";
+        return "spam";
     }
 
     @Override public String getDescription() {
-        return "Say what the user inputs.";
+        // TODO Auto-generated method stub
+        return null;
     }
 }

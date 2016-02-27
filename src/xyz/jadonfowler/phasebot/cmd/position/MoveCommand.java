@@ -9,7 +9,7 @@ import xyz.jadonfowler.phasebot.entity.Entity;
 import xyz.jadonfowler.phasebot.entity.Player;
 import xyz.jadonfowler.phasebot.util.UUIDFetcher;
 
-public class Move extends Command {
+public class MoveCommand extends Command {
 
     @Override public void exec(String in, String[] args, Session s) {
         double rx, ry, rz;

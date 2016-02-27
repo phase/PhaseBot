@@ -4,7 +4,7 @@ import org.spacehq.packetlib.Session;
 import xyz.jadonfowler.phasebot.PhaseBot;
 import xyz.jadonfowler.phasebot.cmd.Command;
 
-public class Dig extends Command {
+public class DigCommand extends Command {
 
     @Override public void exec(String in, String[] args, final Session s) {
         try {

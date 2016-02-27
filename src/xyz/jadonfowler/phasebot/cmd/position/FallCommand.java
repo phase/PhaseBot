@@ -6,7 +6,7 @@ import xyz.jadonfowler.phasebot.cmd.*;
 import xyz.jadonfowler.phasebot.world.*;
 import xyz.jadonfowler.phasebot.world.material.*;
 
-public class Fall extends Command {
+public class FallCommand extends Command {
 
     @Override public void exec(String in, String[] args, Session ses) {
         while (Block.getBlock(PhaseBot.getBot().pos.x, PhaseBot.getBot().pos.y - 1, PhaseBot.getBot().pos.z).getMaterial() == Material.getMaterial(0)) {

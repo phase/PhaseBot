@@ -1,20 +1,20 @@
-package xyz.jadonfowler.phasebot.cmd.chat;
+package xyz.jadonfowler.phasebot.cmd.position;
 
 import org.spacehq.mc.protocol.packet.ingame.client.ClientChatPacket;
 import org.spacehq.packetlib.Session;
 import xyz.jadonfowler.phasebot.cmd.Command;
 
-public class Slap extends Command {
+public class TeleportCommand extends Command {
 
     @Override public void exec(String in, String[] args, Session s) {
-        s.send(new ClientChatPacket("/me slaps " + args[1]));
+        s.send(new ClientChatPacket("/tp " + args[1]));
     }
 
     @Override public String getCommand() {
-        return "slap";
+        return "tp";
     }
 
     @Override public String getDescription() {
-        return "Slap a person";
+        return "Teleport";
     }
 }

@@ -5,7 +5,7 @@ import xyz.jadonfowler.phasebot.*;
 import xyz.jadonfowler.phasebot.cmd.*;
 import xyz.jadonfowler.phasebot.entity.*;
 
-public class Entities extends Command {
+public class EntityCommand extends Command {
 
     @Override public void exec(String in, String[] args, Session s) {
         for (Entity e : Entity.getEntities().values())
