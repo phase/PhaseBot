@@ -25,6 +25,12 @@ lazy_static! {
     static ref CHUNKS: Mutex<HashSet<Chunk>> = Mutex::new(HashSet::new());
 }
 
+#[no_mangle]
 pub extern fn addChunk(cx: i32, cy: i32, cz: i32, c_blocks: [[[i32; 16]; 16]; 16]) {
     CHUNKS.lock().unwrap().insert(Chunk {x: cx, y: cy, z: cz, blocks: c_blocks});
+}
+
+#[no_mangle]
+pub extern fn test() {
+    println!("Hello World!");
 }
