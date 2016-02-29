@@ -14,7 +14,8 @@ public class ChunkColumn {
     public ChunkColumn(int x, int z, Chunk[] y) {
         this.x = x;
         this.z = z;
-        for (Chunk c : y) {
+        for(int yc = 0; yc < y.length; yc++) {
+            Chunk c = y[yc];
             if (c == null || c.getBlocks() == null) {
                 c = new Chunk(true);
                 c.getBlocks().fill(0);
@@ -31,6 +32,12 @@ public class ChunkColumn {
                 }
                 PhaseBot.getConsole().log(" new chunk: " + blocks);
             }
+            int[][][] blocks = new int[16][16][16];
+            for (int cx = 0; cx < 16; cx++)
+                for (int cy = 0; cy < 16; cy++)
+                    for (int cz = 0; cz < 16; cz++)
+                        blocks[cx][cy][cz] = c.getBlocks().getBlock(cx, cy, cz);
+            PhaseBot.getNativeInterface().add_chunk(x, yc, z, blocks);
         }
         this.y = y;
         chunks.add(this);
@@ -59,7 +66,7 @@ public class ChunkColumn {
 
     public static void setBlock(Position p, int id) {
         Vector3d v = new Vector3d(p.getX() > 0 ? Math.floor(p.getX() / 16) : -1 + Math.ceil(p.getX() / 16),
-                p.getY() > 0 ? Math.floor(p.getY() / 16) : -1 + Math.ceil(p.getY() / 16),
+                Math.floor(p.getY() / 16),
                 p.getZ() > 0 ? Math.floor(p.getZ() / 16) : -1 + Math.ceil(p.getZ() / 16));
         Chunk c = getChunk((int) v.x, (int) v.y, (int) v.z);
         Vector3d b = new Vector3d(Math.floor(p.getX() > 0 ? p.getX() % 16 : 16 - (Math.abs(p.getX()) % 16)),
@@ -77,10 +84,7 @@ public class ChunkColumn {
         Chunk c = getChunk((int) Math.floor(cx), (int) Math.floor(cy), (int) Math.floor(cz));
         PhaseBot.getConsole().log("ChunkColumn.getId(" + cx + "," + cy + "," + cz + ") (" + (int) x / 16 + ","
                 + (int) y / 16 + "," + (int) z / 16 + ")");
-        int b = 
-                c
-                .getBlocks().
-                getBlock((int) x % 16, (int) y % 16, (int) z % 16);
+        int b =  c.getBlocks().getBlock((int) x % 16, (int) y % 16, (int) z % 16);
         return b;
     }
 

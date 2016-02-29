@@ -44,16 +44,10 @@ public class PhaseBot {
     @Getter private static File configFile;
     @Getter private static ConsoleGui console;
     @Getter private static MapGui map;
+    @Getter private static NativeInterface nativeInterface;
 
     public static void main(String... args) {
-//        try {
-//            loadDlls();
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        RustInterface rInterface = (RustInterface) Native.loadLibrary("phasebot", RustInterface.class);
-        rInterface.test();
+        nativeInterface = (NativeInterface) Native.loadLibrary("phasebot", NativeInterface.class);
         getOperatingSystem();
         authenticate();
         MaterialLoader.loadMaterials();
@@ -66,30 +60,6 @@ public class PhaseBot {
         status();
         login();
     }
-
-//    static boolean dllsLoaded = false;
-//
-//    private static void loadDlls() throws Exception {
-//        // TODO: Print time when loaded?
-//        if (dllsLoaded) throw new Exception("Libraries were already loaded");
-//        dllsLoaded = true;
-//        
-//        //load res/lib/phasebot.dll
-//        loadJarDll("res/lib/phasebot" + getOperatingSystem().getLibraryExtension());
-//    }
-//    
-//    public static void loadJarDll(String name) throws IOException {
-//        InputStream in = PhaseBot.class.getResourceAsStream(name);
-//        byte[] buffer = new byte[1024];
-//        int read = -1;
-//        File temp = File.createTempFile(name, "");
-//        FileOutputStream fos = new FileOutputStream(temp);
-//        while ((read = in.read(buffer)) != -1)
-//            fos.write(buffer, 0, read);
-//        fos.close();
-//        in.close();
-//        System.load(temp.getAbsolutePath());
-//    }
     
     public static OS getOperatingSystem() {
         if (operatingSystem == null) {
